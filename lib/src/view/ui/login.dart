@@ -10,9 +10,6 @@ class Login extends StatelessWidget {
     ScreenSize size = ScreenSize();
     size.setMediaSize(MediaQuery.of(context).size);
 
-    // api test
-    // getProduct(1);
-
     return Scaffold(
         appBar: CustomAppBar(titleText: "Appbar Test"),
         body: Container(
