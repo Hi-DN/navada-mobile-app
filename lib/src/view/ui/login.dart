@@ -13,6 +13,12 @@ class Login extends StatelessWidget {
     ScreenSize size = ScreenSize();
     size.setMediaSize(MediaQuery.of(context).size);
 
+<<<<<<< HEAD
+=======
+    // api test
+    // getProduct(1);
+
+>>>>>>> ff7a316 (http client 및 Product model)
     return Scaffold(
         appBar: CustomAppBar(titleText: "Appbar Test"),
         body: Center(
