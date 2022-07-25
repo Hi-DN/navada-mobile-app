@@ -4,17 +4,7 @@ import 'package:http/http.dart' as http;
 
 class HttpClient {
   static final HttpClient _instance = HttpClient._internal();
-<<<<<<< HEAD
-<<<<<<< HEAD
   final String baseUrl = 'http://localhost:8080/';
-=======
-  final String baseUrl = 'http://192.168.25.12:8000/';
-  // final String baseUrl = 'http://10.0.2.2:8000/';
-  // final String baseUrl = 'http://localhost:8000/';
->>>>>>> ff7a316 (http client 및 Product model)
-=======
-  final String baseUrl = 'http://localhost:8080/';
->>>>>>> 17344eb (url 수정)
 
   String accessToken = '';
 

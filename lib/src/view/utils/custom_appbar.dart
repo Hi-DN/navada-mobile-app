@@ -36,6 +36,6 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
               )
             : Container(),
         backgroundColor: Colors.white,
-        title: B16Text(text: titleText));
+        title: B18Text(text: titleText));
   }
 }
