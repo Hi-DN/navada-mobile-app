@@ -27,9 +27,7 @@ class Login extends StatelessWidget {
             onPressed: () {
               UserProvider userProvider = Provider.of(context, listen: false);
               userProvider.notifyListeners();
-
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (BuildContext context) => Home()));
+              Navigator.of(context).pushNamed(Home.routeName);
             },
           ),
         ));
