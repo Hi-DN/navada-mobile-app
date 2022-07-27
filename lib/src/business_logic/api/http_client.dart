@@ -23,18 +23,17 @@ class HttpClient {
     } else {
       response = await http.get(Uri.parse(baseUrl + url));
     }
-    debugPrint('url : ${baseUrl + url}');
-    debugPrint('statusCode : ${response.statusCode}');
-    debugPrint('response body : ${utf8.decode(response.bodyBytes)}');
+    _printResponseToApiRequest(response, url);
 
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
   Future<Map<String, dynamic>> postRequest(
-      String url, Map<String, dynamic> body,
-      {bool tokenYn = false}) async {
+      String url, Map<String, dynamic> body, {bool tokenYn = false}) async {
+
     http.Response response;
     Map<String, String> headers;
+
     if (tokenYn) {
       headers = {
         'Content-Type': 'application/json',
@@ -43,11 +42,10 @@ class HttpClient {
     } else {
       headers = {'Content-Type': 'application/json'};
     }
-    response = await http.post(Uri.parse(baseUrl + url),
-        body: jsonEncode(body), headers: headers);
-    debugPrint('url : ${baseUrl + url}');
-    debugPrint('statusCode : ${response.statusCode}');
-    debugPrint('response body : ${utf8.decode(response.bodyBytes)}');
+    response = await http.post(Uri.parse(baseUrl + url), body: jsonEncode(body), headers: headers);
+
+    _printResponseToApiRequest(response, url);
+
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
@@ -63,12 +61,11 @@ class HttpClient {
     } else {
       headers = {'Content-Type': 'application/json'};
     }
-    response = await http.put(Uri.parse(baseUrl + url),
-        body: jsonEncode(body), headers: headers);
-    debugPrint('url : ${baseUrl + url}');
-    debugPrint('statusCode : ${response.statusCode}');
-    debugPrint('response body : ${response.body}');
-    return jsonDecode(response.body);
+    response = await http.put(Uri.parse(baseUrl + url), headers: headers, body: jsonEncode(body));
+
+    _printResponseToApiRequest(response, url);
+
+    return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
   Future<Map<String, dynamic>> deleteRequest(String url,
@@ -85,14 +82,13 @@ class HttpClient {
     }
     response = await http.delete(Uri.parse(baseUrl + url), headers: headers);
 
-    debugPrint('url : ${baseUrl + url}');
-    debugPrint('statusCode : ${response.statusCode}');
-    debugPrint('response body : ${response.body}');
+    _printResponseToApiRequest(response, url);
 
-    return jsonDecode(response.body);
+    return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
-  Future<Map<String, dynamic>> patchRequest(String url,
+  Future<Map<String, dynamic>> patchRequest(
+      String url, Map<String, dynamic> body,
       {bool tokenYn = false}) async {
     http.Response response;
     Map<String, String> headers;
@@ -104,12 +100,16 @@ class HttpClient {
     } else {
       headers = {'Content-Type': 'application/json'};
     }
-    response = await http.patch(Uri.parse(baseUrl + url), headers: headers);
+    response = await http.patch(Uri.parse(baseUrl + url), headers: headers, body: jsonEncode(body));
 
+    _printResponseToApiRequest(response, url);
+
+    return jsonDecode(utf8.decode(response.bodyBytes));
+  }
+
+  void _printResponseToApiRequest(http.Response response, String url) {
     debugPrint('url : ${baseUrl + url}');
     debugPrint('statusCode : ${response.statusCode}');
-    debugPrint('response body : ${response.body}');
-
-    return jsonDecode(response.body);
+    debugPrint('response body : ${utf8.decode(response.bodyBytes)}');
   }
 }
