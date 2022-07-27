@@ -1,3 +1,5 @@
+import 'package:navada_mobile_app/src/view/utils/enums.dart';
+
 class UserModel {
   int? userId;
   String? userName;
@@ -6,7 +8,7 @@ class UserModel {
   String? userPassword;
   String? userPhoneNum;
   String? userAddress;
-  String? userLevel;
+  UserLevel? userLevel;
   double? userRating;
   int? userTradeCount;
   int? userRatingCount;
@@ -32,7 +34,7 @@ class UserModel {
     userPassword = json['userPassword'];
     userPhoneNum = json['userPhoneNum'];
     userAddress = json['userAddress'];
-    userLevel = json['userLevel'];
+    userLevel = UserLevel.strToEnum(json['userLevel']);
     userTradeCount = json['userTradeCount'];
     userRatingCount = json['userRatingCount'];
   }
@@ -46,7 +48,7 @@ class UserModel {
     data['userPassword'] = userPassword;
     data['userPhoneNum'] = userPhoneNum;
     data['userAddress'] = userAddress;
-    data['userLevel'] = userLevel;
+    data['userLevel'] = userLevel == null ? '' : userLevel?.name;
     data['userTradeCount'] = userTradeCount;
     data['userRatingCount'] = userRatingCount;
     return data;

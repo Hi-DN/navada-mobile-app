@@ -1,3 +1,4 @@
+import 'package:navada_mobile_app/src/business_logic/product/category/category_model.dart';
 import 'package:navada_mobile_app/src/view/utils/enums.dart';
 
 class ProductModel {
@@ -24,10 +25,9 @@ class ProductModel {
     productId = json['productId'];
     productName = json['productName'];
     productExplanation = json['productExplanation'];
-    category =
-        json['category'] != null ? Category.fromJson(json['category']) : null;
-    productStatusCd =
-        json['productStatusCd'].toString().strToProductStatusCdEnum;
+    category = Category.objToEnum(CategoryModel.fromJson(json['category']));
+    productStatusCd = 
+        ProductStatusCd.intToEnum(json['productStatusCd']);
     heartNum = json['heartNum'];
     productCost = json['productCost'];
     exchangeCostRange = json['exchangeCostRange'];
@@ -39,31 +39,12 @@ class ProductModel {
     data['productName'] = productName;
     data['productExplanation'] = productExplanation;
     if (category != null) {
-      data['category'] = category!.toJson();
+      data['category'] = Category.enumToObj(category!).toJson();
     }
-    data['productStatusCd'] = productStatusCd?.toShortString();
+    data['productStatusCd'] = productStatusCd?.code;
     data['heartNum'] = heartNum;
     data['productCost'] = productCost;
     data['exchangeCostRange'] = exchangeCostRange;
-    return data;
-  }
-}
-
-class Category {
-  int? categoryId;
-  String? categoryName;
-
-  Category({this.categoryId, this.categoryName});
-
-  Category.fromJson(Map<String, dynamic> json) {
-    categoryId = json['categoryId'];
-    categoryName = json['categoryName'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['categoryId'] = categoryId;
-    data['categoryName'] = categoryName;
     return data;
   }
 }

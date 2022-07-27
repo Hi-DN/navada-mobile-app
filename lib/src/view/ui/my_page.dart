@@ -53,7 +53,7 @@ class UserProfile extends StatelessWidget {
                   children: [
                     B20Text(text: user.userNickname),
                     const Space(height: 5),
-                    R14Text(text: _userLevelToStr(user.userLevel!))
+                    R14Text(text: user.userLevel!.label)
                   ],
                 ),
               ],
@@ -69,25 +69,6 @@ class UserProfile extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _userLevelToStr(String userLevel) {
-    String userLevelStr = 'Lv. ';
-    switch (userLevel) {
-      case 'LV1_OUTSIDER':
-        userLevelStr += '외지인';
-        break;
-      case 'LV2_RESIDENT':
-        userLevelStr += '주민';
-        break;
-      case 'LV3_NATIVE':
-        userLevelStr += '토박이';
-        break;
-      default:
-        userLevelStr += '촌장';
-        break;
-    }
-    return userLevelStr;
   }
 }
 

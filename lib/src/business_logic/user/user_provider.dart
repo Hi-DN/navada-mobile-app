@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:navada_mobile_app/src/business_logic/user/user_model.dart';
+import 'package:navada_mobile_app/src/view/utils/enums.dart';
 
 class UserProvider extends ChangeNotifier {
   static int userId = 1;
@@ -22,7 +23,7 @@ class UserProvider extends ChangeNotifier {
       userPassword,
       userPhoneNum,
       userAddress,
-      userLevel,
+      UserLevel.strToEnum(userLevel),
       userRating,
       userTradeCount,
       userRatingCount);
