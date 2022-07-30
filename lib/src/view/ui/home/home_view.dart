@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/view/ui/home/home_requestsforme_widget.dart';
 import 'package:navada_mobile_app/src/view/utils/colors.dart';
@@ -22,7 +23,6 @@ class HomeView extends StatelessWidget {
             CategorySection(),
             CustomDivider(),
             Expanded(child: RequestsForMeSection())
-            // SizedBox(height: 480, child: RequestsForMeSection())
           ]),
         ));
   }
@@ -56,15 +56,44 @@ class CategorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Space(height: 10),
-        CategoryIconsRow(children: _rowContent1),
-        CategoryIconsRow(children: _rowContent2),
-        // CategoryIconsRow(children: _rowContent3),
-        const Space(height: 18),
+    return CarouselSlider(
+      options: CarouselOptions(
+        enableInfiniteScroll: false,
+        viewportFraction: 1,
+        aspectRatio: 10 / 5
+      ),
+      items: [
+        categoryFirstSlide(),
+        categorySecondSlide()
       ]
     );
+  }
+
+  Widget categoryFirstSlide() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Column(
+            children: [
+              const Space(height: 10),
+              CategoryIconsRow(children: _rowContent1),
+              CategoryIconsRow(children: _rowContent2),
+              const Space(height: 18),
+            ]
+          ),
+        ),
+        // const Icon(Icons.arrow_forward_ios, size: 15,)
+      ],
+    );
+  }
+
+  Widget categorySecondSlide() {
+    return Column(children: [
+        const Space(height: 10),
+        CategoryIconsRow(children: _rowContent3),
+        const Space(height: 78),
+    ]);
   }
 
   final _rowContent1 =  const[
