@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/business_logic/user/user_model.dart';
 import 'package:navada_mobile_app/src/view/ui/heart_list.dart';
 import 'package:navada_mobile_app/src/view/ui/my_page.dart';
+import 'package:navada_mobile_app/src/view/ui/home/home_view.dart';
 import 'package:navada_mobile_app/src/view/utils/colors.dart';
 
-class Home extends StatefulWidget {
-  static const routeName = 'home';
-
-  const Home({Key? key}) : super(key: key);
+class CustomNavigationBar extends StatefulWidget {
+  const CustomNavigationBar({Key? key}) : super(key: key);
+  static const routeName = 'navigation-bar';
 
   @override
-  _HomeState createState() => _HomeState();
+  State<CustomNavigationBar> createState() => _CustomNavigationBarState();
 }
 
-class _HomeState extends State<Home> {
+class _CustomNavigationBarState extends State<CustomNavigationBar> {
   UserModel? user;
   int _currIndex = 0;
 
-  List<Widget> _widgetList = [Text('0'), Text('1'), HeartList(), MyPage()];
+  final List<Widget> _widgetList = [const HomeView(), const Text('1'), HeartList(), const MyPage()];
 
   void _onMenuTapped(int index) {
     setState(() {
@@ -36,7 +36,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print('+ 버튼 클릭');
+          debugPrint('+ 버튼 클릭');
         },
         tooltip: 'Increment',
         backgroundColor: green,

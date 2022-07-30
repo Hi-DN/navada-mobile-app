@@ -96,3 +96,13 @@ enum Category {
     return Category.values.firstWhere((c) => c.label == label).id;
   }
 }
+
+enum DataState {
+  UNINITIALIZED,
+  REFRESHING,
+  INITIAL_FETCHING,
+  MORE_FETCHING,
+  FETCHED,
+  NO_MORE_DATA,
+  ERROR
+}
