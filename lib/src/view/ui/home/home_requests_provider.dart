@@ -20,6 +20,7 @@ class RequestsForMeProvider extends ChangeNotifier {
   DataState get dataState => _dataState;
   List<RequestModel> get dataList => _requestDataList;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
+  bool get _shouldResetTotalPages => _isInitialFetching || _dataState == DataState.REFRESHING;
 
   void setDeniedVisible(bool newValue) {
     _isDeniedVisible = newValue;
@@ -86,13 +87,13 @@ class RequestsForMeProvider extends ChangeNotifier {
       ? await getRequestsForMeIncludingDenied(_userId, _currentPageNum)
       : await getRequestsForMe(_userId, _currentPageNum);
 
-    await _setTotalPagesIfInitialFetching(pageResponse!.totalPages!);
+    await _resetTotalPages(pageResponse!.totalPages!);
 
     return pageResponse;
   }
 
-  _setTotalPagesIfInitialFetching(int totalPages) {
-    if(_isInitialFetching) 
+  _resetTotalPages(int totalPages) {
+    if(_shouldResetTotalPages) 
       _totalPages = totalPages;
   }
 
