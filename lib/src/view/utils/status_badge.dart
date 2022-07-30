@@ -1,15 +1,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/view/utils/colors.dart';
-import 'package:navada_mobile_app/src/view/utils/enums.dart';
 import 'package:navada_mobile_app/src/view/utils/screen_size.dart';
 import 'package:navada_mobile_app/src/view/utils/text_style.dart';
 
-class ProductStatusBadge extends StatelessWidget {
-  const ProductStatusBadge
-({Key? key, this.productStatusCd}) : super(key: key);
+class StatusBadge extends StatelessWidget {
+  const StatusBadge
+({Key? key, this.label, this.backgroundColor}) : super(key: key);
 
-  final ProductStatusCd? productStatusCd;
+  final String? label;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -18,15 +18,11 @@ class ProductStatusBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 9),
       height: size.getSize(21),
       decoration: BoxDecoration(
-        color: productStatusCd == ProductStatusCd.TRADING 
-          ? green 
-          : navy,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(11),
       ),
       child: R12Text(
-        text: productStatusCd == ProductStatusCd.TRADING 
-          ? '교환중' 
-          : '교환완료', 
+        text: label, 
         textColor: white
       )
     );

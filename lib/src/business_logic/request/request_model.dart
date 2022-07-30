@@ -1,3 +1,5 @@
+import 'package:navada_mobile_app/src/view/utils/enums.dart';
+
 class PageResponse {
   bool? success;
   int? code;
@@ -72,7 +74,7 @@ class PageResponse {
 
 class RequestModel {
   int? requestId;
-  int? exchangeStatusCd;
+  ExchangeStatusCd? exchangeStatusCd;
   String? acceptorNickname;
   String? requesterNickName;
   String? acceptorProductName;
@@ -96,7 +98,7 @@ class RequestModel {
 
   RequestModel.fromJson(Map<String, dynamic> json) {
     requestId = json['requestId'];
-    exchangeStatusCd = json['exchangeStatusCd'];
+    exchangeStatusCd = ExchangeStatusCd.intToEnum(json['exchangeStatusCd']);
     acceptorNickname = json['acceptorNickname'];
     requesterNickName = json['requesterNickName'];
     acceptorProductName = json['acceptorProductName'];
@@ -110,7 +112,7 @@ class RequestModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['requestId'] = requestId;
-    data['exchangeStatusCd'] = exchangeStatusCd;
+    data['exchangeStatusCd'] = exchangeStatusCd!.code.toString();
     data['acceptorNickname'] = acceptorNickname;
     data['requesterNickName'] = requesterNickName;
     data['acceptorProductName'] = acceptorProductName;

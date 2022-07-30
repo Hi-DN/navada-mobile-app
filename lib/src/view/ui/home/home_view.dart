@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/view/ui/home/home_requestsforme_widget.dart';
+import 'package:navada_mobile_app/src/view/ui/home/home_requests_widget.dart';
 import 'package:navada_mobile_app/src/view/utils/colors.dart';
 import 'package:navada_mobile_app/src/view/utils/divider.dart';
 import 'package:navada_mobile_app/src/view/utils/screen_size.dart';
@@ -81,19 +81,14 @@ class CategorySection extends StatelessWidget {
               CategoryIconsRow(children: _rowContent2),
               const Space(height: 18),
             ]
-          ),
-        ),
-        // const Icon(Icons.arrow_forward_ios, size: 15,)
-      ],
-    );
+          ))]);
   }
 
   Widget categorySecondSlide() {
     return Column(children: [
         const Space(height: 10),
         CategoryIconsRow(children: _rowContent3),
-        const Space(height: 78),
-    ]);
+        const Space(height: 78)]);
   }
 
   final _rowContent1 =  const[

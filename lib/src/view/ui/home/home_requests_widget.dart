@@ -5,9 +5,10 @@ import 'package:navada_mobile_app/src/business_logic/user/user_provider.dart';
 import 'package:navada_mobile_app/src/view/utils/colors.dart';
 import 'package:navada_mobile_app/src/view/utils/cost_range_badge.dart';
 import 'package:navada_mobile_app/src/view/utils/enums.dart';
-import 'package:navada_mobile_app/src/view/ui/home/home_requestsforme_controller.dart';
+import 'package:navada_mobile_app/src/view/ui/home/home_requests_provider.dart';
 import 'package:navada_mobile_app/src/view/utils/screen_size.dart';
 import 'package:navada_mobile_app/src/view/utils/space.dart';
+import 'package:navada_mobile_app/src/view/utils/status_badge.dart';
 import 'package:navada_mobile_app/src/view/utils/text_style.dart';
 import 'package:provider/provider.dart';
 
@@ -20,10 +21,10 @@ class RequestsForMeSection extends StatelessWidget {
 
     return Scaffold(
       body: ChangeNotifierProvider(
-        create: (context) => RequestsForMeController(),
+        create: (context) => RequestsForMeProvider(user.userId!),
         child: Column(
           children: [
-            _sectionTitle(user.userNickname!),
+            _titleSection(context, user.userNickname!),
             Expanded(
               child: _buildScreenDependingOnDataState()
             ),
@@ -33,41 +34,69 @@ class RequestsForMeSection extends StatelessWidget {
     );
   }
 
-  Widget _sectionTitle(String userNickname) {
+  Widget _titleSection(BuildContext context, String userNickname) {
     ScreenSize size = ScreenSize();
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: size.getSize(18)),
-      child: Row(
-        children: [
-          B16Text(text: userNickname),
-          const R16Text(text: '님에게 온 교환 요청'),
-        ],
-      ),
+
+    return Consumer<RequestsForMeProvider>(
+      builder: (BuildContext context, RequestsForMeProvider provider, Widget? _) {
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: size.getSize(18)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _sectionTitle(userNickname),
+              _deniedVisibleCheckBox(provider)
+            ],
+          ),
+        );
+      });
+  }
+
+  Widget _sectionTitle(String userNickname) {
+    return Row(
+      children: [
+        B16Text(text: userNickname),
+        const R16Text(text: '님에게 온 교환 요청'),
+      ],
     );
   }
 
+  Widget _deniedVisibleCheckBox(RequestsForMeProvider provider) {
+    return Row(
+      children: [
+        Checkbox(
+          visualDensity: const VisualDensity(horizontal: -3.0, vertical: -4.0),
+          value: provider.isDeniedVisible, 
+          side: const BorderSide(color: grey183),
+          activeColor: grey183,
+          onChanged: (value) {
+            provider.setDeniedVisible(value!);
+          }),
+        const R12Text(text: '거절한 요청도 보기', textColor: grey183,)
+    ]);
+  }
+
   Widget _buildScreenDependingOnDataState() {
-    return Consumer<RequestsForMeController>(
-      builder: (BuildContext context, RequestsForMeController controller, Widget? _) {
-          switch(controller.dataState) {
+    return Consumer<RequestsForMeProvider>(
+      builder: (BuildContext context, RequestsForMeProvider provider, Widget? _) {
+          switch(provider.dataState) {
             case DataState.UNINITIALIZED:
               Future(() {
-                controller.fetchData();
+                provider.fetchData();
               });
-              return _RequestsForMeGridView(requestsForMe: controller.dataList, isLoading: false);
+              return _RequestsForMeGridView(requestsForMe: provider.dataList, isLoading: false);
             case DataState.INITIAL_FETCHING:
             case DataState.MORE_FETCHING:
             case DataState.REFRESHING:
-              return _RequestsForMeGridView(requestsForMe: controller.dataList, isLoading: true);
+              return _RequestsForMeGridView(requestsForMe: provider.dataList, isLoading: true);
             case DataState.FETCHED:
             case DataState.ERROR:
             case DataState.NO_MORE_DATA:
-              return _RequestsForMeGridView(requestsForMe: controller.dataList, isLoading: false);
+              return _RequestsForMeGridView(requestsForMe: provider.dataList, isLoading: false);
           }
         });
   }
 }
-
 
 // ignore: must_be_immutable
 class _RequestsForMeGridView extends StatelessWidget {
@@ -81,7 +110,7 @@ class _RequestsForMeGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _dataState = Provider.of<RequestsForMeController>(context, listen: false).dataState;
+    _dataState = Provider.of<RequestsForMeProvider>(context, listen: false).dataState;
     _buildContext = context;
     return _scrollNotificationWidget();
   }
@@ -106,7 +135,7 @@ class _RequestsForMeGridView extends StatelessWidget {
     if(!isLoading && 
     scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
       isLoading = true;
-      Provider.of<RequestsForMeController>(_buildContext!, listen: false).fetchData(isRefresh: false);
+      Provider.of<RequestsForMeProvider>(_buildContext!, listen: false).fetchData(isRefresh: false);
     }
     return true;
   }
@@ -131,7 +160,7 @@ class _RequestsForMeGridView extends StatelessWidget {
   _onRefresh() async {
     if(!isLoading) {
       isLoading = true;
-      Provider.of<RequestsForMeController>(_buildContext!, listen: false).fetchData(isRefresh: true);
+      Provider.of<RequestsForMeProvider>(_buildContext!, listen: false).fetchData(isRefresh: true);
     }
   }
 }
@@ -143,7 +172,6 @@ class RequestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreenSize size = ScreenSize();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -156,10 +184,29 @@ class RequestItem extends StatelessWidget {
 
   Widget _exampleImage() {
     ScreenSize size = ScreenSize();
-    return Image.asset(
-      'assets/images/test.jpeg',
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size.getSize(5)),
+      child: Stack(
+        children: [
+          Image.asset(
+            'assets/images/test.jpeg',
+            width: size.getSize(160.0),
+            height: size.getSize(160.0),
+          ),
+          if(request!.exchangeStatusCd == ExchangeStatusCd.DENIED)
+            _blackTransparentFilter()
+        ],
+      ),
+    );
+  }
+
+  Widget _blackTransparentFilter() {
+    ScreenSize size = ScreenSize();
+    return Container(
       width: size.getSize(160.0),
       height: size.getSize(160.0),
+      color: const Color.fromRGBO(0, 0, 0, 0.5),
+      child: const Center(child: StatusBadge(label: '거절됨', backgroundColor: grey153,))
     );
   }
 
