@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/business_logic/user/user_provider.dart';
+import 'package:navada_mobile_app/src/view/ui/heart_list_provider.dart';
 import 'package:navada_mobile_app/src/view/ui/home/home_view.dart';
 import 'package:navada_mobile_app/src/view/ui/login.dart';
 import 'package:navada_mobile_app/src/view/utils/custom_navigation_bar.dart';
@@ -13,6 +14,8 @@ class NavadaApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => UserProvider()),
+          ChangeNotifierProvider(create: (context) => HeartListCheckButton()),
+          ChangeNotifierProvider(create: (context) => HeartListProvider()),
         ],
         child: MaterialApp(
           title: 'Navada',
@@ -22,7 +25,8 @@ class NavadaApp extends StatelessWidget {
           home: const Login(),
           routes: {
             HomeView.routeName: (context) => const HomeView(),
-            CustomNavigationBar.routeName: (context) => const CustomNavigationBar(),
+            CustomNavigationBar.routeName: (context) =>
+                const CustomNavigationBar(),
           },
         ));
   }

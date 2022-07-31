@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/business_logic/user/user_model.dart';
-import 'package:navada_mobile_app/src/view/ui/heart_list.dart';
-import 'package:navada_mobile_app/src/view/ui/my_page.dart';
+import 'package:navada_mobile_app/src/view/ui/heart_list_widget.dart';
 import 'package:navada_mobile_app/src/view/ui/home/home_view.dart';
+import 'package:navada_mobile_app/src/view/ui/my_page.dart';
 import 'package:navada_mobile_app/src/view/utils/colors.dart';
 
 class CustomNavigationBar extends StatefulWidget {
@@ -17,7 +17,12 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   UserModel? user;
   int _currIndex = 0;
 
-  final List<Widget> _widgetList = [const HomeView(), const Text('1'), HeartList(), const MyPage()];
+  final List<Widget> _widgetList = [
+    const HomeView(),
+    const Text('1'),
+    const HeartListWidget(),
+    const MyPage()
+  ];
 
   void _onMenuTapped(int index) {
     setState(() {
