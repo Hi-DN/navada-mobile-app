@@ -11,6 +11,7 @@ class RequestsForMeProvider extends ChangeNotifier {
   final int _userId;
 
   bool _isDeniedVisible = false;
+
   int _currentPageNum = 0;
   DataState _dataState = DataState.UNINITIALIZED;
   List<RequestModel> _requestDataList = [];
@@ -18,7 +19,7 @@ class RequestsForMeProvider extends ChangeNotifier {
   
   bool get isDeniedVisible => _isDeniedVisible;
   DataState get dataState => _dataState;
-  List<RequestModel> get dataList => _requestDataList;
+  List<RequestModel> get requestDataList => _requestDataList;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
   bool get _shouldResetTotalPages => _isInitialFetching || _dataState == DataState.REFRESHING;
 

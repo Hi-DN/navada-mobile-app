@@ -84,15 +84,15 @@ class RequestsForMeSection extends StatelessWidget {
               Future(() {
                 provider.fetchData();
               });
-              return _RequestsForMeGridView(requestsForMe: provider.dataList, isLoading: false);
+              return _RequestsForMeGridView(requestsForMe: provider.requestDataList, isLoading: false);
             case DataState.INITIAL_FETCHING:
             case DataState.MORE_FETCHING:
             case DataState.REFRESHING:
-              return _RequestsForMeGridView(requestsForMe: provider.dataList, isLoading: true);
+              return _RequestsForMeGridView(requestsForMe: provider.requestDataList, isLoading: true);
             case DataState.FETCHED:
             case DataState.ERROR:
             case DataState.NO_MORE_DATA:
-              return _RequestsForMeGridView(requestsForMe: provider.dataList, isLoading: false);
+              return _RequestsForMeGridView(requestsForMe: provider.requestDataList, isLoading: false);
           }
         });
   }
