@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/business_logic/user/user_model.dart';
-import 'package:navada_mobile_app/src/business_logic/user/user_provider.dart';
-import 'package:navada_mobile_app/src/view/utils/colors.dart';
-import 'package:navada_mobile_app/src/view/utils/custom_appbar.dart';
-import 'package:navada_mobile_app/src/view/utils/divider.dart';
-import 'package:navada_mobile_app/src/view/utils/screen_size.dart';
-import 'package:navada_mobile_app/src/view/utils/space.dart';
-import 'package:navada_mobile_app/src/view/utils/text_style.dart';
+import 'package:navada_mobile_app/src/models/user/user_model.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/widgets/colors.dart';
+import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
+import 'package:navada_mobile_app/src/widgets/divider.dart';
+import 'package:navada_mobile_app/src/widgets/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/space.dart';
+import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
 class MyPage extends StatelessWidget {

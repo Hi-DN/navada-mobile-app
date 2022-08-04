@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:navada_mobile_app/src/business_logic/user/user_model.dart';
-import 'package:navada_mobile_app/src/view/utils/enums.dart';
+import 'package:navada_mobile_app/src/models/user/user_model.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class UserProvider extends ChangeNotifier {
   static int userId = 1;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/business_logic/user/user_model.dart';
-import 'package:navada_mobile_app/src/view/ui/heart_list.dart';
-import 'package:navada_mobile_app/src/view/ui/my_page.dart';
-import 'package:navada_mobile_app/src/view/ui/home/home_view.dart';
-import 'package:navada_mobile_app/src/view/utils/colors.dart';
+import 'package:navada_mobile_app/src/models/user/user_model.dart';
+import 'package:navada_mobile_app/src/screens/heart_list.dart';
+import 'package:navada_mobile_app/src/screens/my_page.dart';
+import 'package:navada_mobile_app/src/screens/home/home_view.dart';
+import 'package:navada_mobile_app/src/widgets/colors.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({Key? key}) : super(key: key);

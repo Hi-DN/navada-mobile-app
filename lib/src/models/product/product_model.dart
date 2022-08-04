@@ -1,5 +1,5 @@
-import 'package:navada_mobile_app/src/business_logic/product/category/category_model.dart';
-import 'package:navada_mobile_app/src/view/utils/enums.dart';
+import 'package:navada_mobile_app/src/models/product/category/category_model.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class ProductModel {
   int? productId;

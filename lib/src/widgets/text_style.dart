@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/view/utils/colors.dart';
-import 'package:navada_mobile_app/src/view/utils/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/colors.dart';
+import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 
 TextStyle styleR =
     const TextStyle(height: 1.2, color: black, fontWeight: FontWeight.w400);

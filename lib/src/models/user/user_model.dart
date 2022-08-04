@@ -1,4 +1,4 @@
-import 'package:navada_mobile_app/src/view/utils/enums.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class UserModel {
   int? userId;

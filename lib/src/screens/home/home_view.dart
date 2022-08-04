@@ -1,11 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/view/ui/home/home_requests_widget.dart';
-import 'package:navada_mobile_app/src/view/utils/colors.dart';
-import 'package:navada_mobile_app/src/view/utils/divider.dart';
-import 'package:navada_mobile_app/src/view/utils/screen_size.dart';
-import 'package:navada_mobile_app/src/view/utils/space.dart';
-import 'package:navada_mobile_app/src/view/utils/text_style.dart';
+import 'package:navada_mobile_app/src/screens/home/home_requests_widget.dart';
+import 'package:navada_mobile_app/src/widgets/colors.dart';
+import 'package:navada_mobile_app/src/widgets/divider.dart';
+import 'package:navada_mobile_app/src/widgets/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/space.dart';
+import 'package:navada_mobile_app/src/widgets/text_style.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);

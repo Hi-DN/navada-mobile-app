@@ -1,5 +1,5 @@
-import 'package:navada_mobile_app/src/business_logic/request/request_model.dart';
-import 'package:navada_mobile_app/src/business_logic/api/http_client.dart';
+import 'package:navada_mobile_app/src/models/request/request_model.dart';
+import 'package:navada_mobile_app/src/models/api/http_client.dart';
 
 HttpClient _httpClient = HttpClient();
 

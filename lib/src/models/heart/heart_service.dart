@@ -1,5 +1,5 @@
-import 'package:navada_mobile_app/src/business_logic/api/http_client.dart';
-import 'package:navada_mobile_app/src/business_logic/heart/heart_list_model.dart';
+import 'package:navada_mobile_app/src/models/api/http_client.dart';
+import 'package:navada_mobile_app/src/models/heart/heart_list_model.dart';
 
 class HeartService {
   final HttpClient _httpClient = HttpClient();

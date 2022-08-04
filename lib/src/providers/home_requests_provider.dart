@@ -1,9 +1,9 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/business_logic/request/request_model.dart';
-import 'package:navada_mobile_app/src/business_logic/request/request_service.dart';
-import 'package:navada_mobile_app/src/view/utils/enums.dart';
+import 'package:navada_mobile_app/src/models/request/request_model.dart';
+import 'package:navada_mobile_app/src/models/request/request_service.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class RequestsForMeProvider extends ChangeNotifier {
   RequestsForMeProvider(this._userId);

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:navada_mobile_app/src/view/utils/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 
 class Space extends StatelessWidget {
   final double width;

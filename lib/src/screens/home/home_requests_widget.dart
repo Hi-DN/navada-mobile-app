@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/business_logic/request/request_model.dart';
-import 'package:navada_mobile_app/src/business_logic/user/user_model.dart';
-import 'package:navada_mobile_app/src/business_logic/user/user_provider.dart';
-import 'package:navada_mobile_app/src/view/utils/colors.dart';
-import 'package:navada_mobile_app/src/view/utils/cost_range_badge.dart';
-import 'package:navada_mobile_app/src/view/utils/enums.dart';
-import 'package:navada_mobile_app/src/view/ui/home/home_requests_provider.dart';
-import 'package:navada_mobile_app/src/view/utils/screen_size.dart';
-import 'package:navada_mobile_app/src/view/utils/space.dart';
-import 'package:navada_mobile_app/src/view/utils/status_badge.dart';
-import 'package:navada_mobile_app/src/view/utils/text_style.dart';
+import 'package:navada_mobile_app/src/models/request/request_model.dart';
+import 'package:navada_mobile_app/src/models/user/user_model.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/widgets/colors.dart';
+import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
+import 'package:navada_mobile_app/src/widgets/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/space.dart';
+import 'package:navada_mobile_app/src/widgets/status_badge.dart';
+import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
 class RequestsForMeSection extends StatelessWidget {

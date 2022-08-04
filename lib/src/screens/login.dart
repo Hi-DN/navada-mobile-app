@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/business_logic/user/user_provider.dart';
-import 'package:navada_mobile_app/src/view/utils/custom_appbar.dart';
-import 'package:navada_mobile_app/src/view/utils/custom_navigation_bar.dart';
-import 'package:navada_mobile_app/src/view/utils/screen_size.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
+import 'package:navada_mobile_app/src/widgets/custom_navigation_bar.dart';
+import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:provider/provider.dart';
 
 

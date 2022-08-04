@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/view/utils/colors.dart';
-import 'package:navada_mobile_app/src/view/utils/screen_size.dart';
-import 'package:navada_mobile_app/src/view/utils/text_style.dart';
+import 'package:navada_mobile_app/src/widgets/colors.dart';
+import 'package:navada_mobile_app/src/widgets/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/text_style.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   CustomAppBar({

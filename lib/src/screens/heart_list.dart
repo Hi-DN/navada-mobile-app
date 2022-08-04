@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/business_logic/heart/heart_list_model.dart';
-import 'package:navada_mobile_app/src/business_logic/heart/heart_service.dart';
-import 'package:navada_mobile_app/src/business_logic/user/user_provider.dart';
-import 'package:navada_mobile_app/src/view/utils/colors.dart';
-import 'package:navada_mobile_app/src/view/utils/custom_appbar.dart';
-import 'package:navada_mobile_app/src/view/utils/screen_size.dart';
-import 'package:navada_mobile_app/src/view/utils/text_style.dart';
+import 'package:navada_mobile_app/src/models/heart/heart_list_model.dart';
+import 'package:navada_mobile_app/src/models/heart/heart_service.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/widgets/colors.dart';
+import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
+import 'package:navada_mobile_app/src/widgets/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/text_style.dart';
 
 class HeartList extends StatefulWidget {
   @override
@@ -35,7 +35,7 @@ class _HeartListState extends State<HeartList> {
     return Scaffold(
       appBar: CustomAppBar(titleText: '관심 상품 목록'),
       body: Center(
-          child: Container(width: size.getSize(335.0), child: _buildBody())),
+          child: SizedBox(width: size.getSize(335.0), child: _buildBody())),
     );
   }
 
@@ -137,7 +137,7 @@ class _HeartListState extends State<HeartList> {
         IconButton(
           onPressed: () {},
           iconSize: size.getSize(18.0),
-          icon: Icon(Icons.check_circle_outline),
+          icon: const Icon(Icons.check_circle_outline),
           color: grey153,
           alignment: Alignment.centerRight,
         ),
