@@ -1,11 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:navada_mobile_app/src/models/user/user_model.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
 import 'package:navada_mobile_app/src/screens/home/home_requests_widget.dart';
+import 'package:navada_mobile_app/src/screens/home/home_view_model.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
+import 'package:provider/provider.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -15,16 +20,26 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
+
+    UserModel user =Provider.of<UserProvider>(context, listen: false).userModel;
+
     return Scaffold(
-        body: Padding(
+      body: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => RequestsForMeProvider(user.userId!)),
+          ChangeNotifierProvider(create: (context) => HomeViewModel()),
+        ],
+        child: Padding(
           padding: EdgeInsets.symmetric(horizontal: size.getSize(22)),
-          child: Column(children: const [
-            HomeTopBar(),
-            CategorySection(),
-            CustomDivider(),
+          child: Column(children:  [
+            const HomeTopBar(),
+            const CategorySection(),
+            const CustomDivider(),
             Expanded(child: RequestsForMeSection())
           ]),
-        ));
+        )
+      )
+    );
   }
 }
 
@@ -56,11 +71,12 @@ class CategorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenSize size = ScreenSize();
     return CarouselSlider(
       options: CarouselOptions(
+        height: size.getSize(175),
         enableInfiniteScroll: false,
         viewportFraction: 1,
-        aspectRatio: 10 / 5
       ),
       items: [
         categoryFirstSlide(),

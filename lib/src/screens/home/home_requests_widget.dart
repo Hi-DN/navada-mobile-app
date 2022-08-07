@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/request/request_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/screens/home/home_view_model.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
@@ -12,31 +13,29 @@ import 'package:navada_mobile_app/src/widgets/status_badge.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class RequestsForMeSection extends StatelessWidget {
-  const RequestsForMeSection({Key? key}) : super(key: key);
+  RequestsForMeSection({Key? key}) : super(key: key);
+
+  late BuildContext? _context;
 
   @override
   Widget build(BuildContext context) {
-    UserModel user =Provider.of<UserProvider>(context, listen: false).userModel;
-
+    _context = context;
     return Scaffold(
-      body: ChangeNotifierProvider(
-        create: (context) => RequestsForMeProvider(user.userId!),
-        child: Column(
+      body: Column(
           children: [
-            _titleSection(context, user.userNickname!),
+            _titleSection(),
             Expanded(
               child: _buildScreenDependingOnDataState()
             ),
           ],
         )
-      )
     );
   }
 
-  Widget _titleSection(BuildContext context, String userNickname) {
+  Widget _titleSection() {
     ScreenSize size = ScreenSize();
-
     return Consumer<RequestsForMeProvider>(
       builder: (BuildContext context, RequestsForMeProvider provider, Widget? _) {
         return Padding(
@@ -44,36 +43,41 @@ class RequestsForMeSection extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _sectionTitle(userNickname),
-              _deniedVisibleCheckBox(provider)
+              _sectionTitle(),
+              _deniedVisibleCheckBox()
             ],
           ),
         );
       });
   }
 
-  Widget _sectionTitle(String userNickname) {
+  Widget _sectionTitle() {
+    UserModel user =Provider.of<UserProvider>(_context!, listen: false).userModel;
     return Row(
       children: [
-        B16Text(text: userNickname),
+        B16Text(text: user.userNickname),
         const R16Text(text: '님에게 온 교환 요청'),
       ],
     );
   }
 
-  Widget _deniedVisibleCheckBox(RequestsForMeProvider provider) {
-    return Row(
-      children: [
-        Checkbox(
-          visualDensity: const VisualDensity(horizontal: -3.0, vertical: -4.0),
-          value: provider.isDeniedVisible, 
-          side: const BorderSide(color: grey183),
-          activeColor: grey183,
-          onChanged: (value) {
-            provider.setDeniedVisible(value!);
-          }),
-        const R12Text(text: '거절한 요청도 보기', textColor: grey183,)
-    ]);
+  Widget _deniedVisibleCheckBox() {
+    return Consumer2<HomeViewModel, RequestsForMeProvider>(
+      builder: (BuildContext context, HomeViewModel homeViewModel, RequestsForMeProvider requestsForMeProvider, Widget? _) {
+          return Row(
+            children: [
+              Checkbox(
+                visualDensity: const VisualDensity(horizontal: -3.0, vertical: -4.0),
+                value: homeViewModel.isDeniedVisible, 
+                side: const BorderSide(color: grey183),
+                activeColor: grey183,
+                onChanged: (value) {
+                  homeViewModel.setDeniedVisible(value!);
+                  requestsForMeProvider.fetchDependingOnDeniedCheck(value);
+                }),
+              const R12Text(text: '거절한 요청도 보기', textColor: grey183,)
+            ]);
+        });
   }
 
   Widget _buildScreenDependingOnDataState() {
@@ -106,12 +110,12 @@ class _RequestsForMeGridView extends StatelessWidget {
   bool isLoading;
   
   late DataState? _dataState;
-  late BuildContext? _buildContext;
+  late BuildContext? _context;
 
   @override
   Widget build(BuildContext context) {
     _dataState = Provider.of<RequestsForMeProvider>(context, listen: false).dataState;
-    _buildContext = context;
+    _context = context;
     return _scrollNotificationWidget();
   }
 
@@ -135,7 +139,7 @@ class _RequestsForMeGridView extends StatelessWidget {
     if(!isLoading && 
     scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
       isLoading = true;
-      Provider.of<RequestsForMeProvider>(_buildContext!, listen: false).fetchData(isRefresh: false);
+      Provider.of<RequestsForMeProvider>(_context!, listen: false).fetchData(isRefresh: false);
     }
     return true;
   }
@@ -160,7 +164,7 @@ class _RequestsForMeGridView extends StatelessWidget {
   _onRefresh() async {
     if(!isLoading) {
       isLoading = true;
-      Provider.of<RequestsForMeProvider>(_buildContext!, listen: false).fetchData(isRefresh: true);
+      Provider.of<RequestsForMeProvider>(_context!, listen: false).fetchData(isRefresh: true);
     }
   }
 }
