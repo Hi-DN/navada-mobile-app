@@ -10,21 +10,21 @@ class RequestsForMeProvider extends ChangeNotifier {
 
   final int _userId;
 
-  bool _isDeniedVisible = false;
-
+  bool _isFetchingIncludingDenied = false;
   int _currentPageNum = 0;
   DataState _dataState = DataState.UNINITIALIZED;
   List<RequestModel> _requestDataList = [];
   late int _totalPages;
   
-  bool get isDeniedVisible => _isDeniedVisible;
+  bool get hasData => _isRefreshing || _requestDataList.isNotEmpty;
   DataState get dataState => _dataState;
   List<RequestModel> get requestDataList => _requestDataList;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
+  bool get _isRefreshing => _dataState == DataState.REFRESHING;
   bool get _shouldResetTotalPages => _isInitialFetching || _dataState == DataState.REFRESHING;
 
-  void setDeniedVisible(bool newValue) {
-    _isDeniedVisible = newValue;
+  fetchDependingOnDeniedCheck(bool newValue) {
+    _isFetchingIncludingDenied = newValue;
     notifyListeners();
     
     fetchData(isRefresh: true);
@@ -67,7 +67,7 @@ class RequestsForMeProvider extends ChangeNotifier {
   }
 
   bool get _didLastLoad {
-    if(_isInitialFetching) {
+    if(_isInitialFetching || _isRefreshing) {
       return false;
     } else {
       return (_currentPageNum >= _totalPages);
@@ -84,7 +84,7 @@ class RequestsForMeProvider extends ChangeNotifier {
   }
 
   _getPageResponse() async {
-    PageResponse? pageResponse = _isDeniedVisible
+    PageResponse? pageResponse = _isFetchingIncludingDenied
       ? await getRequestsForMeIncludingDenied(_userId, _currentPageNum)
       : await getRequestsForMe(_userId, _currentPageNum);
 
