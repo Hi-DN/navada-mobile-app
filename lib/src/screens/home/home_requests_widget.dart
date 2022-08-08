@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/request/request_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/screens/home/home_no_requests_widget.dart';
 import 'package:navada_mobile_app/src/screens/home/home_view_model.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
@@ -14,8 +15,8 @@ import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class RequestsForMeSection extends StatelessWidget {
-  RequestsForMeSection({Key? key}) : super(key: key);
+class RequestsForMe extends StatelessWidget {
+  RequestsForMe({Key? key}) : super(key: key);
 
   late BuildContext? _context;
 
@@ -120,15 +121,18 @@ class _RequestsForMeGridView extends StatelessWidget {
   }
 
   Widget _scrollNotificationWidget() {
+    ScreenSize size = ScreenSize();
     return Column(children: [
       Expanded(
         child: NotificationListener<ScrollNotification> (
           onNotification: _scrollNotification,
           child: RefreshIndicator(
+            color: green,
+            displacement: size.getSize(22),
             onRefresh:() async {
               await _onRefresh();
             },
-            child: _buildRequestsForMeGridView()
+            child: _buildScreenIfHasData()
           ))),
       if(_dataState == DataState.MORE_FETCHING)
           const Center(child: CircularProgressIndicator()),
@@ -144,7 +148,17 @@ class _RequestsForMeGridView extends StatelessWidget {
     return true;
   }
 
-  Widget _buildRequestsForMeGridView() {
+  Widget _buildScreenIfHasData() {
+    bool hasData = Provider.of<RequestsForMeProvider>(_context!).hasData;
+    
+    if(hasData) {
+      return _requestsForMeGridView();
+    } else {
+      return const NoRequests();
+    }
+  }
+
+  Widget _requestsForMeGridView() {
     return GridView.builder(
       gridDelegate: 
         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -156,7 +170,6 @@ class _RequestsForMeGridView extends StatelessWidget {
       itemCount: requestsForMe.length,
       itemBuilder: (context, index) {
           return RequestItem(request: requestsForMe[index]);
-        
       },
     );
   }

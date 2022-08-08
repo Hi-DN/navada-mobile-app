@@ -16,7 +16,7 @@ class RequestsForMeProvider extends ChangeNotifier {
   List<RequestModel> _requestDataList = [];
   late int _totalPages;
   
-  bool get isFetchingIncludingDenied => _isFetchingIncludingDenied;
+  bool get hasData => _isRefreshing || _requestDataList.isNotEmpty;
   DataState get dataState => _dataState;
   List<RequestModel> get requestDataList => _requestDataList;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
