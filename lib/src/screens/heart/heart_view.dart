@@ -64,7 +64,7 @@ class CheckButtonSection extends StatelessWidget {
               color: grey153,
               onPressed: () {
                 Provider.of<HeartViewModel>(context, listen: false)
-                    .onButtonTapped();
+                    .onCheckButtonTapped();
                 Provider.of<HeartProvider>(context, listen: false).setShowAll();
               },
               icon: Provider.of<HeartViewModel>(context).isChecked
@@ -93,6 +93,8 @@ class HeartListSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<HeartProvider>(
         builder: (BuildContext context, HeartProvider provider, Widget? _) {
+      Provider.of<HeartViewModel>(context, listen: false)
+          .createIconList(provider.heartList?.length);
       Future(() {
         if (provider.isInitial) {
           provider.fetchHeartList();
@@ -101,14 +103,14 @@ class HeartListSection extends StatelessWidget {
       });
       return ListView.builder(
         itemBuilder: (context, index) {
-          return _buildItem(provider.heartList?[index].product);
+          return _buildItem(context, index, provider.heartList?[index].product);
         },
         itemCount: provider.heartList?.length,
       );
     });
   }
 
-  Widget _buildItem(Product? product) {
+  Widget _buildItem(BuildContext context, int index, Product? product) {
     return Column(
       children: [
         SizedBox(
@@ -150,9 +152,14 @@ class HeartListSection extends StatelessWidget {
             ),
             Expanded(child: Container()),
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Provider.of<HeartViewModel>(context, listen: false)
+                      .onHeartButtonTapped(index);
+                },
                 icon: Icon(
-                  Icons.favorite,
+                  Provider.of<HeartViewModel>(context).iconList[index]
+                      ? Icons.favorite
+                      : Icons.favorite_border_outlined,
                   size: size.getSize(25.0),
                   color: green,
                 ))
