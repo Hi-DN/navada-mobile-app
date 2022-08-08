@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navada_mobile_app/src/providers/heart_provider.dart';
 import 'package:navada_mobile_app/src/screens/heart/heart_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +24,7 @@ class HeartView extends StatelessWidget {
       body: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => HeartViewModel()),
-          ChangeNotifierProvider(create: (context) => HeartViewModel()),
+          ChangeNotifierProvider(create: (context) => HeartProvider()),
         ],
         child: Center(
           child: SizedBox(
@@ -64,6 +65,7 @@ class CheckButtonSection extends StatelessWidget {
               onPressed: () {
                 Provider.of<HeartViewModel>(context, listen: false)
                     .onButtonTapped();
+                Provider.of<HeartProvider>(context, listen: false).setShowAll();
               },
               icon: Provider.of<HeartViewModel>(context).isChecked
                   ? const Icon(Icons.check_circle, color: navy)
@@ -89,8 +91,8 @@ class HeartListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HeartViewModel>(
-        builder: (BuildContext context, HeartViewModel provider, Widget? _) {
+    return Consumer<HeartProvider>(
+        builder: (BuildContext context, HeartProvider provider, Widget? _) {
       Future(() {
         if (provider.isInitial) {
           provider.fetchHeartList();
