@@ -32,11 +32,6 @@ class HeartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // List<HeartListContentModel>? getHeartList() {
-  //   fetchHeartList();
-  //   return _heartList;
-  // }
-
   fetchHeartList() async {
     HeartListModel model = await getHeartsByUser(userId, _showAll);
 
