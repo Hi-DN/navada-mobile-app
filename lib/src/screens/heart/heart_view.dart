@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/providers/heart_provider.dart';
 import 'package:navada_mobile_app/src/screens/heart/heart_view_model.dart';
-import 'package:navada_mobile_app/src/screens/product/product_detail.dart';
+import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/heart/heart_list_model.dart';

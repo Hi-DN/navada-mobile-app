@@ -7,9 +7,6 @@ import '../models/user/user_provider.dart';
 class HeartProvider with ChangeNotifier {
   int userId = UserProvider.userId;
 
-  bool _isInitial = true;
-  bool get isInitial => _isInitial;
-
   bool _showAll = true;
 
   late HeartListModel _heartListModel;
@@ -20,11 +17,6 @@ class HeartProvider with ChangeNotifier {
 
   bool _last = false;
   bool get last => _last;
-
-  void setInitialFalse() {
-    _isInitial = false;
-    notifyListeners();
-  }
 
   void setShowAll() {
     _showAll = !_showAll;
