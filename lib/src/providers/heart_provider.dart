@@ -6,32 +6,43 @@ import '../models/user/user_provider.dart';
 
 class HeartProvider with ChangeNotifier {
   int userId = UserProvider.userId;
-  bool isInitial = true;
-  bool showAll = true;
 
-  HeartListModel? _heartListModel;
-  List<HeartListContentModel>? _heartList = [];
-  List<HeartListContentModel>? get heartList => _heartList;
+  bool _isInitial = true;
+  bool get isInitial => _isInitial;
+
+  bool _showAll = true;
+
+  late HeartListModel _heartListModel;
+  HeartListModel get heartListModel => _heartListModel;
+
+  List<HeartListContentModel> _heartList = [];
+  List<HeartListContentModel> get heartList => _heartList;
+
+  bool _last = false;
+  bool get last => _last;
 
   void setInitialFalse() {
-    isInitial = false;
+    _isInitial = false;
     notifyListeners();
   }
 
   void setShowAll() {
-    showAll = !showAll;
-    getHeartList();
+    _showAll = !_showAll;
+    fetchHeartList();
     notifyListeners();
   }
 
-  List<HeartListContentModel>? getHeartList() {
-    fetchHeartList();
-    return _heartList;
-  }
+  // List<HeartListContentModel>? getHeartList() {
+  //   fetchHeartList();
+  //   return _heartList;
+  // }
 
   fetchHeartList() async {
-    _heartListModel = await getHeartsByUser(userId, showAll);
-    _heartList = _heartListModel?.content;
+    HeartListModel model = await getHeartsByUser(userId, _showAll);
+
+    _heartListModel = model;
+    _heartList = _heartListModel.content;
+    _last = _heartListModel.last;
 
     notifyListeners();
   }
@@ -40,7 +51,7 @@ class HeartProvider with ChangeNotifier {
     await deleteHeart(heartId);
   }
 
-  saveSelectedHeart(int productId, int userId) async {
+  saveSelectedHeart(int productId) async {
     await saveHeart(productId, userId);
   }
 }

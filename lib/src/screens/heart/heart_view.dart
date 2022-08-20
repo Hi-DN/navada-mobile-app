@@ -18,6 +18,7 @@ class HeartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("============================HeartView build!!!");
     ScreenSize size = ScreenSize();
 
     return Scaffold(
@@ -51,6 +52,7 @@ class CheckButtonSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("============================CheckButtonSection build!!!");
     ScreenSize size = ScreenSize();
 
     return Container(
@@ -92,103 +94,106 @@ class HeartListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HeartProvider>(
-        builder: (BuildContext context, HeartProvider provider, Widget? _) {
-      Provider.of<HeartViewModel>(context, listen: false)
-          .createIconList(provider.heartList?.length);
-      Future(() {
-        if (provider.isInitial) {
-          provider.fetchHeartList();
-          provider.setInitialFalse();
-        }
-      });
-      return ListView.builder(
-        itemBuilder: (context, index) {
-          return _buildItem(context, index, provider.heartList?[index].product);
-        },
-        itemCount: provider.heartList?.length,
-      );
+    print("============================HeartListSection build!!!");
+
+    Provider.of<HeartProvider>(context, listen: false).fetchHeartList();
+
+    return Consumer<HeartProvider>(builder: (context, provider, widget) {
+      if (provider.heartList.isNotEmpty) {
+        Provider.of<HeartViewModel>(context, listen: false)
+            .createIconList(provider.heartListModel.totalElements);
+        return _makeListView(provider.heartList);
+      }
+      return const Center(child: CircularProgressIndicator());
     });
   }
 
-  Widget _buildItem(BuildContext context, int index, Product? product) {
-    return Column(
-      children: [
-        SizedBox(
-          height: size.getSize(8.0),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      ProductDetail(product: product!, like: true)),
-            );
-          },
-          child: Row(
+  Widget _makeListView(List<HeartListContentModel> heartList) {
+    return ListView.builder(
+        itemBuilder: (context, index) {
+          Product product = heartList[index].product;
+          int heartId = heartList[index].heartId;
+
+          return Column(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(5.0),
-                child: Image.asset(
-                  'assets/images/test.jpeg',
-                  width: size.getSize(65.0),
-                  height: size.getSize(65.0),
+              SizedBox(
+                height: size.getSize(8.0),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProductDetail(product: product, like: true)));
+                },
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(5.0),
+                      child: Image.asset(
+                        'assets/images/test.jpeg',
+                        width: size.getSize(65.0),
+                        height: size.getSize(65.0),
+                      ),
+                    ),
+                    SizedBox(
+                      width: size.getSize(12.0),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        B14Text(text: product.productName),
+                        RichText(
+                            text: TextSpan(children: [
+                          const TextSpan(
+                              text: '원가 ',
+                              style: TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                          TextSpan(
+                              text: '${product.productCost}원',
+                              style: const TextStyle(color: Colors.black))
+                        ])),
+                        Space(height: size.getSize(5.0)),
+                        _statusBadge(product),
+                      ],
+                    ),
+                    Expanded(child: Container()),
+                    IconButton(
+                        onPressed: () {
+                          Provider.of<HeartViewModel>(context, listen: false)
+                              .onHeartButtonTapped(index);
+                          bool isDelete = !Provider.of<HeartViewModel>(context,
+                                  listen: false)
+                              .iconBoolList[index];
+                          isDelete
+                              ? Provider.of<HeartProvider>(context,
+                                      listen: false)
+                                  .deleteSelectedHeart(heartId)
+                              : Provider.of<HeartProvider>(context,
+                                      listen: false)
+                                  .saveSelectedHeart(product.productId);
+                        },
+                        icon: Icon(
+                          Provider.of<HeartViewModel>(context)
+                                  .iconBoolList[index]
+                              ? Icons.favorite
+                              : Icons.favorite_border_outlined,
+                          size: size.getSize(25.0),
+                          color: green,
+                        ))
+                  ],
                 ),
               ),
-              SizedBox(
-                width: size.getSize(12.0),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  B14Text(text: product?.productName),
-                  RichText(
-                      text: TextSpan(children: [
-                    const TextSpan(
-                        text: '원가 ',
-                        style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black)),
-                    TextSpan(
-                        text: '${product?.productCost}원',
-                        style: const TextStyle(color: Colors.black))
-                  ])),
-                  Space(height: size.getSize(5.0)),
-                  _statusBadge(product),
-                ],
-              ),
-              Expanded(child: Container()),
-              IconButton(
-                  onPressed: () {
-                    Provider.of<HeartViewModel>(context, listen: false)
-                        .onHeartButtonTapped(index);
-                    bool isDelete =
-                        !Provider.of<HeartViewModel>(context, listen: false)
-                            .iconList[index];
-                    print('isDelete=$isDelete');
-                    isDelete
-                        ? Provider.of<HeartProvider>(context, listen: false)
-                            .deleteSelectedHeart(1)
-                        : Provider.of<HeartProvider>(context, listen: false)
-                            .saveSelectedHeart(2, 1);
-                  },
-                  icon: Icon(
-                    Provider.of<HeartViewModel>(context).iconList[index]
-                        ? Icons.favorite
-                        : Icons.favorite_border_outlined,
-                    size: size.getSize(25.0),
-                    color: green,
-                  ))
+              Space(height: size.getSize(8.0)),
+              const CustomDivider()
             ],
-          ),
-        ),
-        Space(height: size.getSize(8.0)),
-        const CustomDivider()
-      ],
-    );
+          );
+        },
+        itemCount: heartList.length);
   }
 
   Widget _statusBadge(Product? product) {
