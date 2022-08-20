@@ -35,4 +35,12 @@ class HeartProvider with ChangeNotifier {
 
     notifyListeners();
   }
+
+  deleteSelectedHeart(int heartId) async {
+    await deleteHeart(heartId);
+  }
+
+  saveSelectedHeart(int productId, int userId) async {
+    await saveHeart(productId, userId);
+  }
 }

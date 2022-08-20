@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/providers/heart_provider.dart';
 import 'package:navada_mobile_app/src/screens/heart/heart_view_model.dart';
+import 'package:navada_mobile_app/src/screens/product/product_detail.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/heart/heart_list_model.dart';
@@ -116,54 +117,73 @@ class HeartListSection extends StatelessWidget {
         SizedBox(
           height: size.getSize(8.0),
         ),
-        Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(5.0),
-              child: Image.asset(
-                'assets/images/test.jpeg',
-                width: size.getSize(65.0),
-                height: size.getSize(65.0),
+        InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      ProductDetail(product: product!, like: true)),
+            );
+          },
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: Image.asset(
+                  'assets/images/test.jpeg',
+                  width: size.getSize(65.0),
+                  height: size.getSize(65.0),
+                ),
               ),
-            ),
-            SizedBox(
-              width: size.getSize(12.0),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                B14Text(text: product?.productName),
-                RichText(
-                    text: TextSpan(children: [
-                  const TextSpan(
-                      text: '원가 ',
-                      style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  TextSpan(
-                      text: '${product?.productCost}원',
-                      style: const TextStyle(color: Colors.black))
-                ])),
-                Space(height: size.getSize(5.0)),
-                _statusBadge(product),
-              ],
-            ),
-            Expanded(child: Container()),
-            IconButton(
-                onPressed: () {
-                  Provider.of<HeartViewModel>(context, listen: false)
-                      .onHeartButtonTapped(index);
-                },
-                icon: Icon(
-                  Provider.of<HeartViewModel>(context).iconList[index]
-                      ? Icons.favorite
-                      : Icons.favorite_border_outlined,
-                  size: size.getSize(25.0),
-                  color: green,
-                ))
-          ],
+              SizedBox(
+                width: size.getSize(12.0),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  B14Text(text: product?.productName),
+                  RichText(
+                      text: TextSpan(children: [
+                    const TextSpan(
+                        text: '원가 ',
+                        style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    TextSpan(
+                        text: '${product?.productCost}원',
+                        style: const TextStyle(color: Colors.black))
+                  ])),
+                  Space(height: size.getSize(5.0)),
+                  _statusBadge(product),
+                ],
+              ),
+              Expanded(child: Container()),
+              IconButton(
+                  onPressed: () {
+                    Provider.of<HeartViewModel>(context, listen: false)
+                        .onHeartButtonTapped(index);
+                    bool isDelete =
+                        !Provider.of<HeartViewModel>(context, listen: false)
+                            .iconList[index];
+                    print('isDelete=$isDelete');
+                    isDelete
+                        ? Provider.of<HeartProvider>(context, listen: false)
+                            .deleteSelectedHeart(1)
+                        : Provider.of<HeartProvider>(context, listen: false)
+                            .saveSelectedHeart(2, 1);
+                  },
+                  icon: Icon(
+                    Provider.of<HeartViewModel>(context).iconList[index]
+                        ? Icons.favorite
+                        : Icons.favorite_border_outlined,
+                    size: size.getSize(25.0),
+                    color: green,
+                  ))
+            ],
+          ),
         ),
         Space(height: size.getSize(8.0)),
         const CustomDivider()

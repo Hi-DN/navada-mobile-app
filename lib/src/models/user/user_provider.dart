@@ -11,9 +11,9 @@ class UserProvider extends ChangeNotifier {
   static String userPhoneNum = "010-1111-2222";
   static String userAddress = "address";
   static String userLevel = "LV1_OUTSIDER";
-  static double userRating = 0;
-  static int userTradeCount = 0;
-  static int userRatingCount = 0;
+  static double userRating = 4.5;
+  static int userTradeCount = 10;
+  static int userRatingCount = 10;
 
   UserModel userModel = UserModel(
       userId,

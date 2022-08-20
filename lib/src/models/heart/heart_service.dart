@@ -15,6 +15,18 @@ Future<HeartListModel> getHeartsByUser(int userId, bool showAll) async {
   }
 }
 
+//좋아요 등록
+Future<void> saveHeart(int productId, int userId) async {
+  Map<String, dynamic> data = await _httpClient.postRequest(
+      '/product/$productId/heart?userId=$userId', <String, dynamic>{});
+
+  if (data['success']) {
+    return;
+  } else {
+    throw Exception('좋아요 목록 조회 fail');
+  }
+}
+
 //좋아요 취소
 Future<bool> deleteHeart(int heartId) async {
   Map<String, dynamic> data =

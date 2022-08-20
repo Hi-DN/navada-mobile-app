@@ -19,6 +19,11 @@ class HeartViewModel with ChangeNotifier {
     iconList[index] = !iconList[index];
     print(
         'HeartButtonTapped!! index = $index, iconList[index]=${iconList[index]}');
+    // if (iconList[index]) {
+    //   saveSelectedHeart(2, 1);
+    // } else {
+    //   deleteSelectedHeart(1);
+    // }
     notifyListeners();
   }
 }
