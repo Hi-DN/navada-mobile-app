@@ -8,11 +8,6 @@ class ProductDetailViewModel extends ChangeNotifier {
   late bool _like;
   bool get like => _like;
 
-  // void setInitialLikeValue(bool value) {
-  //   _like = value;
-  //   notifyListeners();
-  // }
-
   void setLikeValue() {
     _like = !_like;
     notifyListeners();
