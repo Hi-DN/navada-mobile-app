@@ -122,10 +122,13 @@ class HeartListSection extends StatelessWidget {
               InkWell(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              ProductDetail(product: product, like: true)));
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ProductDetail(product: product, like: true)))
+                      .then((value) =>
+                          Provider.of<HeartProvider>(context, listen: false)
+                              .fetchHeartList());
                 },
                 child: Row(
                   children: [

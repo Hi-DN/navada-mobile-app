@@ -22,35 +22,37 @@ class ProductDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-            create: (context) => ProductDetailViewModel(true)),
-        ChangeNotifierProvider(create: (context) => ProductDetailProvider())
-      ],
-      child: Column(
-        children: [
-          _productImagesSection(context),
-          Expanded(
-            child: Container(
-              width: screenSize.getSize(335.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _userInfoSection(),
-                  _productInfoSection(product),
-                  _reportSection(),
-                  Expanded(
-                      child: ProductDetailBottomButton(
-                          productId: product.productId))
-                ],
-              ),
-            ),
-          )
+    return SafeArea(
+      child: Scaffold(
+          body: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+              create: (context) => ProductDetailViewModel(true)),
+          ChangeNotifierProvider(create: (context) => ProductDetailProvider())
         ],
-      ),
-    ));
+        child: Column(
+          children: [
+            _productImagesSection(context),
+            Expanded(
+              child: Container(
+                width: screenSize.getSize(335.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _userInfoSection(),
+                    _productInfoSection(product),
+                    _reportSection(),
+                    Expanded(
+                        child: ProductDetailBottomButton(
+                            productId: product.productId))
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      )),
+    );
   }
 
   Widget _productImagesSection(BuildContext context) {
@@ -142,14 +144,17 @@ class ProductDetail extends StatelessWidget {
                   )
                 ],
               ),
-              Consumer<ProductDetailViewModel>(
-                  builder: (context, provider, widget) {
+              Consumer2<ProductDetailViewModel, ProductDetailProvider>(
+                  builder: (context, viewProvider, provider, widget) {
                 return IconButton(
                     onPressed: () {
-                      provider.setLikeValue();
+                      viewProvider.setLikeValue();
+                      viewProvider.like
+                          ? provider.saveHeart(product.productId)
+                          : provider.deleteHeart(product.productId);
                     },
                     icon: Icon(
-                      provider.like
+                      viewProvider.like
                           ? Icons.favorite
                           : Icons.favorite_border_outlined,
                       color: const Color(0xFFDD8560),

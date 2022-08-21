@@ -5,6 +5,7 @@ import '../models/heart/heart_service.dart';
 import '../models/user/user_provider.dart';
 
 class HeartProvider with ChangeNotifier {
+  final HeartService _heartService = HeartService();
   int userId = UserProvider.userId;
 
   bool _showAll = true;
@@ -25,7 +26,8 @@ class HeartProvider with ChangeNotifier {
   }
 
   fetchHeartList() async {
-    HeartListModel model = await getHeartsByUser(userId, _showAll);
+    HeartListModel model =
+        await _heartService.getHeartsByUser(userId, _showAll);
 
     _heartListModel = model;
     _heartList = _heartListModel.content;
@@ -35,10 +37,10 @@ class HeartProvider with ChangeNotifier {
   }
 
   deleteSelectedHeart(int heartId) async {
-    await deleteHeart(heartId);
+    await _heartService.deleteHeartByHeartId(heartId);
   }
 
   saveSelectedHeart(int productId) async {
-    await saveHeart(productId, userId);
+    await _heartService.saveHeart(productId, userId);
   }
 }
