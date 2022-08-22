@@ -155,7 +155,6 @@ class ProductDetailBottomButton extends StatelessWidget {
   }
 
   Widget _buildItem(RequestDtoContentModel request) {
-    int? selected;
     return SizedBox(
       height: screenSize.getSize(100.0),
       width: screenSize.getSize(320.0),
@@ -196,13 +195,25 @@ class ProductDetailBottomButton extends StatelessWidget {
                     ],
                   ),
                 ),
-                Radio(
-                    value: request.requestId,
-                    groupValue: selected,
-                    onChanged: (value) {
-                      print('selected requestId=${request.requestId}');
-                      selected = value as int?;
-                    }),
+                SizedBox(
+                  width: screenSize.getSize(20.0),
+                  height: screenSize.getSize(20.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // viewProvider.setSelectedRequestId(request.requestId);
+                    },
+                    style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(10.0),
+                        elevation: 0.0,
+                        primary:
+                            // viewProvider.selectedRequestId == request.requestId
+                            //     ? green
+                            Colors.white,
+                        shape: const CircleBorder(
+                            side: BorderSide(width: 2.5, color: grey153))),
+                    child: Container(),
+                  ),
+                ),
                 const SizedBox(width: 11.0),
               ],
             ),

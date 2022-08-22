@@ -25,33 +25,34 @@ class ProductDetail extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
           body: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-              create: (context) => ProductDetailViewModel(true)),
-          ChangeNotifierProvider(create: (context) => ProductDetailProvider())
-        ],
-        child: Column(
-          children: [
-            _productImagesSection(context),
-            Expanded(
-              child: Container(
-                width: screenSize.getSize(335.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _userInfoSection(),
-                    _productInfoSection(product),
-                    _reportSection(),
-                    Expanded(
-                        child: ProductDetailBottomButton(
-                            productId: product.productId))
-                  ],
-                ),
-              ),
-            )
+              providers: [
+            ChangeNotifierProvider(
+                create: (context) => ProductDetailViewModel(true)),
+            ChangeNotifierProvider(create: (context) => ProductDetailProvider())
           ],
-        ),
-      )),
+              builder: (context, child) {
+                return Column(
+                  children: [
+                    _productImagesSection(context),
+                    Expanded(
+                      child: Container(
+                        width: screenSize.getSize(335.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _userInfoSection(),
+                            _productInfoSection(product),
+                            _reportSection(),
+                            Expanded(
+                                child: ProductDetailBottomButton(
+                                    productId: product.productId))
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              })),
     );
   }
 
