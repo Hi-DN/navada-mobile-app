@@ -18,7 +18,6 @@ class HeartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("============================HeartView build!!!");
     ScreenSize size = ScreenSize();
 
     return Scaffold(
@@ -52,7 +51,6 @@ class CheckButtonSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("============================CheckButtonSection build!!!");
     ScreenSize size = ScreenSize();
 
     return Container(
@@ -94,8 +92,6 @@ class HeartListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("============================HeartListSection build!!!");
-
     Provider.of<HeartProvider>(context, listen: false).fetchHeartList();
 
     return Consumer<HeartProvider>(builder: (context, provider, widget) {
@@ -121,12 +117,10 @@ class HeartListSection extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ProductDetail(product: product, like: true)))
-                      .then((value) =>
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return ProductDetail(product: product, like: true);
+                  })).then((value) =>
                           Provider.of<HeartProvider>(context, listen: false)
                               .fetchHeartList());
                 },

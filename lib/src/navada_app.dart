@@ -22,7 +22,8 @@ class NavadaApp extends StatelessWidget {
           home: const Login(),
           routes: {
             HomeView.routeName: (context) => const HomeView(),
-            CustomNavigationBar.routeName: (context) => const CustomNavigationBar(),
+            CustomNavigationBar.routeName: (context) =>
+                const CustomNavigationBar(),
           },
         ));
   }

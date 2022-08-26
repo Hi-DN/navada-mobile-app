@@ -22,45 +22,43 @@ class ProductDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          body: MultiProvider(
-              providers: [
-            ChangeNotifierProvider(
-                create: (context) => ProductDetailViewModel(true)),
-            ChangeNotifierProvider(create: (context) => ProductDetailProvider())
-          ],
-              builder: (context, child) {
-                return Column(
-                  children: [
-                    _productImagesSection(context),
-                    Expanded(
-                      child: Container(
-                        width: screenSize.getSize(335.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _userInfoSection(),
-                            _productInfoSection(product),
-                            _reportSection(),
-                            Expanded(
-                                child: ProductDetailBottomButton(
-                                    productId: product.productId))
-                          ],
-                        ),
+    return Scaffold(
+        body: MultiProvider(
+            providers: [
+          ChangeNotifierProvider(
+              create: (context) => ProductDetailViewModel(true)),
+          ChangeNotifierProvider(create: (context) => ProductDetailProvider())
+        ],
+            builder: (context, child) {
+              return Column(
+                children: [
+                  _productImagesSection(context),
+                  Expanded(
+                    child: Container(
+                      width: screenSize.getSize(335.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _userInfoSection(),
+                          _productInfoSection(product),
+                          _reportSection(),
+                          Expanded(
+                              child: ProductDetailBottomButton(
+                                  productId: product.productId))
+                        ],
                       ),
-                    )
-                  ],
-                );
-              })),
-    );
+                    ),
+                  )
+                ],
+              );
+            }));
   }
 
   Widget _productImagesSection(BuildContext context) {
     return Stack(children: [
       Container(
         width: double.infinity,
-        height: screenSize.getSize(340.0),
+        height: MediaQuery.of(context).size.height * 0.5,
         child: Image.asset(
           'assets/images/test.jpeg',
           fit: BoxFit.cover,
@@ -68,7 +66,7 @@ class ProductDetail extends StatelessWidget {
       ),
       IconButton(
         onPressed: () => Navigator.of(context).pop(),
-        padding: const EdgeInsets.only(top: 15.0),
+        padding: const EdgeInsets.only(top: 50.0),
         icon: const Icon(
           Icons.arrow_back,
           color: Color(0xFF747474),
