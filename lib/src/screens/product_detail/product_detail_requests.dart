@@ -46,35 +46,6 @@ class ProductDetailRequestsState extends State<ProductDetailRequests> {
     );
   }
 
-  // void _showRequestListSheet(List<RequestDtoContentModel> requestList) {
-  //   showModalBottomSheet(
-  //       context: context,
-  //       shape:
-  //           RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-  //       builder: (BuildContext context) {
-  //         return StatefulBuilder(
-  //             builder: (BuildContext context, StateSetter setState) {
-  //           return Column(
-  //             children: [
-  //               const SizedBox(height: 20.0),
-  //               Container(
-  //                 width: screenSize.getSize(42.0),
-  //                 height: screenSize.getSize(5.0),
-  //                 decoration: BoxDecoration(
-  //                     color: const Color(0xFFE2E2E2),
-  //                     borderRadius: BorderRadius.circular(15.0)),
-  //               ),
-  //               const SizedBox(height: 20.0),
-  //               Expanded(child: _requestListView(requestList)),
-  //               const SizedBox(height: 20.0),
-  //               _acceptRequestButton(),
-  //               const SizedBox(height: 20.0),
-  //             ],
-  //           );
-  //         });
-  //       });
-  // }
-
   void _showRequestListSheet(
       bool like, List<RequestDtoContentModel> requestList) {
     showModalBottomSheet(
