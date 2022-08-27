@@ -36,8 +36,7 @@ class UserProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
-    UserModel user =
-        Provider.of<UserProvider>(context, listen: false).userModel;
+    User user = Provider.of<UserProvider>(context, listen: false).user;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: size.getSize(27)),
@@ -53,7 +52,7 @@ class UserProfile extends StatelessWidget {
                   children: [
                     B20Text(text: user.userNickname),
                     const Space(height: 5),
-                    R14Text(text: user.userLevel!.label)
+                    R14Text(text: user.userLevel.label)
                   ],
                 ),
               ],
