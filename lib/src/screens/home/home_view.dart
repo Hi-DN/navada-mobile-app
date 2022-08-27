@@ -21,25 +21,24 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
 
-    UserModel user =Provider.of<UserProvider>(context, listen: false).userModel;
+    User user = Provider.of<UserProvider>(context, listen: false).user;
 
     return Scaffold(
-      body: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (context) => RequestsForMeProvider(user.userId!)),
+        body: MultiProvider(
+            providers: [
+          ChangeNotifierProvider(
+              create: (context) => RequestsForMeProvider(user.userId)),
           ChangeNotifierProvider(create: (context) => HomeViewModel()),
         ],
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: size.getSize(22)),
-          child: Column(children:  [
-            const HomeTopBar(),
-            const CategorySection(),
-            const CustomDivider(),
-            Expanded(child: RequestsForMe())
-          ]),
-        )
-      )
-    );
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: size.getSize(22)),
+              child: Column(children: [
+                const HomeTopBar(),
+                const CategorySection(),
+                const CustomDivider(),
+                Expanded(child: RequestsForMe())
+              ]),
+            )));
   }
 }
 
@@ -64,10 +63,10 @@ class HomeTopBar extends StatelessWidget {
   Widget _logo() {
     ScreenSize size = ScreenSize();
     return Image.asset(
-        'assets/images/logo.png',
-        width: size.getSize(110.0),
-        height: size.getSize(50.0),
-      );
+      'assets/images/logo.png',
+      width: size.getSize(110.0),
+      height: size.getSize(50.0),
+    );
   }
 }
 
@@ -79,25 +78,20 @@ class SearchBox extends StatelessWidget {
     ScreenSize size = ScreenSize();
 
     return Container(
-      padding: EdgeInsets.only(left: size.getSize(10)),
-      height: size.getSize(40),
-      decoration: BoxDecoration(
-        border: Border.all(color: grey216, width: 1.0),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.search,
-            color: grey216, 
-            size: size.getSize(24)
-          ),
-          const Space(width: 5),
-          const R14Text(text: '검색어를 입력해주세요', textColor: grey216)
-        ],
-      )
-    );
+        padding: EdgeInsets.only(left: size.getSize(10)),
+        height: size.getSize(40),
+        decoration: BoxDecoration(
+          border: Border.all(color: grey216, width: 1.0),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(Icons.search, color: grey216, size: size.getSize(24)),
+            const Space(width: 5),
+            const R14Text(text: '검색어를 입력해주세요', textColor: grey216)
+          ],
+        ));
   }
 }
 
@@ -108,89 +102,79 @@ class CategorySection extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
 
-    return Consumer<HomeViewModel>(
-      builder: (BuildContext context, HomeViewModel homeViewModel, Widget? _) {
-        CarouselController carouselController = homeViewModel.carouselController;
-        return Column(
-          children: [
-            CarouselSlider(
-              carouselController: carouselController,
-              options: CarouselOptions(
+    return Consumer<HomeViewModel>(builder:
+        (BuildContext context, HomeViewModel homeViewModel, Widget? _) {
+      CarouselController carouselController = homeViewModel.carouselController;
+      return Column(
+        children: [
+          CarouselSlider(
+            carouselController: carouselController,
+            options: CarouselOptions(
                 height: size.getSize(175),
                 enableInfiniteScroll: false,
                 viewportFraction: 1,
                 onPageChanged: (index, reason) {
-                    homeViewModel.setCurrentCategoryIndex(index);
-                }
-              ),
-              items: [
-                _categoryFirstSlide(carouselController),
-                _categorySecondSlide(carouselController)
-              ],
-            ),
-          ],
-        );
-      });
+                  homeViewModel.setCurrentCategoryIndex(index);
+                }),
+            items: [
+              _categoryFirstSlide(carouselController),
+              _categorySecondSlide(carouselController)
+            ],
+          ),
+        ],
+      );
+    });
   }
 
   Widget _categoryFirstSlide(CarouselController carouselController) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Column(
-            children: [
-              const Space(height: 10),
-              CategoryIconsRow(children: _rowContent1),
-              CategoryIconsRow(children: _rowContent2),
-              const Space(height: 18),
-            ]
-          )),
-        _nextPageArrowBtn(carouselController)
-      ]);
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Expanded(
+          child: Column(children: [
+        const Space(height: 10),
+        CategoryIconsRow(children: _rowContent1),
+        CategoryIconsRow(children: _rowContent2),
+        const Space(height: 18),
+      ])),
+      _nextPageArrowBtn(carouselController)
+    ]);
   }
 
   Widget _nextPageArrowBtn(CarouselController carouselController) {
     ScreenSize size = ScreenSize();
     return GestureDetector(
-      onTap: () => carouselController.nextPage(),
-      child: Icon(
-        Icons.arrow_forward_ios_rounded,
-        size: size.getSize(12),
-        color: grey183,
-      )
-    );
+        onTap: () => carouselController.nextPage(),
+        child: Icon(
+          Icons.arrow_forward_ios_rounded,
+          size: size.getSize(12),
+          color: grey183,
+        ));
   }
 
   Widget _categorySecondSlide(CarouselController carouselController) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _prevPageArrowBtn(carouselController),
-        Expanded(
-          child: Column(
-            children: [
-              const Space(height: 10),
-              CategoryIconsRow(children: _rowContent3),
-              const Space(height: 78)])),
-        
-      ]);
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      _prevPageArrowBtn(carouselController),
+      Expanded(
+          child: Column(children: [
+        const Space(height: 10),
+        CategoryIconsRow(children: _rowContent3),
+        const Space(height: 78)
+      ])),
+    ]);
   }
 
   Widget _prevPageArrowBtn(CarouselController carouselController) {
     ScreenSize size = ScreenSize();
     return GestureDetector(
-      onTap: () => carouselController.previousPage(),
-      child: Icon(
-        Icons.arrow_back_ios_rounded,
-        size: size.getSize(12),
-        color: grey183,
-      )
-    );
+        onTap: () => carouselController.previousPage(),
+        child: Icon(
+          Icons.arrow_back_ios_rounded,
+          size: size.getSize(12),
+          color: grey183,
+        ));
   }
 
-  final _rowContent1 =  const[
-    CategoryIconTile(icon: Icons.card_giftcard_outlined,label: '기프티콘'),
+  final _rowContent1 = const [
+    CategoryIconTile(icon: Icons.card_giftcard_outlined, label: '기프티콘'),
     CategoryIconTile(icon: Icons.devices, label: '전자기기'),
     CategoryIconTile(icon: Icons.chair_outlined, label: '가구'),
     CategoryIconTile(icon: Icons.stroller_outlined, label: '유아용품'),
@@ -215,7 +199,8 @@ class CategorySection extends StatelessWidget {
 }
 
 class CategoryIconsRow extends StatelessWidget {
-  const CategoryIconsRow({Key? key, this.rowNum, this.children}) : super(key: key);
+  const CategoryIconsRow({Key? key, this.rowNum, this.children})
+      : super(key: key);
 
   final int? rowNum;
   final List<Widget>? children;
@@ -228,9 +213,8 @@ class CategoryIconsRow extends StatelessWidget {
       child: SizedBox(
         height: size.getSize(60),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: children!
-        ),
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: children!),
       ),
     );
   }

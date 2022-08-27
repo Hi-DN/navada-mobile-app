@@ -22,44 +22,43 @@ class ProductDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          body: MultiProvider(
-        providers: [
+    return Scaffold(
+        body: MultiProvider(
+            providers: [
           ChangeNotifierProvider(
               create: (context) => ProductDetailViewModel(true)),
           ChangeNotifierProvider(create: (context) => ProductDetailProvider())
         ],
-        child: Column(
-          children: [
-            _productImagesSection(context),
-            Expanded(
-              child: Container(
-                width: screenSize.getSize(335.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _userInfoSection(),
-                    _productInfoSection(product),
-                    _reportSection(),
-                    Expanded(
-                        child: ProductDetailBottomButton(
-                            productId: product.productId))
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
-      )),
-    );
+            builder: (context, child) {
+              return Column(
+                children: [
+                  _productImagesSection(context),
+                  Expanded(
+                    child: Container(
+                      width: screenSize.getSize(335.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          UserInfoSection(productId: product.productId),
+                          _productInfoSection(product),
+                          _reportSection(),
+                          Expanded(
+                              child:
+                                  ProductDetailBottomButton(product: product))
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              );
+            }));
   }
 
   Widget _productImagesSection(BuildContext context) {
     return Stack(children: [
       Container(
         width: double.infinity,
-        height: screenSize.getSize(340.0),
+        height: MediaQuery.of(context).size.height * 0.5,
         child: Image.asset(
           'assets/images/test.jpeg',
           fit: BoxFit.cover,
@@ -67,7 +66,7 @@ class ProductDetail extends StatelessWidget {
       ),
       IconButton(
         onPressed: () => Navigator.of(context).pop(),
-        padding: const EdgeInsets.only(top: 15.0),
+        padding: const EdgeInsets.only(top: 50.0),
         icon: const Icon(
           Icons.arrow_back,
           color: Color(0xFF747474),
@@ -77,49 +76,9 @@ class ProductDetail extends StatelessWidget {
     ]);
   }
 
-  Widget _userInfoSection() {
-    return Container(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 25.0,
-            backgroundColor: grey153,
-            child: CircleAvatar(
-              radius: 23.0,
-              backgroundColor: Colors.white,
-              child: Icon(
-                Icons.person,
-                color: grey153,
-              ),
-            ),
-          ),
-          SizedBox(width: screenSize.getSize(10.0)),
-          const R14Text(
-            text: "김판매(임의)",
-            textColor: Color(0xFF5B5B5A),
-          ),
-          SizedBox(width: screenSize.getSize(10.0)),
-          Row(
-            children: const [
-              Icon(
-                Icons.star_outline,
-                color: green,
-              ),
-              R14Text(
-                text: "4.5",
-                textColor: green,
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
   Widget _productInfoSection(Product product) {
     return Container(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: const EdgeInsets.only(top: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -198,6 +157,65 @@ class ProductDetail extends StatelessWidget {
               decoration: TextDecoration.underline,
             ),
           )),
+    );
+  }
+}
+
+// ignore: must_be_immutable
+class UserInfoSection extends StatelessWidget {
+  ScreenSize screenSize = ScreenSize();
+  int productId;
+  UserInfoSection({Key? key, required this.productId}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Provider.of<ProductDetailProvider>(context, listen: false)
+        .fetchUserInfo(productId);
+
+    return Consumer<ProductDetailProvider>(
+      builder: (context, provider, widget) {
+        if (provider.userOfProduct != null) {
+          return Container(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: Row(
+              children: [
+                const CircleAvatar(
+                  radius: 25.0,
+                  backgroundColor: grey153,
+                  child: CircleAvatar(
+                    radius: 23.0,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.person,
+                      color: grey153,
+                    ),
+                  ),
+                ),
+                SizedBox(width: screenSize.getSize(10.0)),
+                R14Text(
+                  text: provider.userOfProduct?.userNickname,
+                  textColor: const Color(0xFF5B5B5A),
+                ),
+                SizedBox(width: screenSize.getSize(10.0)),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.star_outline,
+                      color: green,
+                    ),
+                    R14Text(
+                      text: "${provider.userOfProduct?.userRating}",
+                      textColor: green,
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }

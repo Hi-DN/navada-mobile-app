@@ -7,7 +7,6 @@ class UserProvider extends ChangeNotifier {
   static String userName = "kim";
   static String userNickname = "mj";
   static String userEmail = "kim@naver.com";
-  static String userPassword = "kim";
   static String userPhoneNum = "010-1111-2222";
   static String userAddress = "address";
   static String userLevel = "LV1_OUTSIDER";
@@ -15,18 +14,17 @@ class UserProvider extends ChangeNotifier {
   static int userTradeCount = 10;
   static int userRatingCount = 10;
 
-  UserModel userModel = UserModel(
-      userId,
-      userName,
-      userNickname,
-      userEmail,
-      userPassword,
-      userPhoneNum,
-      userAddress,
-      UserLevel.strToEnum(userLevel),
-      userRating,
-      userTradeCount,
-      userRatingCount);
+  User user = User(
+      userId: userId,
+      userName: userName,
+      userNickname: userNickname,
+      userEmail: userEmail,
+      userPhoneNum: userPhoneNum,
+      userAddress: userAddress,
+      userLevel: UserLevel.strToEnum(userLevel),
+      userRating: userRating,
+      userTradeCount: userTradeCount,
+      userRatingCount: userRatingCount);
 
   void userNotifyListeners() {
     notifyListeners();
