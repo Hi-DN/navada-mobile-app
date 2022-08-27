@@ -43,8 +43,8 @@ class ProductDetail extends StatelessWidget {
                           _productInfoSection(product),
                           _reportSection(),
                           Expanded(
-                              child: ProductDetailBottomButton(
-                                  productId: product.productId))
+                              child:
+                                  ProductDetailBottomButton(product: product))
                         ],
                       ),
                     ),

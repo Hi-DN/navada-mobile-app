@@ -4,34 +4,37 @@ import 'package:navada_mobile_app/src/screens/product_detail/product_detail_requ
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/heart/heart_list_model.dart';
 import '../../providers/product_detail_provider.dart';
 import '../../widgets/colors.dart';
 import '../../widgets/text_style.dart';
 
 // ignore: must_be_immutable
 class ProductDetailBottomButton extends StatelessWidget {
-  final int productId;
+  final Product product;
   ScreenSize screenSize = ScreenSize();
 
-  ProductDetailBottomButton({Key? key, required this.productId})
+  ProductDetailBottomButton({Key? key, required this.product})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Provider.of<ProductDetailProvider>(context, listen: false)
-        .fetchRequestDtoList(productId);
+        .fetchRequestDtoList(product.productId);
 
-    return Consumer<ProductDetailProvider>(
-      builder: (context, provider, widget) {
-        if (provider.fetchCompleted && provider.requestDtoModel.success) {
-          return provider.requestDtoList.isEmpty
-              ? _oneBottomButton()
-              : _twoBottomButtons(provider.requestDtoList);
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );
+    return product.productStatusCd == 0
+        ? Consumer<ProductDetailProvider>(
+            builder: (context, provider, widget) {
+              if (provider.fetchCompleted && provider.requestDtoModel.success) {
+                return provider.requestDtoList.isEmpty
+                    ? _oneBottomButton()
+                    : _twoBottomButtons(provider.requestDtoList);
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          )
+        : _canNotTradeButton(product.productStatusCd);
   }
 
   Widget _oneBottomButton() {
@@ -56,7 +59,7 @@ class ProductDetailBottomButton extends StatelessWidget {
           ),
         ),
       ),
-      const SizedBox(height: 15.0),
+      const SizedBox(height: 20.0),
     ]);
   }
 
@@ -87,6 +90,25 @@ class ProductDetailBottomButton extends StatelessWidget {
           ),
           const ProductDetailRequests(),
         ],
+      ),
+      const SizedBox(height: 20.0),
+    ]);
+  }
+
+  Widget _canNotTradeButton(int productStatusCd) {
+    return Column(children: [
+      Expanded(child: Container()),
+      SizedBox(
+        width: screenSize.getSize(327.0),
+        height: screenSize.getSize(40.0),
+        child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.0), color: grey153),
+            child: Center(
+                child: R18Text(
+              text: productStatusCd == 1 ? '교환중인 물품입니다.' : '교환 완료된 물품입니다.',
+              textColor: Colors.white,
+            ))),
       ),
       const SizedBox(height: 20.0),
     ]);
