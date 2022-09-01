@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/screens/heart/heart_view.dart';
 import 'package:navada_mobile_app/src/screens/home/home_view.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view.dart';
 import 'package:navada_mobile_app/src/screens/my_page.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 
@@ -19,7 +20,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
   final List<Widget> _widgetList = [
     const HomeView(),
-    const Text('1'),
+    const MyExchangesView(),
     const HeartView(),
     const MyPage()
   ];
