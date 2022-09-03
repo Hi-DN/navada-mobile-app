@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:navada_mobile_app/src/models/user/user_model.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/providers/exchange_provider.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/trading_and_completed_tab_widget.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
+import 'package:provider/provider.dart';
 
 class MyExchangesView extends StatelessWidget {
   const MyExchangesView({Key? key}) : super(key: key);
@@ -12,9 +18,17 @@ class MyExchangesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
+    User user = Provider.of<UserProvider>(context, listen: false).user;
+    
     return Scaffold(
       appBar: CustomAppBar(titleText: '내 물물교환'),
-      body: Container(
+      body: MultiProvider(
+            providers: [
+          ChangeNotifierProvider(
+              create: (context) => ExchangeProvider(user.userId)),
+          ChangeNotifierProvider(create: (context) => MyExchangesViewModel()),
+        ],
+            child: Container(
         color: white,
         child: DefaultTabController(
           length: 2,
@@ -34,9 +48,7 @@ class MyExchangesView extends StatelessWidget {
               Expanded(
                 child: TabBarView(
                   children: [
-                    Container(
-                      child: const Text('1'),
-                    ),
+                    TradingAndCompletedTab(),
                     Container(
                       child: const Text('2')
                     ),
@@ -44,7 +56,8 @@ class MyExchangesView extends StatelessWidget {
                 ),
               )])
         ),
-      ),
+      ),)
+      
     );
   }
 }
