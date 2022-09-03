@@ -1,6 +1,6 @@
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
-class PageResponse {
+class RequestPageResponse {
   bool? success;
   int? code;
   String? message;
@@ -14,7 +14,7 @@ class PageResponse {
   int? numberOfElements;
   int? size;
 
-  PageResponse(
+  RequestPageResponse(
       {this.success,
       this.code,
       this.message,
@@ -28,7 +28,7 @@ class PageResponse {
       this.numberOfElements,
       this.size});
 
-  PageResponse.fromJson(Map<String, dynamic> json) {
+  RequestPageResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     code = json['code'];
     message = json['message'];

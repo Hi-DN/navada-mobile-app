@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
-import 'package:navada_mobile_app/src/models/product/product_model.dart';
-import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
+import 'package:navada_mobile_app/src/models/request/request_model.dart';
+import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
@@ -10,8 +9,8 @@ import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class TradingAndCompletedTab extends StatelessWidget {
-  TradingAndCompletedTab({Key? key}) : super(key: key);
+class ProductsThatIRequested extends StatelessWidget {
+  ProductsThatIRequested({Key? key}) : super(key: key);
 
   late BuildContext? _context;
 
@@ -29,41 +28,41 @@ class TradingAndCompletedTab extends StatelessWidget {
   }
 
   Widget _buildScreenDependingOnDataState() {
-    return Consumer<MyExchangesExchangeProvider>(builder:
-        (BuildContext context, MyExchangesExchangeProvider provider, Widget? _) {
+    return Consumer<MyExchangesRequestProvider>(builder:
+        (BuildContext context, MyExchangesRequestProvider provider, Widget? _) {
       switch (provider.dataState) {
         case DataState.UNINITIALIZED:
           Future(() {
             provider.fetchData();
           });
-          return _ExchangeListView(exchangeList: provider.exchangeDataList, isLoading: false);
+          return _RequestListView(requestList: provider.requestDataList, isLoading: false);
         case DataState.INITIAL_FETCHING:
         case DataState.MORE_FETCHING:
         case DataState.REFRESHING:
-          return _ExchangeListView(exchangeList: provider.exchangeDataList, isLoading: true);
+          return _RequestListView(requestList: provider.requestDataList, isLoading: true);
         case DataState.FETCHED:
         case DataState.ERROR:
         case DataState.NO_MORE_DATA:
-          return _ExchangeListView(exchangeList: provider.exchangeDataList, isLoading: false);
+          return _RequestListView(requestList: provider.requestDataList, isLoading: false);
       }
     });
   }
 }
 
-// ignore: must_be_immutable
-class _ExchangeListView extends StatelessWidget {
-  _ExchangeListView({Key? key, required this.exchangeList, required this.isLoading}) : super(key: key);
+class _RequestListView extends StatelessWidget {
+  _RequestListView({Key? key, required this.requestList, required this.isLoading}) : super(key: key);
 
-  List<ExchangeModel> exchangeList;
+  List<RequestModel> requestList;
   bool isLoading;
 
   late DataState? _dataState;
   late BuildContext? _context;
 
+
   @override
   Widget build(BuildContext context) {
     _dataState =
-        Provider.of<MyExchangesExchangeProvider>(context, listen: false).dataState;
+        Provider.of<MyExchangesRequestProvider>(context, listen: false).dataState;
     _context = context;
     return _scrollNotificationWidget();
   }
@@ -90,23 +89,23 @@ class _ExchangeListView extends StatelessWidget {
     if (!isLoading &&
         scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
       isLoading = true;
-      Provider.of<MyExchangesExchangeProvider>(_context!, listen: false)
+      Provider.of<MyExchangesRequestProvider>(_context!, listen: false)
           .fetchData(isRefresh: false);
     }
     return true;
   }
 
   Widget _buildScreenIfHasData() {
-    bool hasData = Provider.of<MyExchangesExchangeProvider>(_context!).hasData;
+    bool hasData = Provider.of<MyExchangesRequestProvider>(_context!).hasData;
 
     if (hasData) {
-      return _exchangeListView();
+      return _requestListView();
     } else {
-      return const NoExchanges();
+      return const NoRequestsThatIApplied();
     }
   }
 
-  Widget _exchangeListView() {
+  Widget _requestListView() {
     ScreenSize size = ScreenSize();
 
     return Padding(
@@ -115,9 +114,9 @@ class _ExchangeListView extends StatelessWidget {
         padding: const EdgeInsets.all(0.0),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: exchangeList.length,
+        itemCount: requestList.length,
         itemBuilder: (context, index) {
-          return ExchangeItem(exchange: exchangeList[index]);
+          return RequestItem(request: requestList[index]);
         },
         separatorBuilder: (context, index) {
           return const Space(height: 10);
@@ -128,16 +127,16 @@ class _ExchangeListView extends StatelessWidget {
   _onRefresh() async {
     if (!isLoading) {
       isLoading = true;
-      Provider.of<MyExchangesExchangeProvider>(_context!, listen: false)
+      Provider.of<MyExchangesRequestProvider>(_context!, listen: false)
           .fetchData(isRefresh: true);
     }
   }
 }
 
-class ExchangeItem extends StatelessWidget {
-  const ExchangeItem({Key? key, this.exchange}) : super(key: key);
+class RequestItem extends StatelessWidget {
+  const RequestItem({Key? key, this.request}) : super(key: key);
 
-  final ExchangeModel? exchange;
+  final RequestModel? request;
 
   @override
   Widget build(BuildContext context) {
@@ -158,17 +157,17 @@ class ExchangeItem extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _exchangeStatusSign(exchange?.acceptorProduct!.productStatusCd),
+          _requestStatusSign(),
           const VerticalDivider(thickness: 1, color: grey239, indent: 0, endIndent: 0),
-          _productContent(exchange?.requesterProduct),
+          _productContent(request?.requesterProductName, request?.requesterNickName, request?.requesterProductCost, request?.requesterProductCostRange),
           const VerticalDivider(thickness: 1, color: grey239, indent: 3, endIndent: 3),
-          _productContent(exchange?.acceptorProduct),
+          _productContent(request?.acceptorProductName, request?.acceptorNickname, request?.acceptorProductCost, request?.acceptorProductCostRange),
         ],
       )
     );
   }
 
-  Widget _exchangeStatusSign(ProductStatusCd? statusCd) {
+  Widget _requestStatusSign() {
     ScreenSize size = ScreenSize();
     return Padding(
       padding: EdgeInsets.only(left: size.getSize(7)),
@@ -176,19 +175,19 @@ class ExchangeItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          statusCd == ProductStatusCd.TRADING
-            ? const Icon(Icons.compare_arrows, color: green, size: 32)
-            : const Icon(Icons.check, color: navy, size: 28),
+          request?.exchangeStatusCd == ExchangeStatusCd.WAIT
+            ? const Icon(Icons.access_time, color: yellow, size: 32)
+            : const Icon(Icons.not_interested, color: grey216, size: 28),
           const Space(height: 5),
-          statusCd == ProductStatusCd.TRADING
-            ? const R10Text(text: '교환중', textColor: green)
-            : const R10Text(text: '교환완료', textColor: navy)
+          request?.exchangeStatusCd == ExchangeStatusCd.WAIT
+            ? const R10Text(text: '신청됨', textColor: yellow)
+            : const R10Text(text: '거절됨', textColor: grey216)
         ]
       ),
     );
   }
 
-  Widget _productContent(ProductModel? product) {
+  Widget _productContent(String? productName, String? userNickname, int? productCost, int? exchangeCostRange) {
     ScreenSize size = ScreenSize();
     return SizedBox(
       width: size.getSize(132),
@@ -200,10 +199,10 @@ class ExchangeItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              R12Text(text: _shortenStrTo(product!.productName, 8)),
-              R10Text(text: _shortenStrTo(product.userNickname,10), textColor: grey216),
-              R10Text(text: "원가 ${product.productCost}원"),
-              R10Text(text: "± ${product.exchangeCostRange}원", textColor: grey183,)
+              R12Text(text: _shortenStrTo(productName, 8)),
+              R10Text(text: _shortenStrTo(userNickname,10), textColor: grey216),
+              R10Text(text: "원가 $productCost원"),
+              R10Text(text: "± $exchangeCostRange원", textColor: grey183,)
             ],
           )
         ],
@@ -234,8 +233,8 @@ class ExchangeItem extends StatelessWidget {
   }
 }
 
-class NoExchanges extends StatelessWidget {
-  const NoExchanges({Key? key}) : super(key: key);
+class NoRequestsThatIApplied extends StatelessWidget {
+  const NoRequestsThatIApplied({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -256,23 +255,21 @@ class NoExchanges extends StatelessWidget {
 
   Widget _noExchangesNotice() {
     ScreenSize size = ScreenSize();
-    return IntrinsicWidth(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-        Icon(
-          Icons.tag_faces_sharp,
-          size: size.getSize(96),
-          color: grey216,
-        ),
-        const Space(height: 10),
-        const R14Text(
-          text: '물물교환내역이 없습니다.',
-          textColor: grey153,
-        ),
-        const Space(height: kBottomNavigationBarHeight)
-      ]),
-    );
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+      Icon(
+        Icons.tag_faces_sharp,
+        size: size.getSize(96),
+        color: grey216,
+      ),
+      const Space(height: 10),
+      const R14Text(
+        text: '신청한 내역이 없습니다.',
+        textColor: grey153,
+      ),
+      const Space(height: kBottomNavigationBarHeight)
+    ]);
   }
 }

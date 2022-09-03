@@ -1,23 +1,23 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_service.dart';
+import 'package:navada_mobile_app/src/models/request/request_model.dart';
+import 'package:navada_mobile_app/src/models/request/request_service.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
-class ExchangeProvider extends ChangeNotifier {
-  ExchangeProvider(this._userId);
+class MyExchangesRequestProvider extends ChangeNotifier {
+  MyExchangesRequestProvider(this._userId);
 
   final int _userId;
 
   int _currentPageNum = 0;
   DataState _dataState = DataState.UNINITIALIZED;
-  List<ExchangeModel> _exchangeDataList = [];
+  List<RequestModel> _requestDataList = [];
   late int _totalPages;
   
-  bool get hasData => _isRefreshing || _exchangeDataList.isNotEmpty;
+  bool get hasData => _isRefreshing || _requestDataList.isNotEmpty;
   DataState get dataState => _dataState;
-  List<ExchangeModel> get exchangeDataList => _exchangeDataList;
+  List<RequestModel> get requestDataList => _requestDataList;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
   bool get _isRefreshing => _dataState == DataState.REFRESHING;
   bool get _shouldResetTotalPages => _isInitialFetching || _dataState == DataState.REFRESHING;
@@ -38,7 +38,7 @@ class ExchangeProvider extends ChangeNotifier {
   }
 
   _refresh() {
-    _exchangeDataList.clear();
+    _requestDataList.clear();
     _currentPageNum = 0;
     _dataState = DataState.REFRESHING;
   }
@@ -67,16 +67,16 @@ class ExchangeProvider extends ChangeNotifier {
   }
 
   _fetchData() async {
-    ExchangePageResponse? pageResponse = await _getPageResponse();
-    List<ExchangeModel>? newExchanges = pageResponse!.content;
+    RequestPageResponse? pageResponse = await _getPageResponse();
+    List<RequestModel>? newRequests = pageResponse!.content;
 
-    _exchangeDataList += newExchanges!;
+    _requestDataList += newRequests!;
     _currentPageNum += 1;
     notifyListeners();
   }
 
   _getPageResponse() async {
-    ExchangePageResponse? pageResponse = await getExchangeList(_userId, _currentPageNum);
+    RequestPageResponse? pageResponse = await getRequestsThatIApplied(_userId, _currentPageNum);
 
     await _resetTotalPages(pageResponse!.totalPages!);
 

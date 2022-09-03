@@ -1,34 +1,26 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/request/request_model.dart';
-import 'package:navada_mobile_app/src/models/request/request_service.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_service.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
-class RequestsForMeProvider extends ChangeNotifier {
-  RequestsForMeProvider(this._userId);
+class MyExchangesExchangeProvider extends ChangeNotifier {
+  MyExchangesExchangeProvider(this._userId);
 
   final int _userId;
 
-  bool _isFetchingIncludingDenied = false;
   int _currentPageNum = 0;
   DataState _dataState = DataState.UNINITIALIZED;
-  List<RequestModel> _requestDataList = [];
+  List<ExchangeModel> _exchangeDataList = [];
   late int _totalPages;
   
-  bool get hasData => _isRefreshing || _requestDataList.isNotEmpty;
+  bool get hasData => _isRefreshing || _exchangeDataList.isNotEmpty;
   DataState get dataState => _dataState;
-  List<RequestModel> get requestDataList => _requestDataList;
+  List<ExchangeModel> get exchangeDataList => _exchangeDataList;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
   bool get _isRefreshing => _dataState == DataState.REFRESHING;
   bool get _shouldResetTotalPages => _isInitialFetching || _dataState == DataState.REFRESHING;
-
-  fetchDependingOnDeniedCheck(bool newValue) {
-    _isFetchingIncludingDenied = newValue;
-    notifyListeners();
-    
-    fetchData(isRefresh: true);
-  }
 
   fetchData({bool isRefresh = false}) async {
     if(isRefresh)
@@ -46,7 +38,7 @@ class RequestsForMeProvider extends ChangeNotifier {
   }
 
   _refresh() {
-    _requestDataList.clear();
+    _exchangeDataList.clear();
     _currentPageNum = 0;
     _dataState = DataState.REFRESHING;
   }
@@ -75,18 +67,16 @@ class RequestsForMeProvider extends ChangeNotifier {
   }
 
   _fetchData() async {
-    RequestPageResponse? pageResponse = await _getPageResponse();
-    List<RequestModel>? newRequestsForMe = pageResponse!.content;
+    ExchangePageResponse? pageResponse = await _getPageResponse();
+    List<ExchangeModel>? newExchanges = pageResponse!.content;
 
-    _requestDataList += newRequestsForMe!;
+    _exchangeDataList += newExchanges!;
     _currentPageNum += 1;
     notifyListeners();
   }
 
   _getPageResponse() async {
-    RequestPageResponse? pageResponse = _isFetchingIncludingDenied
-      ? await getRequestsForMeIncludingDenied(_userId, _currentPageNum)
-      : await getRequestsForMe(_userId, _currentPageNum);
+    ExchangePageResponse? pageResponse = await getExchangeList(_userId, _currentPageNum);
 
     await _resetTotalPages(pageResponse!.totalPages!);
 

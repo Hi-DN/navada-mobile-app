@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
-import 'package:navada_mobile_app/src/providers/exchange_provider.dart';
+import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
+import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/products_I_requested.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/trading_and_completed_tab_widget.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
@@ -23,9 +25,9 @@ class MyExchangesView extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(titleText: '내 물물교환'),
       body: MultiProvider(
-            providers: [
-          ChangeNotifierProvider(
-              create: (context) => ExchangeProvider(user.userId)),
+        providers: [
+          ChangeNotifierProvider(create: (context) => MyExchangesExchangeProvider(user.userId)),
+          ChangeNotifierProvider(create: (context) => MyExchangesRequestProvider(user.userId)),
           ChangeNotifierProvider(create: (context) => MyExchangesViewModel()),
         ],
             child: Container(
@@ -50,9 +52,7 @@ class MyExchangesView extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
                     TradingAndCompletedTab(),
-                    Container(
-                      child: const Text('2')
-                    ),
+                    ProductsThatIRequested()
                   ],
                 ),
               )])
