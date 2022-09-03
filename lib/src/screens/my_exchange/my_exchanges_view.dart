@@ -47,6 +47,7 @@ class MyExchangesView extends StatelessWidget {
               ),
               Expanded(
                 child: TabBarView(
+                  physics: const NeverScrollableScrollPhysics(),
                   children: [
                     TradingAndCompletedTab(),
                     Container(

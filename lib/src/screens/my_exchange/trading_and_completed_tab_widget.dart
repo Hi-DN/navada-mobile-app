@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
+import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/exchange_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
@@ -8,6 +9,7 @@ import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class TradingAndCompletedTab extends StatelessWidget {
   TradingAndCompletedTab({Key? key}) : super(key: key);
 
@@ -17,6 +19,7 @@ class TradingAndCompletedTab extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     return Scaffold(
+      backgroundColor: white,
       body: Column(
       children: [
         // _filterSection(),
@@ -47,6 +50,7 @@ class TradingAndCompletedTab extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class _ExchangeListView extends StatelessWidget {
   _ExchangeListView({Key? key, required this.exchangeList, required this.isLoading}) : super(key: key);
 
@@ -103,30 +107,22 @@ class _ExchangeListView extends StatelessWidget {
   }
 
   Widget _exchangeListView() {
-    return ListView.builder(
-              padding: const EdgeInsets.all(0.0),
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: exchangeList.length,
-              itemBuilder: (context, index) {
-                return ExchangeItem(exchange: exchangeList[index]);
-              },
-              // separatorBuilder: (context, index) {
-              //   return Divider(thickness: 1.0);
-              // }
-      );
-    // return ListView.builder(
-    //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-    //     crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
-    //     childAspectRatio: 10 / 14.5, //item 의 가로 / 세로  비율
-    //     mainAxisSpacing: 0, //수평 Padding
-    //     crossAxisSpacing: 10, //수직 Padding
-    //   ),
-    //   itemCount: requestsForMe.length,
-    //   itemBuilder: (context, index) {
-    //     return RequestItem(request: requestsForMe[index]);
-    //   },
-    // );
+    ScreenSize size = ScreenSize();
+
+    return Padding(
+      padding: EdgeInsets.all(size.getSize(12)),
+      child: ListView.separated(
+        padding: const EdgeInsets.all(0.0),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: exchangeList.length,
+        itemBuilder: (context, index) {
+          return ExchangeItem(exchange: exchangeList[index]);
+        },
+        separatorBuilder: (context, index) {
+          return const Space(height: 8);
+        })
+    );
   }
 
   _onRefresh() async {
@@ -145,7 +141,96 @@ class ExchangeItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(exchange?.acceptorProduct!.productName?? "wow");
+    ScreenSize size = ScreenSize();
+    return Container(
+      height: size.getSize(80),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(size.getSize(10)),
+        border: Border.all(color: Colors.white, width: 3.0),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x90979797),
+            offset: Offset(3.0, 3.0), //(x,y)
+            blurRadius: 8.0,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          _exchangeStatusSign(exchange?.acceptorProduct!.productStatusCd),
+          const VerticalDivider(thickness: 1, color: grey239, indent: 0, endIndent: 0),
+          _productContent(exchange?.acceptorProduct),
+          const VerticalDivider(thickness: 1, color: grey239, indent: 3, endIndent: 3),
+          _productContent(exchange?.requesterProduct),
+        ],
+      )
+    );
+  }
+
+  Widget _exchangeStatusSign(ProductStatusCd? statusCd) {
+    ScreenSize size = ScreenSize();
+    return Padding(
+      padding: EdgeInsets.only(left: size.getSize(7)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          statusCd == ProductStatusCd.TRADING
+            ? const Icon(Icons.compare_arrows, color: green, size: 32)
+            : const Icon(Icons.check, color: navy, size: 28),
+          const Space(height: 5),
+          statusCd == ProductStatusCd.TRADING
+            ? const R10Text(text: '교환중', textColor: green)
+            : const R10Text(text: '교환완료', textColor: navy)
+        ]
+      ),
+    );
+  }
+
+  Widget _productContent(ProductModel? product) {
+    ScreenSize size = ScreenSize();
+    return SizedBox(
+      width: size.getSize(132),
+      child: Row(
+        children: [
+          _exampleImage(),
+          const Space(width: 5),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              R12Text(text: _shortenStrTo(product!.productName, 8)),
+              R10Text(text: _shortenStrTo(product.userNickname,10), textColor: grey216),
+              R10Text(text: "원가 ${product.productCost}원"),
+              R10Text(text: "± ${product.exchangeCostRange}원", textColor: grey183,)
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _exampleImage() {
+    ScreenSize size = ScreenSize();
+    return Container(
+      width: size.getSize(40.0),
+      height: size.getSize(50.0),
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: AssetImage('assets/images/test.jpeg')
+        ),
+      ),
+    );
+  }
+
+  _shortenStrTo(String? str, int wantedLength) {
+    if (str!.length <= wantedLength) {
+      return str;
+    } else {
+      return '${str.substring(0, wantedLength)}...';
+    }
   }
 }
 
