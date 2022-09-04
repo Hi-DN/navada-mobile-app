@@ -11,6 +11,8 @@ class ProductDetailProvider extends ChangeNotifier {
   final HeartService _heartService = HeartService();
   final int _userId = UserProvider.userId;
 
+  final RequestService _requestService = RequestService();
+
   User? _userOfProduct;
   User? get userOfProduct => _userOfProduct;
 
@@ -32,7 +34,7 @@ class ProductDetailProvider extends ChangeNotifier {
 
   void fetchRequestDtoList(int productId) async {
     RequestDtoModel model =
-        await getRequestsByCertainProduct(productId, _userId);
+        await _requestService.getRequestsByCertainProduct(productId, _userId);
     _requestDtoModel = model;
     _requestDtoList = _requestDtoModel.dataList;
     _fetchCompleted = true;

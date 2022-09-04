@@ -10,6 +10,8 @@ class MyExchangesRequestProvider extends ChangeNotifier {
 
   final int _userId;
 
+  final RequestService _requestService = RequestService();
+
   int _currentPageNum = 0;
   DataState _dataState = DataState.UNINITIALIZED;
   List<RequestModel> _requestDataList = [];
@@ -76,7 +78,7 @@ class MyExchangesRequestProvider extends ChangeNotifier {
   }
 
   _getPageResponse() async {
-    RequestPageResponse? pageResponse = await getRequestsThatIApplied(_userId, _currentPageNum);
+    RequestPageResponse? pageResponse = await _requestService.getRequestsThatIApplied(_userId, _currentPageNum);
 
     await _resetTotalPages(pageResponse!.totalPages!);
 
@@ -90,6 +92,12 @@ class MyExchangesRequestProvider extends ChangeNotifier {
 
   _handleError() {
     _dataState = DataState.ERROR;
+    notifyListeners();
+  }
+
+  deleteRequest(int requestId) async {
+    await _requestService.deleteRequest(requestId);
+    _requestDataList.removeWhere((request) => request.requestId == requestId);
     notifyListeners();
   }
 }

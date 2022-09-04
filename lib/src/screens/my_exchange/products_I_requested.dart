@@ -49,6 +49,7 @@ class ProductsThatIRequested extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class _RequestListView extends StatelessWidget {
   _RequestListView({Key? key, required this.requestList, required this.isLoading}) : super(key: key);
 
@@ -116,7 +117,52 @@ class _RequestListView extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: requestList.length,
         itemBuilder: (context, index) {
-          return RequestItem(request: requestList[index]);
+          final request = requestList[index];
+          bool isWait = request.exchangeStatusCd == ExchangeStatusCd.WAIT;
+
+          return Dismissible(
+            key: UniqueKey(),
+            onDismissed: (direction) {
+              if(isWait) {
+                Provider.of<MyExchangesRequestProvider>(_context!, listen: false).deleteRequest(request.requestId!);
+              }
+            },
+            confirmDismiss: (direction) async {
+                return await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: R14Text(text: isWait ? "교환신청을 정말로 취소하시겠습니까?" : "거절내역을 삭제하시겠습니까?"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const R14Text(text: "아니요", textColor: grey153),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: R14Text(text: isWait ? "네, 취소할게요!" : "네, 삭제할게요!", textColor: blue),
+                        ),
+                      ],
+                    );
+                  }
+                );
+            },
+            direction: DismissDirection.endToStart,
+            background: Container(
+                decoration: BoxDecoration(
+                    color: grey183,
+                    borderRadius: BorderRadius.circular(size.getSize(10))),
+                margin: EdgeInsets.only(bottom: size.getSize(8)),
+                padding: EdgeInsets.only(right: size.getSize(20)),
+                child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: const [
+                  Icon(Icons.delete, color: white,),
+                ],
+              )
+            ),
+            child: RequestItem(request: request),
+          );
         },
         separatorBuilder: (context, index) {
           return const Space(height: 10);

@@ -10,6 +10,8 @@ class RequestsForMeProvider extends ChangeNotifier {
 
   final int _userId;
 
+  final RequestService _requestService = RequestService();
+
   bool _isFetchingIncludingDenied = false;
   int _currentPageNum = 0;
   DataState _dataState = DataState.UNINITIALIZED;
@@ -85,8 +87,8 @@ class RequestsForMeProvider extends ChangeNotifier {
 
   _getPageResponse() async {
     RequestPageResponse? pageResponse = _isFetchingIncludingDenied
-      ? await getRequestsForMeIncludingDenied(_userId, _currentPageNum)
-      : await getRequestsForMe(_userId, _currentPageNum);
+      ? await _requestService.getRequestsForMeIncludingDenied(_userId, _currentPageNum)
+      : await _requestService.getRequestsForMe(_userId, _currentPageNum);
 
     await _resetTotalPages(pageResponse!.totalPages!);
 
