@@ -4,6 +4,7 @@ import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
+import 'package:navada_mobile_app/src/widgets/divider.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
@@ -22,7 +23,6 @@ class TradingAndCompletedTab extends StatelessWidget {
       backgroundColor: white,
       body: Column(
       children: [
-        // _filterSection(),
         Expanded(child: _buildScreenDependingOnDataState()),
       ],
     ));
@@ -111,17 +111,93 @@ class _ExchangeListView extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.all(size.getSize(12)),
-      child: ListView.separated(
-        padding: const EdgeInsets.all(0.0),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: exchangeList.length,
-        itemBuilder: (context, index) {
-          return ExchangeItem(exchange: exchangeList[index]);
-        },
-        separatorBuilder: (context, index) {
-          return const Space(height: 10);
-        })
+      child: Column(
+        children: [
+          _filterSection(),
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.all(0.0),
+              shrinkWrap: true,
+              itemCount: exchangeList.length,
+              itemBuilder: (context, index) {
+                return ExchangeItem(exchange: exchangeList[index]);
+              },
+              separatorBuilder: (context, index) {
+                return const Space(height: 10);
+              }),
+          ),
+        ],
+      )
+    );
+  }
+
+  Widget _filterSection() {
+    int totalElements = Provider.of<MyExchangesExchangeProvider>(_context!).totalElements;
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [R10Text(text: "총 $totalElements건"), _filter()]),
+        const Space(height: 10)
+      ],
+    );
+  }
+
+  Widget _filter() {
+    ScreenSize size = ScreenSize();
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: _context!,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(size.getSize(15)), topRight: Radius.circular(size.getSize(15))),
+          ),
+          builder: (context) {
+            return Wrap(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 3,
+                        width: size.getSize(40),
+                        decoration: BoxDecoration(
+                          color: grey216,
+                          borderRadius: BorderRadius.circular(size.getSize(10)),
+                          border: Border.all(color: Colors.white, width: 3.0),
+                          ))
+                  ]),
+                ),
+                ListTile(
+                  minVerticalPadding: size.getSize(20),
+                  title: const R16Text(text:'전체보기'),
+                ),
+                const CustomDivider(horizontalIndent: 18),
+                ListTile(
+                  minVerticalPadding: size.getSize(20),
+                  title: const R16Text(text: '내가 신청한것만 보기'),
+                ),
+                const CustomDivider(horizontalIndent: 18),
+                ListTile(
+                  minVerticalPadding: size.getSize(20),
+                  title: const R16Text(text: '신청받은것만 보기'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Row(
+        children: [
+          Icon(Icons.check, size: size.getSize(10)),
+          const Space(width: 3),
+          const R10Text(
+            text: '전체보기',
+          ),
+        ],
+      ),
     );
   }
 

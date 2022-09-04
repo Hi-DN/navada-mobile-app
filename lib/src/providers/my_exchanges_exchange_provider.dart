@@ -14,13 +14,15 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   DataState _dataState = DataState.UNINITIALIZED;
   List<ExchangeModel> _exchangeDataList = [];
   late int _totalPages;
+  late int _totalElements;
   
   bool get hasData => _isRefreshing || _exchangeDataList.isNotEmpty;
   DataState get dataState => _dataState;
+  int get totalElements => _totalElements;
   List<ExchangeModel> get exchangeDataList => _exchangeDataList;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
   bool get _isRefreshing => _dataState == DataState.REFRESHING;
-  bool get _shouldResetTotalPages => _isInitialFetching || _dataState == DataState.REFRESHING;
+  bool get _shouldResetTotalPagesAndTotalElements => _isInitialFetching || _dataState == DataState.REFRESHING;
 
   fetchData({bool isRefresh = false}) async {
     if(isRefresh)
@@ -78,14 +80,15 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   _getPageResponse() async {
     ExchangePageResponse? pageResponse = await getExchangeList(_userId, _currentPageNum);
 
-    await _resetTotalPages(pageResponse!.totalPages!);
+    await _resetTotalPagesAndTotalElements(pageResponse!.totalPages!, pageResponse.totalElements!);
 
     return pageResponse;
   }
 
-  _resetTotalPages(int totalPages) {
-    if(_shouldResetTotalPages) 
+  _resetTotalPagesAndTotalElements(int totalPages, int totalElements) {
+    if(_shouldResetTotalPagesAndTotalElements) 
       _totalPages = totalPages;
+      _totalElements = totalElements;
   }
 
   _handleError() {
