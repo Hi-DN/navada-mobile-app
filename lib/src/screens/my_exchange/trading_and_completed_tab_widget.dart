@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
+import 'package:navada_mobile_app/src/widgets/my_exchange_card.dart';
+import 'package:navada_mobile_app/src/widgets/my_exchange_status_sign.dart';
+import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
@@ -12,13 +16,10 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class TradingAndCompletedTab extends StatelessWidget {
-  TradingAndCompletedTab({Key? key}) : super(key: key);
-
-  late BuildContext? _context;
+  const TradingAndCompletedTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
     return Scaffold(
       backgroundColor: white,
       body: Column(
@@ -62,8 +63,7 @@ class _ExchangeListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _dataState =
-        Provider.of<MyExchangesExchangeProvider>(context, listen: false).dataState;
+    _dataState = Provider.of<MyExchangesExchangeProvider>(context, listen: false).dataState;
     _context = context;
     return _scrollNotificationWidget();
   }
@@ -90,8 +90,7 @@ class _ExchangeListView extends StatelessWidget {
     if (!isLoading &&
         scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
       isLoading = true;
-      Provider.of<MyExchangesExchangeProvider>(_context!, listen: false)
-          .fetchData(isRefresh: false);
+      Provider.of<MyExchangesExchangeProvider>(_context!, listen: false).fetchData(isRefresh: false);
     }
     return true;
   }
@@ -102,7 +101,7 @@ class _ExchangeListView extends StatelessWidget {
     if (hasData) {
       return _exchangeListView();
     } else {
-      return const NoExchanges();
+      return const NoElements(text: '물물교환내역이 없습니다.');
     }
   }
 
@@ -137,75 +136,16 @@ class _ExchangeListView extends StatelessWidget {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [R10Text(text: "총 $totalElements건"), _filter()]),
+          children: [R10Text(text: "총 $totalElements건"), _ViewFilter()]),
         const Space(height: 10)
       ],
-    );
-  }
-
-  Widget _filter() {
-    ScreenSize size = ScreenSize();
-    return GestureDetector(
-      onTap: () {
-        showModalBottomSheet(
-          context: _context!,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(size.getSize(15)), topRight: Radius.circular(size.getSize(15))),
-          ),
-          builder: (context) {
-            return Wrap(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 3,
-                        width: size.getSize(40),
-                        decoration: BoxDecoration(
-                          color: grey216,
-                          borderRadius: BorderRadius.circular(size.getSize(10)),
-                          border: Border.all(color: Colors.white, width: 3.0),
-                          ))
-                  ]),
-                ),
-                ListTile(
-                  minVerticalPadding: size.getSize(20),
-                  title: const R16Text(text:'전체보기'),
-                ),
-                const CustomDivider(horizontalIndent: 18),
-                ListTile(
-                  minVerticalPadding: size.getSize(20),
-                  title: const R16Text(text: '내가 신청한것만 보기'),
-                ),
-                const CustomDivider(horizontalIndent: 18),
-                ListTile(
-                  minVerticalPadding: size.getSize(20),
-                  title: const R16Text(text: '신청받은것만 보기'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-      child: Row(
-        children: [
-          Icon(Icons.check, size: size.getSize(10)),
-          const Space(width: 3),
-          const R10Text(
-            text: '전체보기',
-          ),
-        ],
-      ),
     );
   }
 
   _onRefresh() async {
     if (!isLoading) {
       isLoading = true;
-      Provider.of<MyExchangesExchangeProvider>(_context!, listen: false)
-          .fetchData(isRefresh: true);
+      Provider.of<MyExchangesExchangeProvider>(_context!, listen: false).fetchData(isRefresh: true);
     }
   }
 }
@@ -217,138 +157,109 @@ class ExchangeItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreenSize size = ScreenSize();
-    return Container(
-      height: size.getSize(76),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(size.getSize(10)),
-        border: Border.all(color: Colors.white, width: 3.0),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x90979797),
-            offset: Offset(3.0, 3.0), //(x,y)
-            blurRadius: 8.0,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          _exchangeStatusSign(exchange?.acceptorProduct!.productStatusCd),
-          const VerticalDivider(thickness: 1, color: grey239, indent: 0, endIndent: 0),
-          _productContent(exchange?.requesterProduct),
-          const VerticalDivider(thickness: 1, color: grey239, indent: 3, endIndent: 3),
-          _productContent(exchange?.acceptorProduct),
-        ],
-      )
-    );
-  }
+    bool isTrading = exchange?.acceptorProduct!.productStatusCd == ProductStatusCd.TRADING;
+    ProductModel? requesterProduct = exchange?.requesterProduct;
+    ProductModel? acceptorProduct = exchange?.acceptorProduct;
 
-  Widget _exchangeStatusSign(ProductStatusCd? statusCd) {
-    ScreenSize size = ScreenSize();
-    return Padding(
-      padding: EdgeInsets.only(left: size.getSize(7)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          statusCd == ProductStatusCd.TRADING
-            ? const Icon(Icons.compare_arrows, color: green, size: 32)
-            : const Icon(Icons.check, color: navy, size: 28),
-          const Space(height: 5),
-          statusCd == ProductStatusCd.TRADING
-            ? const R10Text(text: '교환중', textColor: green)
-            : const R10Text(text: '교환완료', textColor: navy)
-        ]
+    return MyExchangeCard(
+      statusSign: isTrading
+        ? const MyExchangeStatusSign(color: green, icon: Icons.compare_arrows, label: '교환중')
+        : const MyExchangeStatusSign(color: navy, icon: Icons.check, label: '교환완료'),
+      params: MyExchangeCardParams(
+        requesterProductName: requesterProduct?.productName,
+        requesterNickname: requesterProduct?.userNickname,
+        requesterProductCost: requesterProduct?.productCost,
+        requesterProductCostRange: requesterProduct?.exchangeCostRange,
+        acceptorProductName: acceptorProduct?.productName,
+        acceptorNickname: acceptorProduct?.userNickname,
+        acceptorProductCost: acceptorProduct?.productCost,
+        acceptorProductCostRange: acceptorProduct?.exchangeCostRange
       ),
     );
-  }
-
-  Widget _productContent(ProductModel? product) {
-    ScreenSize size = ScreenSize();
-    return SizedBox(
-      width: size.getSize(132),
-      child: Row(
-        children: [
-          _exampleImage(),
-          const Space(width: 5),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              R12Text(text: _shortenStrTo(product!.productName, 8)),
-              R10Text(text: _shortenStrTo(product.userNickname,10), textColor: grey216),
-              R10Text(text: "원가 ${product.productCost}원"),
-              R10Text(text: "± ${product.exchangeCostRange}원", textColor: grey183,)
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _exampleImage() {
-    ScreenSize size = ScreenSize();
-    return Container(
-      width: size.getSize(40.0),
-      height: size.getSize(50.0),
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('assets/images/test.jpeg')
-        ),
-      ),
-    );
-  }
-
-  _shortenStrTo(String? str, int wantedLength) {
-    if (str!.length <= wantedLength) {
-      return str;
-    } else {
-      return '${str.substring(0, wantedLength)}...';
-    }
   }
 }
 
-class NoExchanges extends StatelessWidget {
-  const NoExchanges({Key? key}) : super(key: key);
+// ignore: must_be_immutable
+class _ViewFilter extends StatelessWidget {
+
+  late BuildContext? _context;
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: ((context, constraint) => 
-          SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraint.maxHeight, minWidth: double.infinity),
-              child: IntrinsicHeight(
-                child: _noExchangesNotice()
-              ),
-            ),
-          )
-      )
+    _context = context;
+    ScreenSize size = ScreenSize();
+    MyExchangesFilterItem curFilter = Provider.of<MyExchangesViewModel>(_context!).curFilter;
+
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(size.getSize(15)), 
+              topRight: Radius.circular(size.getSize(15))),
+          ),
+          builder: (context) {
+            return _viewSelectionModal();
+          },
+        );
+      },
+      child: Row(
+        children: [
+          Icon(Icons.check, size: size.getSize(10)),
+          const Space(width: 3),
+          R10Text(text: curFilter.label),
+        ],
+      ),
     );
   }
 
-  Widget _noExchangesNotice() {
-    ScreenSize size = ScreenSize();
-    return IntrinsicWidth(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+  Widget _viewSelectionModal() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15.0),
+      child: Wrap(
         children: [
-        Icon(
-          Icons.tag_faces_sharp,
-          size: size.getSize(96),
-          color: grey216,
-        ),
-        const Space(height: 10),
-        const R14Text(
-          text: '물물교환내역이 없습니다.',
-          textColor: grey153,
-        ),
-        const Space(height: kBottomNavigationBarHeight)
+          _greyStick(),
+          _customListTile(MyExchangesFilterItem.viewAll),
+          const CustomDivider(horizontalIndent: 18),
+          _customListTile(MyExchangesFilterItem.viewOnlyIApplied),
+          const CustomDivider(horizontalIndent: 18),
+          _customListTile(MyExchangesFilterItem.viewOnlyIGot)
+        ],
+      ),
+    );
+  }
+
+  Widget _greyStick() {
+    ScreenSize size = ScreenSize();
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: 3,
+            width: size.getSize(40),
+            decoration: BoxDecoration(
+              color: grey216,
+              borderRadius: BorderRadius.circular(size.getSize(10)),
+              border: Border.all(color: Colors.white, width: 3.0),
+              ))
       ]),
+    );
+  }
+
+  Widget _customListTile(MyExchangesFilterItem? selectedFilter) {
+    ScreenSize size = ScreenSize();
+    return GestureDetector(
+      onTap: () {
+        Provider.of<MyExchangesViewModel>(_context!, listen: false).setFilter(selectedFilter!);
+        Navigator.of(_context!).pop(false);
+      },
+      child: ListTile(
+        minVerticalPadding: size.getSize(20),
+        title: R16Text(text: selectedFilter?.label),
+      ),
     );
   }
 }

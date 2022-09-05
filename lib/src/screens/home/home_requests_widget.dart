@@ -3,11 +3,12 @@ import 'package:navada_mobile_app/src/models/request/request_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
-import 'package:navada_mobile_app/src/screens/home/home_no_requests_widget.dart';
 import 'package:navada_mobile_app/src/screens/home/home_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
+import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/status_badge.dart';
@@ -158,17 +159,17 @@ class _RequestsForMeGridView extends StatelessWidget {
     if (hasData) {
       return _requestsForMeGridView();
     } else {
-      return const NoRequests();
+      return const NoElements(text: '새로운 요청이 없네요 ㅜㅜ\n  낙담말고 기다려보세요!');
     }
   }
 
   Widget _requestsForMeGridView() {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
-        childAspectRatio: 10 / 14.5, //item 의 가로 / 세로  비율
-        mainAxisSpacing: 0, //수평 Padding
-        crossAxisSpacing: 10, //수직 Padding
+        crossAxisCount: 2, 
+        childAspectRatio: 10 / 14.5, 
+        mainAxisSpacing: 0, 
+        crossAxisSpacing: 10,
       ),
       itemCount: requestsForMe.length,
       itemBuilder: (context, index) {
@@ -253,9 +254,9 @@ class RequestItem extends StatelessWidget {
   _productAndRequesterInfo() {
     return Row(
       children: [
-        B12Text(text: _shortenStrTo(request!.requesterProductName!, 10)),
+        B12Text(text: Shortener.shortenStrTo(request!.requesterProductName!, 10)),
         R12Text(
-            text: ' | ${_shortenStrTo(request!.requesterNickName!, 5)}',
+            text: ' | ${Shortener.shortenStrTo(request!.requesterNickName!, 5)}',
             textColor: grey153)
       ],
     );
@@ -272,13 +273,5 @@ class RequestItem extends StatelessWidget {
 
   _costRangeInfo() {
     return CostRangeBadge(cost: request!.requesterProductCostRange);
-  }
-
-  _shortenStrTo(String str, int wantedLength) {
-    if (str.length <= wantedLength) {
-      return str;
-    } else {
-      return '${str.substring(0, wantedLength)}...';
-    }
   }
 }

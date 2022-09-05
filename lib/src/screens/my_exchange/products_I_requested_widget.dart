@@ -3,6 +3,9 @@ import 'package:navada_mobile_app/src/models/request/request_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
+import 'package:navada_mobile_app/src/widgets/my_exchange_card.dart';
+import 'package:navada_mobile_app/src/widgets/my_exchange_status_sign.dart';
+import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
@@ -10,18 +13,14 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class ProductsThatIRequested extends StatelessWidget {
-  ProductsThatIRequested({Key? key}) : super(key: key);
-
-  late BuildContext? _context;
+  const ProductsThatIRequested({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
     return Scaffold(
       backgroundColor: white,
       body: Column(
       children: [
-        // _filterSection(),
         Expanded(child: _buildScreenDependingOnDataState()),
       ],
     ));
@@ -102,7 +101,7 @@ class _RequestListView extends StatelessWidget {
     if (hasData) {
       return _requestListView();
     } else {
-      return const NoRequestsThatIApplied();
+      return const NoElements(text: '신청한 내역이 없습니다.');
     }
   }
 
@@ -155,14 +154,10 @@ class _RequestListView extends StatelessWidget {
                       decoration: BoxDecoration(
                           color: grey183,
                           borderRadius: BorderRadius.circular(size.getSize(10))),
-                      margin: EdgeInsets.only(bottom: size.getSize(8)),
                       padding: EdgeInsets.only(right: size.getSize(20)),
                       child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
-                      children: const [
-                        Icon(Icons.delete, color: white,),
-                      ],
-                    )
+                      children: const [Icon(Icons.delete, color: white)])
                   ),
                   child: RequestItem(request: request),
                 );
@@ -202,136 +197,22 @@ class RequestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreenSize size = ScreenSize();
-    return Container(
-      height: size.getSize(76),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(size.getSize(10)),
-        border: Border.all(color: Colors.white, width: 3.0),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x90979797),
-            offset: Offset(3.0, 3.0), //(x,y)
-            blurRadius: 8.0,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          _requestStatusSign(),
-          const VerticalDivider(thickness: 1, color: grey239, indent: 0, endIndent: 0),
-          _productContent(request?.requesterProductName, request?.requesterNickName, request?.requesterProductCost, request?.requesterProductCostRange),
-          const VerticalDivider(thickness: 1, color: grey239, indent: 3, endIndent: 3),
-          _productContent(request?.acceptorProductName, request?.acceptorNickname, request?.acceptorProductCost, request?.acceptorProductCostRange),
-        ],
-      )
-    );
-  }
+    bool isWait = request?.exchangeStatusCd == ExchangeStatusCd.WAIT;
 
-  Widget _requestStatusSign() {
-    ScreenSize size = ScreenSize();
-    return Padding(
-      padding: EdgeInsets.only(left: size.getSize(7)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          request?.exchangeStatusCd == ExchangeStatusCd.WAIT
-            ? const Icon(Icons.access_time, color: yellow, size: 32)
-            : const Icon(Icons.not_interested, color: grey216, size: 28),
-          const Space(height: 5),
-          request?.exchangeStatusCd == ExchangeStatusCd.WAIT
-            ? const R10Text(text: '신청됨', textColor: yellow)
-            : const R10Text(text: '거절됨', textColor: grey216)
-        ]
+    return MyExchangeCard(
+      statusSign: isWait
+        ? const MyExchangeStatusSign(color: yellow, icon: Icons.access_time, label: '신청됨')
+        : const MyExchangeStatusSign(color: grey216, icon: Icons.not_interested, label: '거절됨'),
+      params: MyExchangeCardParams(
+        requesterProductName: request?.requesterProductName,
+        requesterNickname: request?.requesterNickName,
+        requesterProductCost: request?.requesterProductCost,
+        requesterProductCostRange: request?.requesterProductCostRange,
+        acceptorProductName: request?.acceptorProductName,
+        acceptorNickname: request?.acceptorNickname,
+        acceptorProductCost: request?.acceptorProductCost,
+        acceptorProductCostRange: request?.acceptorProductCostRange
       ),
     );
-  }
-
-  Widget _productContent(String? productName, String? userNickname, int? productCost, int? exchangeCostRange) {
-    ScreenSize size = ScreenSize();
-    return SizedBox(
-      width: size.getSize(132),
-      child: Row(
-        children: [
-          _exampleImage(),
-          const Space(width: 5),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              R12Text(text: _shortenStrTo(productName, 8)),
-              R10Text(text: _shortenStrTo(userNickname,10), textColor: grey216),
-              R10Text(text: "원가 $productCost원"),
-              R10Text(text: "± $exchangeCostRange원", textColor: grey183,)
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _exampleImage() {
-    ScreenSize size = ScreenSize();
-    return Container(
-      width: size.getSize(40.0),
-      height: size.getSize(50.0),
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('assets/images/test.jpeg')
-        ),
-      ),
-    );
-  }
-
-  _shortenStrTo(String? str, int wantedLength) {
-    if (str!.length <= wantedLength) {
-      return str;
-    } else {
-      return '${str.substring(0, wantedLength)}...';
-    }
-  }
-}
-
-class NoRequestsThatIApplied extends StatelessWidget {
-  const NoRequestsThatIApplied({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: ((context, constraint) => 
-          SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraint.maxHeight, minWidth: double.infinity),
-              child: IntrinsicHeight(
-                child: _noExchangesNotice()
-              ),
-            ),
-          )
-      )
-    );
-  }
-
-  Widget _noExchangesNotice() {
-    ScreenSize size = ScreenSize();
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-      Icon(
-        Icons.tag_faces_sharp,
-        size: size.getSize(96),
-        color: grey216,
-      ),
-      const Space(height: 10),
-      const R14Text(
-        text: '신청한 내역이 없습니다.',
-        textColor: grey153,
-      ),
-      const Space(height: kBottomNavigationBarHeight)
-    ]);
   }
 }

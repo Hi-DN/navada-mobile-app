@@ -4,7 +4,7 @@ import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
-import 'package:navada_mobile_app/src/screens/my_exchange/products_I_requested.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/products_I_requested_widget.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/trading_and_completed_tab_widget.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
@@ -47,9 +47,9 @@ class MyExchangesView extends StatelessWidget {
                 unselectedLabelColor: grey183,
                 unselectedLabelStyle: styleR.copyWith(fontSize: size.getSize(16)),
               ),
-              Expanded(
+              const Expanded(
                 child: TabBarView(
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics: NeverScrollableScrollPhysics(),
                   children: [
                     TradingAndCompletedTab(),
                     ProductsThatIRequested()
@@ -57,8 +57,6 @@ class MyExchangesView extends StatelessWidget {
                 ),
               )])
         ),
-      ),)
-      
-    );
+      )));
   }
 }

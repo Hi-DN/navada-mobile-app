@@ -4,8 +4,10 @@ import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 
-class NoRequests extends StatelessWidget {
-  const NoRequests({Key? key}) : super(key: key);
+class NoElements extends StatelessWidget {
+  const NoElements({Key? key, required this.text}) : super(key: key);
+
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +16,9 @@ class NoRequests extends StatelessWidget {
           SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraint.maxHeight),
+              constraints: BoxConstraints(minHeight: constraint.maxHeight, minWidth: double.infinity),
               child: IntrinsicHeight(
-                child: _noRequestsNotice()
+                child: _noElementsNotice()
               ),
             ),
           )
@@ -24,7 +26,7 @@ class NoRequests extends StatelessWidget {
     );
   }
 
-  Widget _noRequestsNotice() {
+  Widget _noElementsNotice() {
     ScreenSize size = ScreenSize();
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -36,8 +38,8 @@ class NoRequests extends StatelessWidget {
         color: grey216,
       ),
       const Space(height: 10),
-      const R14Text(
-        text: '새로운 요청이 없네요 ㅜㅜ\n  낙담말고 기다려보세요!',
+      R14Text(
+        text: text!,
         textColor: grey153,
       ),
       const Space(height: kBottomNavigationBarHeight)
