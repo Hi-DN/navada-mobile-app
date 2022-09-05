@@ -16,7 +16,7 @@ class MyExchangesRequestProvider extends ChangeNotifier {
   DataState _dataState = DataState.UNINITIALIZED;
   List<RequestModel> _requestDataList = [];
   late int _totalPages;
-  late int _totalElements;
+  late int _totalElements = 0;
 
   bool get hasData => _isRefreshing || _requestDataList.isNotEmpty;
   DataState get dataState => _dataState;

@@ -96,37 +96,33 @@ class _ExchangeListView extends StatelessWidget {
   }
 
   Widget _buildScreenIfHasData() {
-    bool hasData = Provider.of<MyExchangesExchangeProvider>(_context!).hasData;
-
-    if (hasData) {
-      return _exchangeListView();
-    } else {
-      return const NoElements(text: '물물교환내역이 없습니다.');
-    }
-  }
-
-  Widget _exchangeListView() {
     ScreenSize size = ScreenSize();
+    bool hasData = Provider.of<MyExchangesExchangeProvider>(_context!).hasData;
 
     return Padding(
       padding: EdgeInsets.all(size.getSize(12)),
       child: Column(
         children: [
           _filterSection(),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.all(0.0),
-              shrinkWrap: true,
-              itemCount: exchangeList.length,
-              itemBuilder: (context, index) {
-                return ExchangeItem(exchange: exchangeList[index]);
-              },
-              separatorBuilder: (context, index) {
-                return const Space(height: 10);
-              }),
-          ),
-        ],
-      )
+          hasData
+            ? _exchangeListView()
+            : const NoElements(text: '물물교환내역이 없습니다.')
+        ]),
+    );
+  }
+
+  Widget _exchangeListView() {
+    return Expanded(
+      child: ListView.separated(
+        padding: const EdgeInsets.all(0.0),
+        shrinkWrap: true,
+        itemCount: exchangeList.length,
+        itemBuilder: (context, index) {
+          return ExchangeItem(exchange: exchangeList[index]);
+        },
+        separatorBuilder: (context, index) {
+          return const Space(height: 10);
+        }),
     );
   }
 

@@ -96,78 +96,75 @@ class _RequestListView extends StatelessWidget {
   }
 
   Widget _buildScreenIfHasData() {
-    bool hasData = Provider.of<MyExchangesRequestProvider>(_context!).hasData;
-
-    if (hasData) {
-      return _requestListView();
-    } else {
-      return const NoElements(text: '신청한 내역이 없습니다.');
-    }
-  }
-
-  Widget _requestListView() {
     ScreenSize size = ScreenSize();
-
+    bool hasData = Provider.of<MyExchangesRequestProvider>(_context!).hasData;
     return Padding(
       padding: EdgeInsets.all(size.getSize(12)),
       child: Column(
         children: [
           _totalElementsCount(),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.all(0.0),
-              shrinkWrap: true,
-              itemCount: requestList.length,
-              itemBuilder: (context, index) {
-                final request = requestList[index];
-                bool isWait = request.exchangeStatusCd == ExchangeStatusCd.WAIT;
-          
-                return Dismissible(
-                  key: UniqueKey(),
-                  onDismissed: (direction) {
-                    if(isWait) {
-                      Provider.of<MyExchangesRequestProvider>(_context!, listen: false).deleteRequest(request.requestId!);
-                    }
-                  },
-                  confirmDismiss: (direction) async {
-                      return await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            content: R14Text(text: isWait ? "교환신청을 정말로 취소하시겠습니까?" : "거절내역을 삭제하시겠습니까?"),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(false),
-                                child: const R14Text(text: "아니요", textColor: grey153),
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(true),
-                                child: R14Text(text: isWait ? "네, 취소할게요!" : "네, 삭제할게요!", textColor: blue),
-                              ),
-                            ],
-                          );
-                        }
-                      );
-                  },
-                  direction: DismissDirection.endToStart,
-                  background: Container(
-                      decoration: BoxDecoration(
-                          color: grey183,
-                          borderRadius: BorderRadius.circular(size.getSize(10))),
-                      padding: EdgeInsets.only(right: size.getSize(20)),
-                      child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: const [Icon(Icons.delete, color: white)])
-                  ),
-                  child: RequestItem(request: request),
+          hasData
+            ? _requestListView()
+            : const NoElements(text: '신청한 내역이 없습니다.')
+        ]),
+    );
+  }
+
+  Widget _requestListView() {
+    ScreenSize size = ScreenSize();
+
+    return Expanded(
+      child: ListView.separated(
+        padding: const EdgeInsets.all(0.0),
+        shrinkWrap: true,
+        itemCount: requestList.length,
+        itemBuilder: (context, index) {
+          final request = requestList[index];
+          bool isWait = request.exchangeStatusCd == ExchangeStatusCd.WAIT;
+    
+          return Dismissible(
+            key: UniqueKey(),
+            onDismissed: (direction) {
+              if(isWait) {
+                Provider.of<MyExchangesRequestProvider>(_context!, listen: false).deleteRequest(request.requestId!);
+              }
+            },
+            confirmDismiss: (direction) async {
+                return await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: R14Text(text: isWait ? "교환신청을 정말로 취소하시겠습니까?" : "거절내역을 삭제하시겠습니까?"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const R14Text(text: "아니요", textColor: grey153),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: R14Text(text: isWait ? "네, 취소할게요!" : "네, 삭제할게요!", textColor: blue),
+                        ),
+                      ],
+                    );
+                  }
                 );
-              },
-              separatorBuilder: (context, index) {
-                return const Space(height: 10);
-              }),
-          ),
-        ],
-      )
+            },
+            direction: DismissDirection.endToStart,
+            background: Container(
+                decoration: BoxDecoration(
+                    color: grey183,
+                    borderRadius: BorderRadius.circular(size.getSize(10))),
+                padding: EdgeInsets.only(right: size.getSize(20)),
+                child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: const [Icon(Icons.delete, color: white)])
+            ),
+            child: RequestItem(request: request),
+          );
+        },
+        separatorBuilder: (context, index) {
+          return const Space(height: 10);
+        }),
     );
   }
 
