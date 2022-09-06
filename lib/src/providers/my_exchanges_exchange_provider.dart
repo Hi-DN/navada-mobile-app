@@ -1,36 +1,28 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/request/request_model.dart';
-import 'package:navada_mobile_app/src/models/request/request_service.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_service.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
-class RequestsForMeProvider extends ChangeNotifier {
-  RequestsForMeProvider(this._userId);
+class MyExchangesExchangeProvider extends ChangeNotifier {
+  MyExchangesExchangeProvider(this._userId);
 
   final int _userId;
 
-  final RequestService _requestService = RequestService();
-
-  bool _isFetchingIncludingDenied = false;
   int _currentPageNum = 0;
   DataState _dataState = DataState.UNINITIALIZED;
-  List<RequestModel> _requestDataList = [];
+  List<ExchangeModel> _exchangeDataList = [];
   late int _totalPages;
+  late int _totalElements = 0;
   
-  bool get hasData => _isRefreshing || _requestDataList.isNotEmpty;
+  bool get hasData => _isRefreshing || _exchangeDataList.isNotEmpty;
   DataState get dataState => _dataState;
-  List<RequestModel> get requestDataList => _requestDataList;
+  int get totalElements => _totalElements;
+  List<ExchangeModel> get exchangeDataList => _exchangeDataList;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
   bool get _isRefreshing => _dataState == DataState.REFRESHING;
-  bool get _shouldResetTotalPages => _isInitialFetching || _dataState == DataState.REFRESHING;
-
-  fetchDependingOnDeniedCheck(bool newValue) {
-    _isFetchingIncludingDenied = newValue;
-    notifyListeners();
-    
-    fetchData(isRefresh: true);
-  }
+  bool get _shouldResetTotalPagesAndTotalElements => _isInitialFetching || _dataState == DataState.REFRESHING;
 
   fetchData({bool isRefresh = false}) async {
     if(isRefresh)
@@ -48,7 +40,7 @@ class RequestsForMeProvider extends ChangeNotifier {
   }
 
   _refresh() {
-    _requestDataList.clear();
+    _exchangeDataList.clear();
     _currentPageNum = 0;
     _dataState = DataState.REFRESHING;
   }
@@ -77,27 +69,26 @@ class RequestsForMeProvider extends ChangeNotifier {
   }
 
   _fetchData() async {
-    RequestPageResponse? pageResponse = await _getPageResponse();
-    List<RequestModel>? newRequestsForMe = pageResponse!.content;
+    ExchangePageResponse? pageResponse = await _getPageResponse();
+    List<ExchangeModel>? newExchanges = pageResponse!.content;
 
-    _requestDataList += newRequestsForMe!;
+    _exchangeDataList += newExchanges!;
     _currentPageNum += 1;
     notifyListeners();
   }
 
   _getPageResponse() async {
-    RequestPageResponse? pageResponse = _isFetchingIncludingDenied
-      ? await _requestService.getRequestsForMeIncludingDenied(_userId, _currentPageNum)
-      : await _requestService.getRequestsForMe(_userId, _currentPageNum);
+    ExchangePageResponse? pageResponse = await getExchangeList(_userId, _currentPageNum);
 
-    await _resetTotalPages(pageResponse!.totalPages!);
+    await _resetTotalPagesAndTotalElements(pageResponse!.totalPages!, pageResponse.totalElements!);
 
     return pageResponse;
   }
 
-  _resetTotalPages(int totalPages) {
-    if(_shouldResetTotalPages) 
+  _resetTotalPagesAndTotalElements(int totalPages, int totalElements) {
+    if(_shouldResetTotalPagesAndTotalElements) 
       _totalPages = totalPages;
+      _totalElements = totalElements;
   }
 
   _handleError() {

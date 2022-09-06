@@ -5,6 +5,7 @@ class ProductModel {
   int? productId;
   String? productName;
   String? productExplanation;
+  String? userNickname;
   Category? category;
   ProductStatusCd? productStatusCd;
   int? heartNum;
@@ -15,6 +16,7 @@ class ProductModel {
       {this.productId,
       this.productName,
       this.productExplanation,
+      this.userNickname,
       this.category,
       this.productStatusCd,
       this.heartNum,
@@ -25,6 +27,7 @@ class ProductModel {
     productId = json['productId'];
     productName = json['productName'];
     productExplanation = json['productExplanation'];
+    userNickname = json['userNickname'];
     category = Category.objToEnum(CategoryModel.fromJson(json['category']));
     productStatusCd = 
         ProductStatusCd.intToEnum(json['productStatusCd']);
@@ -38,6 +41,7 @@ class ProductModel {
     data['productId'] = productId;
     data['productName'] = productName;
     data['productExplanation'] = productExplanation;
+    data['userNickname'] = userNickname;
     if (category != null) {
       data['category'] = Category.enumToObj(category!).toJson();
     }

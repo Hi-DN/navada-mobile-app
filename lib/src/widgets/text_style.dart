@@ -13,6 +13,67 @@ TextStyle styleB =
 TextStyle styleL =
     const TextStyle(height: 1.2, color: black, fontWeight: FontWeight.w100);
 
+    
+class R8Text extends StatelessWidget {
+  const R8Text({Key? key, @required this.text, this.textColor = black})
+      : super(key: key);
+
+  final String? text;
+  final Color textColor;
+
+  @override
+  Widget build(BuildContext context) {
+    ScreenSize size = ScreenSize();
+    return Text(text!,
+        style: styleR.copyWith(fontSize: size.getSize(8), color: textColor));
+  }
+}
+
+class B8Text extends StatelessWidget {
+  const B8Text({Key? key, @required this.text, this.textColor = black})
+      : super(key: key);
+
+  final String? text;
+  final Color textColor;
+
+  @override
+  Widget build(BuildContext context) {
+    ScreenSize size = ScreenSize();
+    return Text(text!,
+        style: styleB.copyWith(fontSize: size.getSize(8), color: textColor));
+  }
+}
+
+class R10Text extends StatelessWidget {
+  const R10Text({Key? key, @required this.text, this.textColor = black})
+      : super(key: key);
+
+  final String? text;
+  final Color textColor;
+
+  @override
+  Widget build(BuildContext context) {
+    ScreenSize size = ScreenSize();
+    return Text(text!,
+        style: styleR.copyWith(fontSize: size.getSize(10), color: textColor));
+  }
+}
+
+class B10Text extends StatelessWidget {
+  const B10Text({Key? key, @required this.text, this.textColor = black})
+      : super(key: key);
+
+  final String? text;
+  final Color textColor;
+
+  @override
+  Widget build(BuildContext context) {
+    ScreenSize size = ScreenSize();
+    return Text(text!,
+        style: styleB.copyWith(fontSize: size.getSize(10), color: textColor));
+  }
+}
+
 class R12Text extends StatelessWidget {
   const R12Text({Key? key, @required this.text, this.textColor = black})
       : super(key: key);

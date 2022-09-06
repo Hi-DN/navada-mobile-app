@@ -5,32 +5,26 @@ import 'package:navada_mobile_app/src/models/request/request_model.dart';
 import 'package:navada_mobile_app/src/models/request/request_service.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
-class RequestsForMeProvider extends ChangeNotifier {
-  RequestsForMeProvider(this._userId);
+class MyExchangesRequestProvider extends ChangeNotifier {
+  MyExchangesRequestProvider(this._userId);
 
   final int _userId;
 
   final RequestService _requestService = RequestService();
 
-  bool _isFetchingIncludingDenied = false;
   int _currentPageNum = 0;
   DataState _dataState = DataState.UNINITIALIZED;
   List<RequestModel> _requestDataList = [];
   late int _totalPages;
-  
+  late int _totalElements = 0;
+
   bool get hasData => _isRefreshing || _requestDataList.isNotEmpty;
   DataState get dataState => _dataState;
   List<RequestModel> get requestDataList => _requestDataList;
+  int get totalElements => _totalElements;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
   bool get _isRefreshing => _dataState == DataState.REFRESHING;
-  bool get _shouldResetTotalPages => _isInitialFetching || _dataState == DataState.REFRESHING;
-
-  fetchDependingOnDeniedCheck(bool newValue) {
-    _isFetchingIncludingDenied = newValue;
-    notifyListeners();
-    
-    fetchData(isRefresh: true);
-  }
+  bool get _shouldResetTotalPagesAndTotalElements => _isInitialFetching || _dataState == DataState.REFRESHING;
 
   fetchData({bool isRefresh = false}) async {
     if(isRefresh)
@@ -78,30 +72,36 @@ class RequestsForMeProvider extends ChangeNotifier {
 
   _fetchData() async {
     RequestPageResponse? pageResponse = await _getPageResponse();
-    List<RequestModel>? newRequestsForMe = pageResponse!.content;
+    List<RequestModel>? newRequests = pageResponse!.content;
 
-    _requestDataList += newRequestsForMe!;
+    _requestDataList += newRequests!;
     _currentPageNum += 1;
     notifyListeners();
   }
 
   _getPageResponse() async {
-    RequestPageResponse? pageResponse = _isFetchingIncludingDenied
-      ? await _requestService.getRequestsForMeIncludingDenied(_userId, _currentPageNum)
-      : await _requestService.getRequestsForMe(_userId, _currentPageNum);
+    RequestPageResponse? pageResponse = await _requestService.getRequestsThatIApplied(_userId, _currentPageNum);
 
-    await _resetTotalPages(pageResponse!.totalPages!);
+    await _resetTotalPagesAndTotalElements(pageResponse!.totalPages!, pageResponse.totalElements!);
 
     return pageResponse;
   }
 
-  _resetTotalPages(int totalPages) {
-    if(_shouldResetTotalPages) 
+  _resetTotalPagesAndTotalElements(int totalPages, int totalElements) {
+    if(_shouldResetTotalPagesAndTotalElements) {
       _totalPages = totalPages;
+      _totalElements = totalElements;
+    }
   }
 
   _handleError() {
     _dataState = DataState.ERROR;
+    notifyListeners();
+  }
+
+  deleteRequest(int requestId) async {
+    await _requestService.deleteRequest(requestId);
+    _requestDataList.removeWhere((request) => request.requestId == requestId);
     notifyListeners();
   }
 }

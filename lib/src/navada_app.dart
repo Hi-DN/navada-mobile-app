@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/screens/home/home_view.dart';
 import 'package:navada_mobile_app/src/screens/login.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view.dart';
 import 'package:navada_mobile_app/src/widgets/custom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -22,9 +23,9 @@ class NavadaApp extends StatelessWidget {
           home: const Login(),
           routes: {
             HomeView.routeName: (context) => const HomeView(),
-            CustomNavigationBar.routeName: (context) =>
-                const CustomNavigationBar(),
-          },
+            CustomNavigationBar.routeName: (context) => const CustomNavigationBar(),
+            MyExchangesView.routeName: (context) => const MyExchangesView()
+          }
         ));
   }
 }

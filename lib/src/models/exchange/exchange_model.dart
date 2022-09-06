@@ -1,10 +1,10 @@
-import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/models/product/product_model.dart';
 
-class RequestPageResponse {
+class ExchangePageResponse {
   bool? success;
   int? code;
   String? message;
-  List<RequestModel>? content;
+  List<ExchangeModel>? content;
   Pageable? pageable;
   int? totalPages;
   int? totalElements;
@@ -14,7 +14,7 @@ class RequestPageResponse {
   int? numberOfElements;
   int? size;
 
-  RequestPageResponse(
+  ExchangePageResponse(
       {this.success,
       this.code,
       this.message,
@@ -28,14 +28,14 @@ class RequestPageResponse {
       this.numberOfElements,
       this.size});
 
-  RequestPageResponse.fromJson(Map<String, dynamic> json) {
+  ExchangePageResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     code = json['code'];
     message = json['message'];
     if (json['content'] != null) {
-      content = <RequestModel>[];
+      content = <ExchangeModel>[];
       json['content'].forEach((v) {
-        content!.add(RequestModel.fromJson(v));
+        content!.add(ExchangeModel.fromJson(v));
       });
     }
     pageable = json['pageable'] != null
@@ -72,55 +72,75 @@ class RequestPageResponse {
   }
 }
 
-class RequestModel {
-  int? requestId;
-  ExchangeStatusCd? exchangeStatusCd;
-  String? acceptorNickname;
-  String? requesterNickName;
-  String? acceptorProductName;
-  String? requesterProductName;
-  int? acceptorProductCost;
-  int? requesterProductCost;
-  int? acceptorProductCostRange;
-  int? requesterProductCostRange;
+class ExchangeModel {
+  String? createdDate;
+  String? modifiedDate;
+  int? exchangeId;
+  ProductModel? acceptorProduct;
+  ProductModel? requesterProduct;
+  bool? acceptorConfirmYn;
+  bool? requesterConfirmYn;
+  bool? exchangeCompleteYn;
+  String? exchangeCompleteDt;
+  double? acceptorRating;
+  double? requesterRating;
+  bool? acceptorHistoryDeleteYn;
+  bool? requesterHistoryDeleteYn;
 
-  RequestModel(
-      {this.requestId,
-      this.exchangeStatusCd,
-      this.acceptorNickname,
-      this.requesterNickName,
-      this.acceptorProductName,
-      this.requesterProductName,
-      this.acceptorProductCost,
-      this.requesterProductCost,
-      this.acceptorProductCostRange,
-      this.requesterProductCostRange});
+  ExchangeModel(
+      {this.createdDate,
+      this.modifiedDate,
+      this.exchangeId,
+      this.acceptorProduct,
+      this.requesterProduct,
+      this.acceptorConfirmYn,
+      this.requesterConfirmYn,
+      this.exchangeCompleteYn,
+      this.exchangeCompleteDt,
+      this.acceptorRating,
+      this.requesterRating,
+      this.acceptorHistoryDeleteYn,
+      this.requesterHistoryDeleteYn});
 
-  RequestModel.fromJson(Map<String, dynamic> json) {
-    requestId = json['requestId'];
-    exchangeStatusCd = ExchangeStatusCd.intToEnum(json['exchangeStatusCd']);
-    acceptorNickname = json['acceptorNickname'];
-    requesterNickName = json['requesterNickName'];
-    acceptorProductName = json['acceptorProductName'];
-    requesterProductName = json['requesterProductName'];
-    acceptorProductCost = json['acceptorProductCost'];
-    requesterProductCost = json['requesterProductCost'];
-    acceptorProductCostRange = json['acceptorProductCostRange'];
-    requesterProductCostRange = json['requesterProductCostRange'];
+  ExchangeModel.fromJson(Map<String, dynamic> json) {
+    createdDate = json['createdDate'];
+    modifiedDate = json['modifiedDate'];
+    exchangeId = json['exchangeId'];
+    acceptorProduct = json['acceptorProduct'] != null
+        ? ProductModel.fromJson(json['acceptorProduct'])
+        : null;
+    requesterProduct = json['requesterProduct'] != null
+        ? ProductModel.fromJson(json['requesterProduct'])
+        : null;
+    acceptorConfirmYn = json['acceptorConfirmYn'];
+    requesterConfirmYn = json['requesterConfirmYn'];
+    exchangeCompleteYn = json['exchangeCompleteYn'];
+    exchangeCompleteDt = json['exchangeCompleteDt'];
+    acceptorRating = json['acceptorRating'];
+    requesterRating = json['requesterRating'];
+    acceptorHistoryDeleteYn = json['acceptorHistoryDeleteYn'];
+    requesterHistoryDeleteYn = json['requesterHistoryDeleteYn'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['requestId'] = requestId;
-    data['exchangeStatusCd'] = exchangeStatusCd!.code.toString();
-    data['acceptorNickname'] = acceptorNickname;
-    data['requesterNickName'] = requesterNickName;
-    data['acceptorProductName'] = acceptorProductName;
-    data['requesterProductName'] = requesterProductName;
-    data['acceptorProductCost'] = acceptorProductCost;
-    data['requesterProductCost'] = requesterProductCost;
-    data['acceptorProductCostRange'] = acceptorProductCostRange;
-    data['requesterProductCostRange'] = requesterProductCostRange;
+    data['createdDate'] = createdDate;
+    data['modifiedDate'] = modifiedDate;
+    data['exchangeId'] = exchangeId;
+    if (acceptorProduct != null) {
+      data['acceptorProduct'] = acceptorProduct!.toJson();
+    }
+    if (requesterProduct != null) {
+      data['requesterProduct'] = requesterProduct!.toJson();
+    }
+    data['acceptorConfirmYn'] = acceptorConfirmYn;
+    data['requesterConfirmYn'] = requesterConfirmYn;
+    data['exchangeCompleteYn'] = exchangeCompleteYn;
+    data['exchangeCompleteDt'] = exchangeCompleteDt;
+    data['acceptorRating'] = acceptorRating;
+    data['requesterRating'] = requesterRating;
+    data['acceptorHistoryDeleteYn'] = acceptorHistoryDeleteYn;
+    data['requesterHistoryDeleteYn'] = requesterHistoryDeleteYn;
     return data;
   }
 }
@@ -166,22 +186,22 @@ class Pageable {
 
 class Sort {
   bool? empty;
-  bool? sorted;
   bool? unsorted;
+  bool? sorted;
 
-  Sort({this.empty, this.sorted, this.unsorted});
+  Sort({this.empty, this.unsorted, this.sorted});
 
   Sort.fromJson(Map<String, dynamic> json) {
     empty = json['empty'];
-    sorted = json['sorted'];
     unsorted = json['unsorted'];
+    sorted = json['sorted'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['empty'] = empty;
-    data['sorted'] = sorted;
     data['unsorted'] = unsorted;
+    data['sorted'] = sorted;
     return data;
   }
 }
