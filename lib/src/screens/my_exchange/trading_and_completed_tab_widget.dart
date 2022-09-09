@@ -303,9 +303,6 @@ class _ViewFilter extends StatelessWidget {
       onTap: () async {
         Provider.of<MyExchangesViewModel>(_context!, listen: false).setFilter(selectedFilter!);
         Provider.of<MyExchangesExchangeProvider>(_context!, listen: false).setFilter(selectedFilter);
-        if(selectedFilter == MyExchangesFilterItem.viewAll) {
-          
-        }
         Navigator.of(_context!).pop(false);
       },
       child: ListTile(
