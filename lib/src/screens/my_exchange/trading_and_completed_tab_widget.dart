@@ -106,7 +106,7 @@ class _ExchangeListView extends StatelessWidget {
           _filterSection(),
           hasData
             ? _exchangeListView()
-            : const NoElements(text: '물물교환내역이 없습니다.')
+            : const Expanded(child: NoElements(text: '물물교환내역이 없습니다.'))
         ]),
     );
   }

@@ -187,13 +187,16 @@ class _RequestsForMeGridView extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class RequestItem extends StatelessWidget {
-  const RequestItem({Key? key, this.request}) : super(key: key);
+  RequestItem({Key? key, this.request}) : super(key: key);
 
   final RequestModel? request;
+  late BuildContext? _context;
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -245,7 +248,13 @@ class RequestItem extends StatelessWidget {
           const Space(height: 2),
           _priceInfo(),
           const Space(height: 4),
-          _costRangeInfo(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+            _costRangeInfo(),
+            if (request!.exchangeStatusCd == ExchangeStatusCd.DENIED)
+              _deleteDeniedRequestBtn(),
+          ],)
         ],
       ),
     );
@@ -273,5 +282,30 @@ class RequestItem extends StatelessWidget {
 
   _costRangeInfo() {
     return CostRangeBadge(cost: request!.requesterProductCostRange);
+  }
+
+  _deleteDeniedRequestBtn() {
+    ScreenSize size = ScreenSize();
+    return PopupMenuButton(
+      constraints: BoxConstraints(maxWidth: size.getSize(60)),
+      padding: const EdgeInsets.all(0),
+      offset: const Offset(0, -25),
+      elevation: 10.0,
+      position: PopupMenuPosition.over,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(size.getSize(5))),
+      ),
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          onTap: () {
+            Provider.of<RequestsForMeProvider>(_context!, listen: false).deleteDeniedRequest(request?.requestId);
+          },
+          height: size.getSize(24),
+          value: '삭제',
+          child: SizedBox(width: size.getSize(30), child: const R14Text(text: '삭제')),
+        )
+      ],
+      child: Icon(Icons.more_vert, size: size.getSize(18), color: Colors.grey,)
+    );
   }
 }

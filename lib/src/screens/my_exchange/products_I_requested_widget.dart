@@ -105,7 +105,7 @@ class _RequestListView extends StatelessWidget {
           _totalElementsCount(),
           hasData
             ? _requestListView()
-            : const NoElements(text: '신청한 내역이 없습니다.')
+            : const Expanded(child: NoElements(text: '신청한 내역이 없습니다.'))
         ]),
     );
   }
