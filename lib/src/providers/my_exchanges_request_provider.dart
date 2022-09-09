@@ -99,8 +99,14 @@ class MyExchangesRequestProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  deleteRequest(int requestId) async {
+  cancelRequest(int requestId) async {
     await _requestService.deleteRequest(requestId);
+    _requestDataList.removeWhere((request) => request.requestId == requestId);
+    notifyListeners();
+  }
+
+  deleteDeniedRequest(int requestId) async {
+    await _requestService.deleteDeniedRequestByRequester(requestId);
     _requestDataList.removeWhere((request) => request.requestId == requestId);
     notifyListeners();
   }

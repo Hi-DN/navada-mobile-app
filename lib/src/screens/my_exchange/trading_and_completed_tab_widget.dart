@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
@@ -55,7 +55,7 @@ class TradingAndCompletedTab extends StatelessWidget {
 class _ExchangeListView extends StatelessWidget {
   _ExchangeListView({Key? key, required this.exchangeList, required this.isLoading}) : super(key: key);
 
-  List<ExchangeModel> exchangeList;
+  List<ExchangeDtoModel> exchangeList;
   bool isLoading;
 
   late DataState? _dataState;
@@ -149,7 +149,7 @@ class _ExchangeListView extends StatelessWidget {
 class ExchangeItem extends StatelessWidget {
   const ExchangeItem({Key? key, this.exchange}) : super(key: key);
 
-  final ExchangeModel? exchange;
+  final ExchangeDtoModel? exchange;
 
   @override
   Widget build(BuildContext context) {

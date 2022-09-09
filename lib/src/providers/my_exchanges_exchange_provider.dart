@@ -1,7 +1,7 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_service.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
@@ -12,14 +12,14 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
 
   int _currentPageNum = 0;
   DataState _dataState = DataState.UNINITIALIZED;
-  List<ExchangeModel> _exchangeDataList = [];
+  List<ExchangeDtoModel> _exchangeDataList = [];
   late int _totalPages;
   late int _totalElements = 0;
   
   bool get hasData => _isRefreshing || _exchangeDataList.isNotEmpty;
   DataState get dataState => _dataState;
   int get totalElements => _totalElements;
-  List<ExchangeModel> get exchangeDataList => _exchangeDataList;
+  List<ExchangeDtoModel> get exchangeDataList => _exchangeDataList;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
   bool get _isRefreshing => _dataState == DataState.REFRESHING;
   bool get _shouldResetTotalPagesAndTotalElements => _isInitialFetching || _dataState == DataState.REFRESHING;
@@ -69,8 +69,8 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   }
 
   _fetchData() async {
-    ExchangePageResponse? pageResponse = await _getPageResponse();
-    List<ExchangeModel>? newExchanges = pageResponse!.content;
+    ExchangeDtoPageResponse? pageResponse = await _getPageResponse();
+    List<ExchangeDtoModel>? newExchanges = pageResponse!.content;
 
     _exchangeDataList += newExchanges!;
     _currentPageNum += 1;
@@ -78,7 +78,7 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   }
 
   _getPageResponse() async {
-    ExchangePageResponse? pageResponse = await getExchangeList(_userId, _currentPageNum);
+    ExchangeDtoPageResponse? pageResponse = await getExchangeList(_userId, _currentPageNum);
 
     await _resetTotalPagesAndTotalElements(pageResponse!.totalPages!, pageResponse.totalElements!);
 
