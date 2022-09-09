@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/request/request_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/my_exchange_card.dart';
 import 'package:navada_mobile_app/src/widgets/my_exchange_status_sign.dart';
@@ -207,11 +208,15 @@ class RequestItem extends StatelessWidget {
         : const MyExchangeStatusSign(color: grey216, icon: Icons.not_interested, label: '거절됨'),
       params: MyExchangeCardParams(
         requesterProductName: request?.requesterProductName,
-        requesterNickname: request?.requesterNickName,
+        requesterNickname: Row(children: [
+                  B10Text(text: "신청 ", textColor: isWait ? yellow : grey153),
+                  R10Text(text: Shortener.shortenStrTo(request?.requesterNickName, 6), textColor: grey183),]),
         requesterProductCost: request?.requesterProductCost,
         requesterProductCostRange: request?.requesterProductCostRange,
         acceptorProductName: request?.acceptorProductName,
-        acceptorNickname: request?.acceptorNickname,
+        acceptorNickname: Row(children: [
+                  B10Text(text: isWait ? "대기 " : "거절 ", textColor: isWait ? yellow : grey153),
+                  R10Text(text: Shortener.shortenStrTo(request?.acceptorNickname, 6), textColor: grey183),]),
         acceptorProductCost: request?.acceptorProductCost,
         acceptorProductCostRange: request?.acceptorProductCostRange
       ),

@@ -18,6 +18,32 @@ class ExchangeService {
     }
   }
 
+  // 교환중/교환완료인 교환 조회(내가 신청한것만 보기)
+  Future<ExchangeDtoPageResponse?> getExchangeListViewOnlySent(int userId, int pageNum) async {
+    Map<String, dynamic> data = await _httpClient.getRequest(
+        '/user/$userId/exchanges?viewOnlySentElseGot=true&page=$pageNum',
+        tokenYn: false);
+
+    if (data['success']) {
+      return ExchangeDtoPageResponse.fromJson(data);
+    } else {
+      return null;
+    }
+  }
+
+  // 교환중/교환완료인 교환 조회(신청받은것만 보기)
+  Future<ExchangeDtoPageResponse?> getExchangeListViewOnlyGot(int userId, int pageNum) async {
+    Map<String, dynamic> data = await _httpClient.getRequest(
+        '/user/$userId/exchanges?viewOnlySentElseGot=false&page=$pageNum',
+        tokenYn: false);
+
+    if (data['success']) {
+      return ExchangeDtoPageResponse.fromJson(data);
+    } else {
+      return null;
+    }
+  }
+
   // 교환완료내역 삭제
   Future<ExchangeModel?> deleteCompletedExchange(int exchangeId, bool isAcceptor) async {
     Map<String, dynamic> data = await _httpClient.patchRequest(

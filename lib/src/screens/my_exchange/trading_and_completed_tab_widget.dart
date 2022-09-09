@@ -270,7 +270,7 @@ class _ViewFilter extends StatelessWidget {
           _greyStick(),
           _customListTile(MyExchangesFilterItem.viewAll),
           const CustomDivider(horizontalIndent: 18),
-          _customListTile(MyExchangesFilterItem.viewOnlyIApplied),
+          _customListTile(MyExchangesFilterItem.viewOnlyISent),
           const CustomDivider(horizontalIndent: 18),
           _customListTile(MyExchangesFilterItem.viewOnlyIGot)
         ],
@@ -302,6 +302,7 @@ class _ViewFilter extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         Provider.of<MyExchangesViewModel>(_context!, listen: false).setFilter(selectedFilter!);
+        Provider.of<MyExchangesExchangeProvider>(_context!, listen: false).setFilter(selectedFilter);
         if(selectedFilter == MyExchangesFilterItem.viewAll) {
           
         }
