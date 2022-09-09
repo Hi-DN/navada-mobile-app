@@ -4,6 +4,7 @@ import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
 import 'package:navada_mobile_app/src/widgets/my_exchange_card.dart';
@@ -210,11 +211,15 @@ class ExchangeItem extends StatelessWidget {
         : const MyExchangeStatusSign(color: navy, icon: Icons.check, label: '교환완료'),
       params: MyExchangeCardParams(
         requesterProductName: requesterProduct?.productName,
-        requesterNickname: requesterProduct?.userNickname,
+        requesterNickname: Row(children: [
+                  B10Text(text: "신청 ", textColor: isTrading ? green : navy),
+                  R10Text(text: Shortener.shortenStrTo(requesterProduct?.userNickname, 6), textColor: grey183),]),
         requesterProductCost: requesterProduct?.productCost,
         requesterProductCostRange: requesterProduct?.exchangeCostRange,
         acceptorProductName: acceptorProduct?.productName,
-        acceptorNickname: acceptorProduct?.userNickname,
+        acceptorNickname: Row(children: [
+                  B10Text(text: "수락 ", textColor: isTrading ? green : navy),
+                  R10Text(text: Shortener.shortenStrTo(acceptorProduct?.userNickname, 6), textColor: grey183),]),
         acceptorProductCost: acceptorProduct?.productCost,
         acceptorProductCostRange: acceptorProduct?.exchangeCostRange
       ),
@@ -295,8 +300,11 @@ class _ViewFilter extends StatelessWidget {
   Widget _customListTile(MyExchangesFilterItem? selectedFilter) {
     ScreenSize size = ScreenSize();
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         Provider.of<MyExchangesViewModel>(_context!, listen: false).setFilter(selectedFilter!);
+        if(selectedFilter == MyExchangesFilterItem.viewAll) {
+          
+        }
         Navigator.of(_context!).pop(false);
       },
       child: ListTile(
