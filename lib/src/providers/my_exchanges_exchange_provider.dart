@@ -10,6 +10,8 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
 
   final int _userId;
 
+  final ExchangeService _exchangeService = ExchangeService();
+
   int _currentPageNum = 0;
   DataState _dataState = DataState.UNINITIALIZED;
   List<ExchangeDtoModel> _exchangeDataList = [];
@@ -78,7 +80,7 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   }
 
   _getPageResponse() async {
-    ExchangeDtoPageResponse? pageResponse = await getExchangeList(_userId, _currentPageNum);
+    ExchangeDtoPageResponse? pageResponse = await _exchangeService.getExchangeList(_userId, _currentPageNum);
 
     await _resetTotalPagesAndTotalElements(pageResponse!.totalPages!, pageResponse.totalElements!);
 
@@ -94,5 +96,11 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   _handleError() {
     _dataState = DataState.ERROR;
     notifyListeners();
+  }
+
+  deleteCompletedExchange(int? exchangeId, int? acceptorId) async {
+    bool isAcceptor = (_userId == acceptorId);
+    await _exchangeService.deleteCompletedExchange(exchangeId!, isAcceptor);
+    _exchangeDataList.removeWhere((exchange) => exchange.exchangeId == exchangeId);
   }
 }

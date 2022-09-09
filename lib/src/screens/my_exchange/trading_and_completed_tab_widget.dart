@@ -118,11 +118,58 @@ class _ExchangeListView extends StatelessWidget {
         shrinkWrap: true,
         itemCount: exchangeList.length,
         itemBuilder: (context, index) {
-          return ExchangeItem(exchange: exchangeList[index]);
+          ExchangeDtoModel exchange = exchangeList[index];
+          bool isTrading = exchange.acceptorProduct?.productStatusCd == ProductStatusCd.TRADING;
+
+          return (isTrading)
+            ? ExchangeItem(exchange: exchange)
+            : _dismissibleCompletedExchangeItem(context, exchange);
         },
         separatorBuilder: (context, index) {
           return const Space(height: 10);
         }),
+    );
+  }
+
+  Widget _dismissibleCompletedExchangeItem(BuildContext? context, ExchangeDtoModel? exchange) {
+    ScreenSize size = ScreenSize();
+
+    return Dismissible(
+      key: UniqueKey(),
+      onDismissed: (direction) {
+        Provider.of<MyExchangesExchangeProvider>(_context!, listen: false).deleteCompletedExchange(exchange!.exchangeId, exchange.acceptorId);
+      },
+      confirmDismiss: (direction) async {
+          return await showDialog(
+            context: context!,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                content: const R14Text(text: "교환내역을 삭제하시겠습니까?"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const R14Text(text: "아니요", textColor: grey153),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const R14Text(text: "네, 삭제할게요!", textColor: blue),
+                  ),
+                ],
+              );
+            }
+          );
+      },
+      direction: DismissDirection.endToStart,
+      background: Container(
+          decoration: BoxDecoration(
+              color: grey183,
+              borderRadius: BorderRadius.circular(size.getSize(10))),
+          padding: EdgeInsets.only(right: size.getSize(20)),
+          child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [Icon(Icons.delete, color: white)])
+      ),
+      child: ExchangeItem(exchange: exchange),
     );
   }
 
