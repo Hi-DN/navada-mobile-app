@@ -89,7 +89,9 @@ class RequestListSheet extends StatelessWidget {
                       color: const Color(0xFFE2E2E2),
                       borderRadius: BorderRadius.circular(15.0)),
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 10.0),
+                _explanationText(requestList.length),
+                const SizedBox(height: 10.0),
                 Expanded(
                   child: _requestListView(requestList),
                 ),
@@ -220,6 +222,24 @@ class RequestListSheet extends StatelessWidget {
           textColor: Colors.white,
         ),
       ),
+    );
+  }
+
+  Widget _explanationText(int length) {
+    return SizedBox(
+      width: screenSize.getSize(342.0),
+      child: RichText(
+          text: TextSpan(children: [
+        const TextSpan(
+            text: '내 물품 ', style: TextStyle(fontSize: 12.0, color: grey153)),
+        TextSpan(
+            text: '$length',
+            style: const TextStyle(
+                fontSize: 16.0, color: grey153, fontWeight: FontWeight.w700)),
+        const TextSpan(
+            text: '개에 대해 이미 요청이 있어요!',
+            style: TextStyle(fontSize: 12.0, color: grey153))
+      ])),
     );
   }
 }
