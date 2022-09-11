@@ -139,12 +139,13 @@ class RequestListSheet extends StatelessWidget {
             child: Row(
               children: [
                 const SizedBox(width: 11.0),
-                SizedBox(
-                  height: screenSize.getSize(70.0),
-                  width: screenSize.getSize(70.0),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
                   child: Image.asset(
                     'assets/images/test.jpeg',
                     fit: BoxFit.cover,
+                    width: screenSize.getSize(70.0),
+                    height: screenSize.getSize(70.0),
                   ),
                 ),
                 const SizedBox(width: 11.0),
@@ -231,14 +232,14 @@ class RequestListSheet extends StatelessWidget {
       child: RichText(
           text: TextSpan(children: [
         const TextSpan(
-            text: '내 물품 ', style: TextStyle(fontSize: 12.0, color: grey153)),
+            text: '내 물품 ', style: TextStyle(fontSize: 12.0, color: navy)),
         TextSpan(
             text: '$length',
             style: const TextStyle(
-                fontSize: 16.0, color: grey153, fontWeight: FontWeight.w700)),
+                fontSize: 16.0, color: navy, fontWeight: FontWeight.w700)),
         const TextSpan(
             text: '개에 대해 이미 요청이 있어요!',
-            style: TextStyle(fontSize: 12.0, color: grey153))
+            style: TextStyle(fontSize: 12.0, color: navy))
       ])),
     );
   }

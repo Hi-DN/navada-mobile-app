@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/request/request_dto_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_requests.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/heart/heart_list_model.dart';
+import '../../models/product/product_model.dart';
 import '../../providers/product_detail_provider.dart';
 import '../../widgets/colors.dart';
 import '../../widgets/text_style.dart';
+import '../request_exchange/request_exchange_view.dart';
 
 // ignore: must_be_immutable
 class ProductDetailBottomButton extends StatelessWidget {
-  final Product product;
+  final ProductModel product;
   ScreenSize screenSize = ScreenSize();
 
   ProductDetailBottomButton({Key? key, required this.product})
@@ -20,24 +22,25 @@ class ProductDetailBottomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Provider.of<ProductDetailProvider>(context, listen: false)
-        .fetchRequestDtoList(product.productId);
+        .fetchRequestDtoList(product.productId!);
 
-    return product.productStatusCd == 0
+    return product.productStatusCd == ProductStatusCd.REGISTERED
         ? Consumer<ProductDetailProvider>(
             builder: (context, provider, widget) {
               if (provider.fetchCompleted && provider.requestDtoModel.success) {
                 return provider.requestDtoList.isEmpty
-                    ? _oneBottomButton()
-                    : _twoBottomButtons(provider.requestDtoList);
+                    ? _oneBottomButton(context, product)
+                    : _twoBottomButtons(
+                        context, product, provider.requestDtoList);
               } else {
                 return const Center(child: CircularProgressIndicator());
               }
             },
           )
-        : _canNotTradeButton(product.productStatusCd);
+        : _canNotTradeButton(product.productStatusCd!);
   }
 
-  Widget _oneBottomButton() {
+  Widget _oneBottomButton(BuildContext context, ProductModel product) {
     return Column(children: [
       Expanded(child: Container()),
       SizedBox(
@@ -45,8 +48,10 @@ class ProductDetailBottomButton extends StatelessWidget {
         height: screenSize.getSize(40.0),
         child: ElevatedButton(
           onPressed: () {
-            //fixme 교환 신청 화면으로!
-            print('신청하기 버튼 클릭!');
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (BuildContext context) {
+              return RequestExchangeView(acceptorProduct: product);
+            }));
           },
           style: ElevatedButton.styleFrom(
               elevation: 0.0,
@@ -63,7 +68,8 @@ class ProductDetailBottomButton extends StatelessWidget {
     ]);
   }
 
-  Widget _twoBottomButtons(List<RequestDtoContentModel> requestList) {
+  Widget _twoBottomButtons(BuildContext context, ProductModel product,
+      List<RequestDtoContentModel> requestList) {
     return Column(children: [
       Expanded(child: Container()),
       Row(
@@ -74,8 +80,10 @@ class ProductDetailBottomButton extends StatelessWidget {
             height: screenSize.getSize(40.0),
             child: ElevatedButton(
               onPressed: () {
-                //fixme 신청 화면으로 이동!
-                print('신청하기 버튼 클릭!');
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  return RequestExchangeView(acceptorProduct: product);
+                }));
               },
               style: ElevatedButton.styleFrom(
                   elevation: 0.0,
@@ -95,7 +103,7 @@ class ProductDetailBottomButton extends StatelessWidget {
     ]);
   }
 
-  Widget _canNotTradeButton(int productStatusCd) {
+  Widget _canNotTradeButton(ProductStatusCd productStatusCd) {
     return Column(children: [
       Expanded(child: Container()),
       SizedBox(
@@ -106,7 +114,9 @@ class ProductDetailBottomButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16.0), color: grey153),
             child: Center(
                 child: R18Text(
-              text: productStatusCd == 1 ? '교환중인 물품입니다.' : '교환 완료된 물품입니다.',
+              text: productStatusCd == ProductStatusCd.TRADING
+                  ? '교환중인 물품입니다.'
+                  : '교환 완료된 물품입니다.',
               textColor: Colors.white,
             ))),
       ),

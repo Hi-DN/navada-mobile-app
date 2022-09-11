@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/providers/heart_provider.dart';
 import 'package:navada_mobile_app/src/screens/heart/heart_view_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/heart/heart_list_model.dart';
+import '../../models/product/product_model.dart';
 import '../../widgets/colors.dart';
 import '../../widgets/custom_appbar.dart';
 import '../../widgets/divider.dart';
@@ -107,7 +109,7 @@ class HeartListSection extends StatelessWidget {
   Widget _makeListView(List<HeartListContentModel> heartList) {
     return ListView.builder(
         itemBuilder: (context, index) {
-          Product product = heartList[index].product;
+          ProductModel product = heartList[index].product;
           int heartId = heartList[index].heartId;
 
           return Column(
@@ -172,7 +174,7 @@ class HeartListSection extends StatelessWidget {
                                   .deleteSelectedHeart(heartId)
                               : Provider.of<HeartProvider>(context,
                                       listen: false)
-                                  .saveSelectedHeart(product.productId);
+                                  .saveSelectedHeart(product.productId!);
                         },
                         icon: Icon(
                           Provider.of<HeartViewModel>(context)
@@ -193,16 +195,16 @@ class HeartListSection extends StatelessWidget {
         itemCount: heartList.length);
   }
 
-  Widget _statusBadge(Product? product) {
-    switch (product?.productStatusCd) {
-      case 0:
+  Widget _statusBadge(ProductModel product) {
+    switch (product.productStatusCd) {
+      case ProductStatusCd.REGISTERED:
         return Container();
-      case 1:
+      case ProductStatusCd.TRADING:
         return const StatusBadge(
           label: '교환중',
           backgroundColor: green,
         );
-      case 2:
+      case ProductStatusCd.TRADE_COMPLETED:
         return const StatusBadge(
           label: '교환완료',
           backgroundColor: navy,
