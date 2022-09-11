@@ -13,7 +13,7 @@ class MyExchangesViewModel extends ChangeNotifier {
 
 enum MyExchangesFilterItem { 
   viewAll('전체보기'), 
-  viewOnlyIApplied('내가 신청한것만 보기'), 
+  viewOnlyISent('내가 신청한것만 보기'), 
   viewOnlyIGot('신청받은것만 보기');
 
   const MyExchangesFilterItem(this.label);

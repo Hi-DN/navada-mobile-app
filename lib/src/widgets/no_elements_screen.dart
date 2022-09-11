@@ -11,20 +11,18 @@ class NoElements extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: LayoutBuilder(
-        builder: ((context, constraint) => 
-            SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraint.maxHeight, minWidth: double.infinity),
-                child: IntrinsicHeight(
-                  child: _noElementsNotice()
-                ),
+    return LayoutBuilder(
+      builder: ((context, constraint) => 
+          SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraint.maxHeight, minWidth: double.infinity),
+              child: IntrinsicHeight(
+                child: _noElementsNotice()
               ),
-            )
-        )
-      ),
+            ),
+          )
+      )
     );
   }
 

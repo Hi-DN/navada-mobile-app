@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/request/request_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/my_exchange_card.dart';
 import 'package:navada_mobile_app/src/widgets/my_exchange_status_sign.dart';
@@ -105,14 +106,12 @@ class _RequestListView extends StatelessWidget {
           _totalElementsCount(),
           hasData
             ? _requestListView()
-            : const NoElements(text: '신청한 내역이 없습니다.')
+            : const Expanded(child: NoElements(text: '신청한 내역이 없습니다.'))
         ]),
     );
   }
 
   Widget _requestListView() {
-    ScreenSize size = ScreenSize();
-
     return Expanded(
       child: ListView.separated(
         padding: const EdgeInsets.all(0.0),
@@ -120,51 +119,58 @@ class _RequestListView extends StatelessWidget {
         itemCount: requestList.length,
         itemBuilder: (context, index) {
           final request = requestList[index];
-          bool isWait = request.exchangeStatusCd == ExchangeStatusCd.WAIT;
-    
-          return Dismissible(
-            key: UniqueKey(),
-            onDismissed: (direction) {
-              if(isWait) {
-                Provider.of<MyExchangesRequestProvider>(_context!, listen: false).deleteRequest(request.requestId!);
-              }
-            },
-            confirmDismiss: (direction) async {
-                return await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      content: R14Text(text: isWait ? "교환신청을 정말로 취소하시겠습니까?" : "거절내역을 삭제하시겠습니까?"),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: const R14Text(text: "아니요", textColor: grey153),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: R14Text(text: isWait ? "네, 취소할게요!" : "네, 삭제할게요!", textColor: blue),
-                        ),
-                      ],
-                    );
-                  }
-                );
-            },
-            direction: DismissDirection.endToStart,
-            background: Container(
-                decoration: BoxDecoration(
-                    color: grey183,
-                    borderRadius: BorderRadius.circular(size.getSize(10))),
-                padding: EdgeInsets.only(right: size.getSize(20)),
-                child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: const [Icon(Icons.delete, color: white)])
-            ),
-            child: RequestItem(request: request),
-          );
+          return _dismissibleListItem(context, request);
         },
         separatorBuilder: (context, index) {
           return const Space(height: 10);
         }),
+    );
+  }
+
+  _dismissibleListItem(BuildContext? context, RequestModel request) {
+    ScreenSize size = ScreenSize();
+    bool isWait = request.exchangeStatusCd == ExchangeStatusCd.WAIT;
+    
+    return Dismissible(
+      key: UniqueKey(),
+      onDismissed: (direction) {
+        if(isWait) {
+          Provider.of<MyExchangesRequestProvider>(_context!, listen: false).cancelRequest(request.requestId!);
+        } else {
+          Provider.of<MyExchangesRequestProvider>(_context!, listen: false).deleteDeniedRequest(request.requestId!);
+        }
+      },
+      confirmDismiss: (direction) async {
+          return await showDialog(
+            context: context!,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                content: R14Text(text: isWait ? "교환신청을 정말로 취소하시겠습니까?" : "거절내역을 삭제하시겠습니까?"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const R14Text(text: "아니요", textColor: grey153),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: R14Text(text: isWait ? "네, 취소할게요!" : "네, 삭제할게요!", textColor: blue),
+                  ),
+                ],
+              );
+            }
+          );
+      },
+      direction: DismissDirection.endToStart,
+      background: Container(
+          decoration: BoxDecoration(
+              color: isWait ? yellow : grey183,
+              borderRadius: BorderRadius.circular(size.getSize(10))),
+          padding: EdgeInsets.only(right: size.getSize(20)),
+          child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [Icon(Icons.delete, color: white)])
+      ),
+      child: RequestItem(request: request),
     );
   }
 
@@ -202,11 +208,15 @@ class RequestItem extends StatelessWidget {
         : const MyExchangeStatusSign(color: grey216, icon: Icons.not_interested, label: '거절됨'),
       params: MyExchangeCardParams(
         requesterProductName: request?.requesterProductName,
-        requesterNickname: request?.requesterNickName,
+        requesterNickname: Row(children: [
+                  B10Text(text: "신청 ", textColor: isWait ? yellow : grey153),
+                  R10Text(text: Shortener.shortenStrTo(request?.requesterNickName, 6), textColor: grey183),]),
         requesterProductCost: request?.requesterProductCost,
         requesterProductCostRange: request?.requesterProductCostRange,
         acceptorProductName: request?.acceptorProductName,
-        acceptorNickname: request?.acceptorNickname,
+        acceptorNickname: Row(children: [
+                  B10Text(text: isWait ? "대기 " : "거절 ", textColor: isWait ? yellow : grey153),
+                  R10Text(text: Shortener.shortenStrTo(request?.acceptorNickname, 6), textColor: grey183),]),
         acceptorProductCost: request?.acceptorProductCost,
         acceptorProductCostRange: request?.acceptorProductCostRange
       ),

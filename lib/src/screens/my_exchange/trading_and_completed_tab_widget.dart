@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
 import 'package:navada_mobile_app/src/widgets/my_exchange_card.dart';
@@ -55,7 +56,7 @@ class TradingAndCompletedTab extends StatelessWidget {
 class _ExchangeListView extends StatelessWidget {
   _ExchangeListView({Key? key, required this.exchangeList, required this.isLoading}) : super(key: key);
 
-  List<ExchangeModel> exchangeList;
+  List<ExchangeDtoModel> exchangeList;
   bool isLoading;
 
   late DataState? _dataState;
@@ -106,7 +107,7 @@ class _ExchangeListView extends StatelessWidget {
           _filterSection(),
           hasData
             ? _exchangeListView()
-            : const NoElements(text: '물물교환내역이 없습니다.')
+            : const Expanded(child: NoElements(text: '물물교환내역이 없습니다.'))
         ]),
     );
   }
@@ -118,11 +119,58 @@ class _ExchangeListView extends StatelessWidget {
         shrinkWrap: true,
         itemCount: exchangeList.length,
         itemBuilder: (context, index) {
-          return ExchangeItem(exchange: exchangeList[index]);
+          ExchangeDtoModel exchange = exchangeList[index];
+          bool isTrading = exchange.acceptorProduct?.productStatusCd == ProductStatusCd.TRADING;
+
+          return (isTrading)
+            ? ExchangeItem(exchange: exchange)
+            : _dismissibleCompletedExchangeItem(context, exchange);
         },
         separatorBuilder: (context, index) {
           return const Space(height: 10);
         }),
+    );
+  }
+
+  Widget _dismissibleCompletedExchangeItem(BuildContext? context, ExchangeDtoModel? exchange) {
+    ScreenSize size = ScreenSize();
+
+    return Dismissible(
+      key: UniqueKey(),
+      onDismissed: (direction) {
+        Provider.of<MyExchangesExchangeProvider>(_context!, listen: false).deleteCompletedExchange(exchange!.exchangeId, exchange.acceptorId);
+      },
+      confirmDismiss: (direction) async {
+          return await showDialog(
+            context: context!,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                content: const R14Text(text: "교환내역을 삭제하시겠습니까?"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const R14Text(text: "아니요", textColor: grey153),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const R14Text(text: "네, 삭제할게요!", textColor: blue),
+                  ),
+                ],
+              );
+            }
+          );
+      },
+      direction: DismissDirection.endToStart,
+      background: Container(
+          decoration: BoxDecoration(
+              color: grey183,
+              borderRadius: BorderRadius.circular(size.getSize(10))),
+          padding: EdgeInsets.only(right: size.getSize(20)),
+          child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [Icon(Icons.delete, color: white)])
+      ),
+      child: ExchangeItem(exchange: exchange),
     );
   }
 
@@ -149,7 +197,7 @@ class _ExchangeListView extends StatelessWidget {
 class ExchangeItem extends StatelessWidget {
   const ExchangeItem({Key? key, this.exchange}) : super(key: key);
 
-  final ExchangeModel? exchange;
+  final ExchangeDtoModel? exchange;
 
   @override
   Widget build(BuildContext context) {
@@ -163,11 +211,15 @@ class ExchangeItem extends StatelessWidget {
         : const MyExchangeStatusSign(color: navy, icon: Icons.check, label: '교환완료'),
       params: MyExchangeCardParams(
         requesterProductName: requesterProduct?.productName,
-        requesterNickname: requesterProduct?.userNickname,
+        requesterNickname: Row(children: [
+                  B10Text(text: "신청 ", textColor: isTrading ? green : navy),
+                  R10Text(text: Shortener.shortenStrTo(requesterProduct?.userNickname, 6), textColor: grey183),]),
         requesterProductCost: requesterProduct?.productCost,
         requesterProductCostRange: requesterProduct?.exchangeCostRange,
         acceptorProductName: acceptorProduct?.productName,
-        acceptorNickname: acceptorProduct?.userNickname,
+        acceptorNickname: Row(children: [
+                  B10Text(text: "수락 ", textColor: isTrading ? green : navy),
+                  R10Text(text: Shortener.shortenStrTo(acceptorProduct?.userNickname, 6), textColor: grey183),]),
         acceptorProductCost: acceptorProduct?.productCost,
         acceptorProductCostRange: acceptorProduct?.exchangeCostRange
       ),
@@ -218,7 +270,7 @@ class _ViewFilter extends StatelessWidget {
           _greyStick(),
           _customListTile(MyExchangesFilterItem.viewAll),
           const CustomDivider(horizontalIndent: 18),
-          _customListTile(MyExchangesFilterItem.viewOnlyIApplied),
+          _customListTile(MyExchangesFilterItem.viewOnlyISent),
           const CustomDivider(horizontalIndent: 18),
           _customListTile(MyExchangesFilterItem.viewOnlyIGot)
         ],
@@ -248,8 +300,9 @@ class _ViewFilter extends StatelessWidget {
   Widget _customListTile(MyExchangesFilterItem? selectedFilter) {
     ScreenSize size = ScreenSize();
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         Provider.of<MyExchangesViewModel>(_context!, listen: false).setFilter(selectedFilter!);
+        Provider.of<MyExchangesExchangeProvider>(_context!, listen: false).setFilter(selectedFilter);
         Navigator.of(_context!).pop(false);
       },
       child: ListTile(

@@ -33,15 +33,15 @@ class MyExchangeCard extends StatelessWidget {
         children: [
           statusSign!,
           const VerticalDivider(thickness: 1, color: grey239, indent: 0, endIndent: 0),
-          _productContent(params?.requesterProductName, params?.requesterNickname, params?.requesterProductCost, params?.requesterProductCostRange),
+          _productContent(params?.requesterProductName, params?.requesterNickname, params?.requesterProductCost, params?.requesterProductCostRange, false),
           const VerticalDivider(thickness: 1, color: grey239, indent: 3, endIndent: 3),
-          _productContent(params?.acceptorProductName, params?.acceptorNickname, params?.acceptorProductCost, params?.acceptorProductCostRange),
+          _productContent(params?.acceptorProductName, params?.acceptorNickname, params?.acceptorProductCost, params?.acceptorProductCostRange, true),
         ],
       )
     );
   }
 
-  Widget _productContent(String? productName, String? nickName, int? cost, int? costRange) {
+  Widget _productContent(String? productName, Widget? nickName, int? cost, int? costRange, bool isAcceptor) {
     ScreenSize size = ScreenSize();
 
     return SizedBox(
@@ -55,7 +55,7 @@ class MyExchangeCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               R12Text(text: Shortener.shortenStrTo(productName, 8)),
-              R10Text(text: Shortener.shortenStrTo(nickName, 10), textColor: grey216),
+              nickName!,
               R10Text(text: "원가 $cost원"),
               R10Text(text: "± $costRange원", textColor: grey183,)
             ],
@@ -84,11 +84,11 @@ class MyExchangeCardParams{
   const MyExchangeCardParams({this.requesterProductName, this.requesterNickname, this.requesterProductCost, this.requesterProductCostRange, this.acceptorProductName, this.acceptorNickname, this.acceptorProductCost, this.acceptorProductCostRange});
 
   final String? requesterProductName;
-  final String? requesterNickname;
+  final Widget? requesterNickname;
   final int? requesterProductCost;
   final int? requesterProductCostRange;
   final String? acceptorProductName;
-  final String? acceptorNickname;
+  final Widget? acceptorNickname;
   final int? acceptorProductCost;
   final int? acceptorProductCostRange;
 }

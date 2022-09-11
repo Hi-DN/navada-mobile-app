@@ -104,4 +104,10 @@ class RequestsForMeProvider extends ChangeNotifier {
     _dataState = DataState.ERROR;
     notifyListeners();
   }
+
+  deleteDeniedRequest(int? requestId) async {
+    await _requestService.deleteDeniedRequestByAcceptor(requestId!);
+    _requestDataList.removeWhere((request) => request.requestId == requestId);
+    notifyListeners();
+  }
 }
