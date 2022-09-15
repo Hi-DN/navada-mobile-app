@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
-import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
@@ -23,8 +22,6 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreenSize size = ScreenSize();
-
     return AppBar(
         leading: leadingYn ?? false
             ? GestureDetector(

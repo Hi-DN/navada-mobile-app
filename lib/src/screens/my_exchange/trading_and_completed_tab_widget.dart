@@ -135,12 +135,12 @@ class _ExchangeListView extends StatelessWidget {
 
   Widget _tappableTradingExchangeItem(BuildContext? context, ExchangeDtoModel? exchange) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(context! ,
-        MaterialPageRoute(builder: (BuildContext context) => CompleteExchange(exchange: exchange)));
-      },
-      child: ExchangeItem(exchange: exchange),
-    );
+        onTap: () {
+          Navigator.push(context!,
+              MaterialPageRoute(builder: (BuildContext context) => CompleteExchangeView(exchange: exchange)));
+        },
+        child: ExchangeItem(exchange: exchange),
+      );
   }
 
   Widget _dismissibleCompletedExchangeItem(BuildContext? context, ExchangeDtoModel? exchange) {

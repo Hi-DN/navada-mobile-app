@@ -15,15 +15,18 @@ class LongCircledBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
 
-    return Container(
-      alignment: Alignment.center,
-      width: size.getSize(327),
-      height: size.getSize(54),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        color: backgroundColor
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        width: size.getSize(327),
+        height: size.getSize(54),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          color: backgroundColor
+        ),
+        child: B16Text(text: text, textColor: white)
       ),
-      child: B16Text(text: text, textColor: white)
     );
   }
 }

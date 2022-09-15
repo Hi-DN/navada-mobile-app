@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
-import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/screens/complete_exchange/complete_exchange_view_model.dart';
+import 'package:navada_mobile_app/src/screens/complete_exchange/exchange_confirm_modal.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
@@ -13,38 +13,67 @@ import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
-class CompleteExchange extends StatelessWidget {
-  const CompleteExchange({Key? key, this.exchange}) : super(key: key);
+class CompleteExchangeView extends StatelessWidget {
+  const CompleteExchangeView({Key? key, this.exchange}) : super(key: key);
 
   final ExchangeDtoModel? exchange;
 
   @override
   Widget build(BuildContext context) {
-    ScreenSize size = ScreenSize();
-    User user = Provider.of<UserProvider>(context, listen: false).user;
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        titleText: "교환 완료하기",
-        leadingYn: true,
-        onTap: () => Navigator.of(context).pop(),
-      ),
-      body: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (context) => CompleteExchangeViewModel()),
-        ],
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _ProductInfo(product: exchange!.requesterProduct, isAcceptor: false),
-              const CustomDivider(),
-              _ProductInfo(product: exchange!.acceptorProduct, isAcceptor: true),
-              const LongCircledBtn(text: "교환 완료하기"),
-              const Space(height: 20)
-            ],
+    int userId = Provider.of<UserProvider>(context, listen: false).user.userId;
+    bool isAcceptor = (userId == exchange!.acceptorId);
+    bool isCompleteFeatureActive = !(isAcceptor ? exchange!.acceptorConfirmYn! : exchange!.requesterConfirmYn!);
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => CompleteExchangeViewModel(isCompleteFeatureActive)),
+      ],
+      child: Consumer<CompleteExchangeViewModel>(builder: 
+        (BuildContext context, CompleteExchangeViewModel viewModel, Widget? _) {
+
+        bool isCompleteBtnActive = viewModel.isCompleteFeatureActive;
+        
+        return Scaffold(
+          appBar: CustomAppBar(
+            titleText: "교환 완료하기",
+            leadingYn: true,
+            onTap: () => Navigator.of(context).pop(),
           ),
-        ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                _ProductInfo(product: exchange!.requesterProduct, isAcceptor: false),
+                const CustomDivider(),
+                _ProductInfo(product: exchange!.acceptorProduct, isAcceptor: true),
+                LongCircledBtn(
+                  text: "교환 완료하기",
+                  onTap: () => isCompleteBtnActive ? _showExchangeConfirmModal(context) : null,
+                  backgroundColor: isCompleteBtnActive ? green : grey183,                  
+                ),
+                const Space(height: 20)
+              ],
+            ),
+          ),
+        );
+      })
+      
+    );
+  }
+
+  _showExchangeConfirmModal(BuildContext? context) {
+    ScreenSize size = ScreenSize();
+    showModalBottomSheet(
+      context: context!,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(size.getSize(30)), 
+          topRight: Radius.circular(size.getSize(30))),
       ),
+      builder: (context) {
+        return ExchangeConfirmModal(exchange: exchange);
+      },
     );
   }
 }
@@ -155,13 +184,3 @@ class _ProductInfo extends StatelessWidget {
   }
 }
 
-class _CompleteExchangeBtn extends StatelessWidget {
-  const _CompleteExchangeBtn({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: const R18Text(text: "교환 완료하기"),
-    );
-  }
-}

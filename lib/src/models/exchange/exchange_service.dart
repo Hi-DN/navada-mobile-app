@@ -55,5 +55,29 @@ class ExchangeService {
       return null;
     }
   }
+
+  // 교환완료
+  Future<ExchangeModel?> rateExchange(int exchangeId, bool isAcceptor, double rating) async {
+    Map<String, dynamic> data = await _httpClient.patchRequest(
+        '/exchange/$exchangeId/rate?isAcceptor=$isAcceptor&rating=$rating', {}, tokenYn: false);
+
+    if (data['success']) {
+      return ExchangeModel.fromJson(data['data']);
+    } else {
+      return null;
+    }
+  }
+
+  // 교환완료
+  Future<ExchangeModel?> completeExchange(int exchangeId, bool isAcceptor) async {
+    Map<String, dynamic> data = await _httpClient.patchRequest(
+        '/exchange/$exchangeId?isAcceptor=$isAcceptor', {}, tokenYn: false);
+
+    if (data['success']) {
+      return ExchangeModel.fromJson(data['data']);
+    } else {
+      return null;
+    }
+  }
 }
 
