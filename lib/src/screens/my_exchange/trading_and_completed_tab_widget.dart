@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
+import 'package:navada_mobile_app/src/screens/complete_exchange/complete_exchange_view.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
@@ -123,12 +124,22 @@ class _ExchangeListView extends StatelessWidget {
           bool isTrading = exchange.acceptorProduct?.productStatusCd == ProductStatusCd.TRADING;
 
           return (isTrading)
-            ? ExchangeItem(exchange: exchange)
+            ? _tappableTradingExchangeItem(context, exchange)
             : _dismissibleCompletedExchangeItem(context, exchange);
         },
         separatorBuilder: (context, index) {
           return const Space(height: 10);
         }),
+    );
+  }
+
+  Widget _tappableTradingExchangeItem(BuildContext? context, ExchangeDtoModel? exchange) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context! ,
+        MaterialPageRoute(builder: (BuildContext context) => CompleteExchange(exchange: exchange)));
+      },
+      child: ExchangeItem(exchange: exchange),
     );
   }
 
