@@ -45,7 +45,7 @@ class ProductDetailBottomButton extends StatelessWidget {
       Expanded(child: Container()),
       SizedBox(
         width: screenSize.getSize(327.0),
-        height: screenSize.getSize(40.0),
+        height: screenSize.getSize(45.0),
         child: ElevatedButton(
           onPressed: () {
             Navigator.of(context)
@@ -77,7 +77,7 @@ class ProductDetailBottomButton extends StatelessWidget {
         children: [
           SizedBox(
             width: screenSize.getSize(160.0),
-            height: screenSize.getSize(40.0),
+            height: screenSize.getSize(45.0),
             child: ElevatedButton(
               onPressed: () {
                 Navigator.of(context)
@@ -108,7 +108,7 @@ class ProductDetailBottomButton extends StatelessWidget {
       Expanded(child: Container()),
       SizedBox(
         width: screenSize.getSize(327.0),
-        height: screenSize.getSize(40.0),
+        height: screenSize.getSize(45.0),
         child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.0), color: grey153),
