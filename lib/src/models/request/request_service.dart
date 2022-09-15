@@ -75,7 +75,8 @@ class RequestService {
   // 거절한 신청내역 삭제
   Future<RequestModel?> deleteDeniedRequestByAcceptor(int requestId) async {
     Map<String, dynamic> data = await _httpClient.patchRequest(
-        '/exchange/request/$requestId/delete?isAcceptor=true', {}, tokenYn: false);
+        '/exchange/request/$requestId/delete?isAcceptor=true', {},
+        tokenYn: false);
 
     if (data['success']) {
       return RequestModel.fromJson(data['data']);
@@ -87,7 +88,22 @@ class RequestService {
   // 거절당한 신청내역 삭제
   Future<RequestModel?> deleteDeniedRequestByRequester(int requestId) async {
     Map<String, dynamic> data = await _httpClient.patchRequest(
-        '/exchange/request/$requestId/delete?isAcceptor=false', {}, tokenYn: false);
+        '/exchange/request/$requestId/delete?isAcceptor=false', {},
+        tokenYn: false);
+
+    if (data['success']) {
+      return RequestModel.fromJson(data['data']);
+    } else {
+      return null;
+    }
+  }
+
+  //교환 신청
+  Future<RequestModel?> createRequest(
+      int requesterProductId, int acceptorProductId) async {
+    Map<String, dynamic> data = await _httpClient.postRequest(
+        '/exchange/request/$requesterProductId/$acceptorProductId', {},
+        tokenYn: false);
 
     if (data['success']) {
       return RequestModel.fromJson(data['data']);

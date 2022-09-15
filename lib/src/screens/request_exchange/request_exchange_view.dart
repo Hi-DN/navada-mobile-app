@@ -256,20 +256,21 @@ class MyProductList extends StatelessWidget {
   }
 
   Widget _exchangeRequestButton() {
-    return Consumer<RequestExchangeViewModel>(
-        builder: (context, provider, child) {
+    return Consumer2<RequestExchangeViewModel, RequestExchangeProvider>(
+        builder: (context, viewModel, provider, child) {
       return SizedBox(
         width: screenSize.getSize(327.0),
         height: screenSize.getSize(50.0),
         child: ElevatedButton(
           onPressed: () {
-            if (!provider.isListEmpty) {
-              _showConfirmPopUp(context, provider.requestProductIdList);
+            if (!viewModel.isListEmpty) {
+              _showConfirmPopUp(
+                  context, provider, viewModel.requestProductIdList);
             }
           },
           style: ElevatedButton.styleFrom(
               elevation: 0.0,
-              primary: provider.isListEmpty ? grey153 : green,
+              primary: viewModel.isListEmpty ? grey153 : green,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(27.0))),
           child: const R18Text(
@@ -281,8 +282,9 @@ class MyProductList extends StatelessWidget {
     });
   }
 
-  _showConfirmPopUp(context, List<int> requestProductIdList) {
-    showDialog<String>(
+  _showConfirmPopUp(BuildContext context, RequestExchangeProvider provider,
+      List<int> requestProductIdList) {
+    return showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
         content: Container(
@@ -311,7 +313,15 @@ class MyProductList extends StatelessWidget {
               SizedBox(
                 width: screenSize.getSize(120.0),
                 child: TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () async {
+                    provider.setInitialFetched(false);
+                    bool success = await provider.createRequests(
+                        requestProductIdList, acceptorProductId);
+                    if (success) {
+                      provider.fetchProductsList(acceptorProductId);
+                      Navigator.pop(context);
+                    }
+                  },
                   style: TextButton.styleFrom(
                       backgroundColor: green,
                       shape: RoundedRectangleBorder(
