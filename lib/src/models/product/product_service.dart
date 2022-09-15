@@ -1,4 +1,5 @@
 import 'package:navada_mobile_app/src/models/api/http_client.dart';
+import 'package:navada_mobile_app/src/models/product/product_list_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 
 HttpClient _httpClient = HttpClient();
@@ -40,5 +41,19 @@ Future<ProductModel?> modifyProduct(
     return ProductModel.fromJson(data['data']);
   } else {
     return null;
+  }
+}
+
+// 특정 상품에 교환신청 가능한 내 상품 목록
+Future<ProductPageModel> getProductsForRequest(
+    int userId, int acceptorProductId) async {
+  Map<String, dynamic> data = await _httpClient.getRequest(
+      '/user/$userId/products/request?acceptorProductId=$acceptorProductId',
+      tokenYn: false);
+
+  if (data['success']) {
+    return ProductPageModel.fromJson(data);
+  } else {
+    throw Exception('getProductsForRequest() fail!');
   }
 }

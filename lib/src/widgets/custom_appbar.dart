@@ -42,8 +42,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
             child: Container(
               color: grey216,
               height: 1.0,
-            )
-        ),
+            )),
         title: B18Text(text: titleText));
   }
 }

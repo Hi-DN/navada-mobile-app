@@ -29,8 +29,7 @@ class ProductModel {
     productExplanation = json['productExplanation'];
     userNickname = json['userNickname'];
     category = Category.objToEnum(CategoryModel.fromJson(json['category']));
-    productStatusCd = 
-        ProductStatusCd.intToEnum(json['productStatusCd']);
+    productStatusCd = ProductStatusCd.intToEnum(json['productStatusCd']);
     heartNum = json['heartNum'];
     productCost = json['productCost'];
     exchangeCostRange = json['exchangeCostRange'];
@@ -50,6 +49,14 @@ class ProductModel {
     data['productCost'] = productCost;
     data['exchangeCostRange'] = exchangeCostRange;
     return data;
+  }
+
+  int getLowerBound() {
+    return productCost! - exchangeCostRange!;
+  }
+
+  int getUpperBound() {
+    return productCost! + exchangeCostRange!;
   }
 }
 

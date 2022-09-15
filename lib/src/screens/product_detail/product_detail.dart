@@ -1,7 +1,6 @@
 // ignore_for_file: sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/heart/heart_list_model.dart';
 import 'package:navada_mobile_app/src/providers/product_detail_provider.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_bottom_button.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_view_model.dart';
@@ -9,11 +8,12 @@ import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/product/product_model.dart';
 import '../../widgets/colors.dart';
 
 // ignore: must_be_immutable
 class ProductDetail extends StatelessWidget {
-  final Product product;
+  final ProductModel product;
   bool like;
   ScreenSize screenSize = ScreenSize();
 
@@ -39,7 +39,7 @@ class ProductDetail extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          UserInfoSection(productId: product.productId),
+                          UserInfoSection(productId: product.productId!),
                           _productInfoSection(product),
                           _reportSection(),
                           Expanded(
@@ -76,7 +76,7 @@ class ProductDetail extends StatelessWidget {
     ]);
   }
 
-  Widget _productInfoSection(Product product) {
+  Widget _productInfoSection(ProductModel product) {
     return Container(
       padding: const EdgeInsets.only(top: 20.0),
       child: Column(
@@ -98,7 +98,7 @@ class ProductDetail extends StatelessWidget {
                   const SizedBox(height: 5.0),
                   R14Text(
                     text:
-                        "희망교환가격범위 : ${getLowerCostBound(product)}원 ~ ${getUpperCostBound(product)}원",
+                        "희망교환가격범위 : ${product.getLowerBound()}원 ~ ${product.getUpperBound()}원",
                     textColor: Colors.black.withOpacity(0.5),
                   )
                 ],
@@ -109,8 +109,8 @@ class ProductDetail extends StatelessWidget {
                     onPressed: () {
                       viewProvider.setLikeValue();
                       viewProvider.like
-                          ? provider.saveHeart(product.productId)
-                          : provider.deleteHeart(product.productId);
+                          ? provider.saveHeart(product.productId!)
+                          : provider.deleteHeart(product.productId!);
                     },
                     icon: Icon(
                       viewProvider.like
@@ -135,14 +135,6 @@ class ProductDetail extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  int getUpperCostBound(Product product) {
-    return product.productCost + product.exchangeCostRange;
-  }
-
-  int getLowerCostBound(Product product) {
-    return product.productCost - product.exchangeCostRange;
   }
 
   Widget _reportSection() {
