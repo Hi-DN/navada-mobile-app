@@ -217,22 +217,29 @@ class MyProductList extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: screenSize.getSize(20.0),
-                  height: screenSize.getSize(20.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      //fixme
-                    },
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(10.0),
-                        elevation: 0.0,
-                        primary: Colors.white,
-                        shape: const CircleBorder(
-                            side: BorderSide(width: 2.5, color: grey153))),
-                    child: Container(),
-                  ),
-                ),
+                Consumer<RequestExchangeViewModel>(
+                    builder: (context, provider, child) {
+                  return SizedBox(
+                    width: screenSize.getSize(20.0),
+                    height: screenSize.getSize(20.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        provider.isSelectedId(product.productId!)
+                            ? provider.removeProductId(product.productId!)
+                            : provider.addProductId(product.productId!);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.all(10.0),
+                          elevation: 0.0,
+                          primary: provider.isSelectedId(product.productId!)
+                              ? green
+                              : Colors.white,
+                          shape: const CircleBorder(
+                              side: BorderSide(width: 2.5, color: grey153))),
+                      child: Container(),
+                    ),
+                  );
+                }),
                 const SizedBox(width: 11.0),
               ],
             ),
@@ -249,20 +256,85 @@ class MyProductList extends StatelessWidget {
   }
 
   Widget _exchangeRequestButton() {
-    return SizedBox(
-      width: screenSize.getSize(327.0),
-      height: screenSize.getSize(50.0),
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-            elevation: 0.0,
-            primary: green,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(27.0))),
-        child: const R18Text(
-          text: '교환 신청하기',
-          textColor: Colors.white,
+    return Consumer2<RequestExchangeViewModel, RequestExchangeProvider>(
+        builder: (context, viewModel, provider, child) {
+      return SizedBox(
+        width: screenSize.getSize(327.0),
+        height: screenSize.getSize(50.0),
+        child: ElevatedButton(
+          onPressed: () {
+            if (!viewModel.isListEmpty) {
+              _showConfirmPopUp(
+                  context, provider, viewModel.requestProductIdList);
+            }
+          },
+          style: ElevatedButton.styleFrom(
+              elevation: 0.0,
+              primary: viewModel.isListEmpty ? grey153 : green,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(27.0))),
+          child: const R18Text(
+            text: '교환 신청하기',
+            textColor: Colors.white,
+          ),
         ),
+      );
+    });
+  }
+
+  _showConfirmPopUp(BuildContext context, RequestExchangeProvider provider,
+      List<int> requestProductIdList) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        content: Container(
+            height: screenSize.getSize(70.0),
+            alignment: Alignment.center,
+            child: B16Text(
+                text: '${requestProductIdList.length}개의 물품에 대해 교환신청 하시겠습니까?')),
+        actions: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                width: screenSize.getSize(120.0),
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                      backgroundColor: grey153,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0))),
+                  child: const R14Text(
+                    text: '아니오',
+                    textColor: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: screenSize.getSize(120.0),
+                child: TextButton(
+                  onPressed: () async {
+                    provider.setInitialFetched(false);
+                    bool success = await provider.createRequests(
+                        requestProductIdList, acceptorProductId);
+                    if (success) {
+                      provider.fetchProductsList(acceptorProductId);
+                      Navigator.pop(context);
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                      backgroundColor: green,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0))),
+                  child: const R14Text(
+                    text: '네',
+                    textColor: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

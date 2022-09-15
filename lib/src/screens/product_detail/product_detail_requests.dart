@@ -26,7 +26,7 @@ class ProductDetailRequestsState extends State<ProductDetailRequests> {
 
     return SizedBox(
       width: screenSize.getSize(160.0),
-      height: screenSize.getSize(40.0),
+      height: screenSize.getSize(45.0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             elevation: 0.0,
