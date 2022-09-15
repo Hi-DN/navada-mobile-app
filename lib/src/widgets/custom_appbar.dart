@@ -26,14 +26,10 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     ScreenSize size = ScreenSize();
 
     return AppBar(
-        leadingWidth: 0,
         leading: leadingYn ?? false
-            ? Padding(
-                padding: EdgeInsets.only(left: size.getSize(14)),
-                child: GestureDetector(
-                    onTap: onTap,
-                    child: const Icon(Icons.arrow_back, color: grey153)),
-              )
+            ? GestureDetector(
+                onTap: onTap,
+                child: const Icon(Icons.arrow_back, color: grey153))
             : Container(),
         backgroundColor: Colors.white,
         elevation: 0,
