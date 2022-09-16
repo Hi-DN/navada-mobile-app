@@ -20,7 +20,6 @@ class CompleteExchangeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     int userId = Provider.of<UserProvider>(context, listen: false).user.userId;
     bool isAcceptor = (userId == exchange!.acceptorId);
     bool isCompleteFeatureActive = !(isAcceptor ? exchange!.acceptorConfirmYn! : exchange!.requesterConfirmYn!);
@@ -63,8 +62,10 @@ class CompleteExchangeView extends StatelessWidget {
 
   _showExchangeConfirmModal(BuildContext? context) {
     ScreenSize size = ScreenSize();
+    final viewModel = Provider.of<CompleteExchangeViewModel>(context!, listen: false);
+    
     showModalBottomSheet(
-      context: context!,
+      context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -72,7 +73,7 @@ class CompleteExchangeView extends StatelessWidget {
           topRight: Radius.circular(size.getSize(30))),
       ),
       builder: (context) {
-        return ExchangeConfirmModal(exchange: exchange);
+        return ChangeNotifierProvider.value(value: viewModel, child: ExchangeConfirmModal(exchange: exchange));
       },
     );
   }

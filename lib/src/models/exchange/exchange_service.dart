@@ -56,7 +56,7 @@ class ExchangeService {
     }
   }
 
-  // 교환완료
+  // 별점부여
   Future<ExchangeModel?> rateExchange(int exchangeId, bool isAcceptor, double rating) async {
     Map<String, dynamic> data = await _httpClient.patchRequest(
         '/exchange/$exchangeId/rate?isAcceptor=$isAcceptor&rating=$rating', {}, tokenYn: false);

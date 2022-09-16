@@ -27,7 +27,6 @@ class ExchangeConfirmModal extends StatelessWidget {
     
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => CompleteExchangeViewModel(true)),
         ChangeNotifierProvider(create: (context) => CompleteExchangeProvider()),
       ],
       child: Container(
@@ -87,11 +86,11 @@ class ExchangeConfirmModal extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           LongCircledBtn(
-            onTap: () {
+            onTap: () async {
               if(!isInitial) {
                 if(hasConfirmedRating)
-                  provider.rateExchange(exchange.exchangeId, isAcceptor, rating);
-                provider.completeExchange(exchange.exchangeId, isAcceptor);
+                  await provider.rateExchange(exchange.exchangeId, isAcceptor, rating);
+                await provider.completeExchange(exchange.exchangeId, isAcceptor);
                 viewModel.setCompleteFeatureActive(false);
                 Navigator.of(context).pop();
               }

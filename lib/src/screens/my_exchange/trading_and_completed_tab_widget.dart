@@ -140,7 +140,7 @@ class _ExchangeListView extends StatelessWidget {
               MaterialPageRoute(builder: (BuildContext context) => CompleteExchangeView(exchange: exchange)));
         },
         child: ExchangeItem(exchange: exchange),
-      );
+    );
   }
 
   Widget _dismissibleCompletedExchangeItem(BuildContext? context, ExchangeDtoModel? exchange) {
