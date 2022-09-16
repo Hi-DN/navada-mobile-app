@@ -54,6 +54,10 @@ class CompleteExchangeViewModel extends ChangeNotifier {
   setConfirmedRating(bool val) {
     setInitial(false);
     _hasConfirmedRating = val;
+    if(val) {
+      setConfirmedNoRating(false);
+      setStarGrey(false);
+    }
     notifyListeners();
   }
 }

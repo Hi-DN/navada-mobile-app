@@ -86,11 +86,9 @@ class ExchangeConfirmModal extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           LongCircledBtn(
-            onTap: () async {
+            onTap: () {
               if(!isInitial) {
-                if(hasConfirmedRating)
-                  await provider.rateExchange(exchange.exchangeId, isAcceptor, rating);
-                await provider.completeExchange(exchange.exchangeId, isAcceptor);
+                provider.completeExchange(exchange.exchangeId, isAcceptor, hasConfirmedRating, rating);
                 viewModel.setCompleteFeatureActive(false);
                 Navigator.of(context).pop();
               }
@@ -170,7 +168,6 @@ class _RatingSection extends StatelessWidget {
   }
 
   Widget _confirmBtnSection() {
-    ScreenSize size = ScreenSize();
     return Consumer<CompleteExchangeViewModel>(builder: 
     (BuildContext context, CompleteExchangeViewModel viewModel, Widget? _) {
       
@@ -180,36 +177,52 @@ class _RatingSection extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          GestureDetector(
-            onTap: () {
-              viewModel.setConfirmedNoRating(true);
-
-            },
-            child: Container(
-              alignment: Alignment.center,
-              width: size.getSize(115), 
-              height: size.getSize(40),
-              decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: hasConfirmedNoRating ? grey183 : white,
-              border: Border.all(color: grey183, width: 1.0),
+          _RatingConfirmBtn(
+              backgroundColor: hasConfirmedNoRating ? grey183 : white,
+              borderColor: grey183,
+              text: "안줄래요",
+              textColor: hasConfirmedNoRating ? white : grey183,
+              onTap: () => viewModel.setConfirmedNoRating(true),
             ),
-              child: R16Text(text: "안줄래요", textColor: hasConfirmedNoRating ? white : grey183),
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            width: size.getSize(115), 
-            height: size.getSize(40),
-            decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: hasConfirmedRating ? green : white,
-            border: Border.all(color: green, width: 1.0),
-          ),
-            child: R16Text(text: "확인", textColor: hasConfirmedRating ? white : grey183),
-          )
+          _RatingConfirmBtn(
+              backgroundColor: hasConfirmedRating ? green : white,
+              borderColor: green,
+              text: "확인",
+              textColor: hasConfirmedRating ? white : green,
+              onTap: () => viewModel.setConfirmedRating(true)
+            )
         ],
       );
     });
+  }
+}
+
+class _RatingConfirmBtn extends StatelessWidget {
+  const _RatingConfirmBtn({Key? key, this.backgroundColor, this.borderColor, this.textColor, this.text, required this.onTap}) : super(key: key);
+
+  final Color? backgroundColor;
+  final Color? borderColor;
+  final Color? textColor;
+  final String? text;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    ScreenSize size = ScreenSize();
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        width: size.getSize(115), 
+        height: size.getSize(40),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: backgroundColor,
+          border: Border.all(color: borderColor!, width: 1.0),
+        ),
+        child: R16Text(text: text, textColor: textColor!),
+      ),
+    );
   }
 }

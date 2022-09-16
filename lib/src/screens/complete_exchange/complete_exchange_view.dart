@@ -56,7 +56,6 @@ class CompleteExchangeView extends StatelessWidget {
           ),
         );
       })
-      
     );
   }
 
