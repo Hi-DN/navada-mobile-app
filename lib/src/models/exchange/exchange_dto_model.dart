@@ -76,6 +76,8 @@ class ExchangeDtoModel {
   int? exchangeId;
   int? requesterId;
   int? acceptorId;
+  bool? requesterConfirmYn;
+  bool? acceptorConfirmYn;
   ProductModel? acceptorProduct;
   ProductModel? requesterProduct;
 
@@ -83,6 +85,8 @@ class ExchangeDtoModel {
       {this.exchangeId,
       this.requesterId,
       this.acceptorId,
+      this.requesterConfirmYn,
+      this.acceptorConfirmYn,
       this.acceptorProduct,
       this.requesterProduct});
 
@@ -90,6 +94,8 @@ class ExchangeDtoModel {
     exchangeId = json['exchangeId'];
     requesterId = json['requesterId'];
     acceptorId = json['acceptorId'];
+    requesterConfirmYn = json['requesterConfirmYn'];
+    acceptorConfirmYn = json['acceptorConfirmYn'];
     acceptorProduct = json['acceptorProduct'] != null
         ? ProductModel.fromJson(json['acceptorProduct'])
         : null;
@@ -103,6 +109,8 @@ class ExchangeDtoModel {
     data['exchangeId'] = exchangeId;
     data['requesterId'] = requesterId;
     data['acceptorId'] = acceptorId;
+    data['requesterConfirmYn'] = requesterConfirmYn;
+    data['acceptorConfirmYn'] = acceptorConfirmYn;
     if (acceptorProduct != null) {
       data['acceptorProduct'] = acceptorProduct!.toJson();
     }
