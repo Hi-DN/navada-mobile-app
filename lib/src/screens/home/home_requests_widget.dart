@@ -218,7 +218,7 @@ class RequestItem extends StatelessWidget {
             width: size.getSize(160.0),
             height: size.getSize(160.0),
           ),
-          if (request!.exchangeStatusCd == ExchangeStatusCd.DENIED)
+          if (request!.requestStatusCd == RequestStatusCd.DENIED)
             _blackTransparentFilter()
         ],
       ),
@@ -252,7 +252,7 @@ class RequestItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
             _costRangeInfo(),
-            if (request!.exchangeStatusCd == ExchangeStatusCd.DENIED)
+            if (request!.requestStatusCd == RequestStatusCd.DENIED)
               _deleteDeniedRequestBtn(),
           ],)
         ],

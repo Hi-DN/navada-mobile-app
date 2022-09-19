@@ -129,7 +129,7 @@ class _RequestListView extends StatelessWidget {
 
   _dismissibleListItem(BuildContext? context, RequestModel request) {
     ScreenSize size = ScreenSize();
-    bool isWait = request.exchangeStatusCd == ExchangeStatusCd.WAIT;
+    bool isWait = request.requestStatusCd == RequestStatusCd.WAIT;
     
     return Dismissible(
       key: UniqueKey(),
@@ -200,7 +200,7 @@ class RequestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isWait = request?.exchangeStatusCd == ExchangeStatusCd.WAIT;
+    bool isWait = request?.requestStatusCd == RequestStatusCd.WAIT;
 
     return MyExchangeCard(
       statusSign: isWait

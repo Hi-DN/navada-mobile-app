@@ -74,7 +74,7 @@ class RequestPageResponse {
 
 class RequestModel {
   int? requestId;
-  ExchangeStatusCd? exchangeStatusCd;
+  RequestStatusCd? requestStatusCd;
   String? acceptorNickname;
   String? requesterNickName;
   String? acceptorProductName;
@@ -86,7 +86,7 @@ class RequestModel {
 
   RequestModel(
       {this.requestId,
-      this.exchangeStatusCd,
+      this.requestStatusCd,
       this.acceptorNickname,
       this.requesterNickName,
       this.acceptorProductName,
@@ -98,7 +98,7 @@ class RequestModel {
 
   RequestModel.fromJson(Map<String, dynamic> json) {
     requestId = json['requestId'];
-    exchangeStatusCd = ExchangeStatusCd.intToEnum(json['exchangeStatusCd']);
+    requestStatusCd = RequestStatusCd.codeToEnum(json['requestStatusCd']);
     acceptorNickname = json['acceptorNickname'];
     requesterNickName = json['requesterNickName'];
     acceptorProductName = json['acceptorProductName'];
@@ -112,7 +112,7 @@ class RequestModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['requestId'] = requestId;
-    data['exchangeStatusCd'] = exchangeStatusCd!.code.toString();
+    data['requestStatusCd'] = requestStatusCd!.code.toString();
     data['acceptorNickname'] = acceptorNickname;
     data['requesterNickName'] = requesterNickName;
     data['acceptorProductName'] = acceptorProductName;

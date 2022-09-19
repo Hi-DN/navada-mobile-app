@@ -196,15 +196,15 @@ class HeartListSection extends StatelessWidget {
   }
 
   Widget _statusBadge(ProductModel product) {
-    switch (product.productStatusCd) {
-      case ProductStatusCd.REGISTERED:
+    switch (product.productExchangeStatusCd) {
+      case ProductExchangeStatusCd.REGISTERED:
         return Container();
-      case ProductStatusCd.TRADING:
+      case ProductExchangeStatusCd.TRADING:
         return const StatusBadge(
           label: '교환중',
           backgroundColor: green,
         );
-      case ProductStatusCd.TRADE_COMPLETED:
+      case ProductExchangeStatusCd.TRADE_COMPLETED:
         return const StatusBadge(
           label: '교환완료',
           backgroundColor: navy,
