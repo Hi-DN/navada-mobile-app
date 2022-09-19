@@ -24,7 +24,7 @@ class ProductDetailBottomButton extends StatelessWidget {
     Provider.of<ProductDetailProvider>(context, listen: false)
         .fetchRequestDtoList(product.productId!);
 
-    return product.productStatusCd == ProductStatusCd.REGISTERED
+    return product.productExchangeStatusCd == ProductExchangeStatusCd.REGISTERED
         ? Consumer<ProductDetailProvider>(
             builder: (context, provider, widget) {
               if (provider.fetchCompleted && provider.requestDtoModel.success) {
@@ -37,7 +37,7 @@ class ProductDetailBottomButton extends StatelessWidget {
               }
             },
           )
-        : _canNotTradeButton(product.productStatusCd!);
+        : _canNotTradeButton(product.productExchangeStatusCd!);
   }
 
   Widget _oneBottomButton(BuildContext context, ProductModel product) {
@@ -103,7 +103,7 @@ class ProductDetailBottomButton extends StatelessWidget {
     ]);
   }
 
-  Widget _canNotTradeButton(ProductStatusCd productStatusCd) {
+  Widget _canNotTradeButton(ProductExchangeStatusCd productExchangeStatusCd) {
     return Column(children: [
       Expanded(child: Container()),
       SizedBox(
@@ -114,7 +114,7 @@ class ProductDetailBottomButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16.0), color: grey153),
             child: Center(
                 child: R18Text(
-              text: productStatusCd == ProductStatusCd.TRADING
+              text: productExchangeStatusCd == ProductExchangeStatusCd.TRADING
                   ? '교환중인 물품입니다.'
                   : '교환 완료된 물품입니다.',
               textColor: Colors.white,

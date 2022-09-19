@@ -20,19 +20,19 @@ class RequestDtoModel {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['success'] = success;
-    _data['code'] = code;
-    _data['message'] = message;
-    _data['dataList'] = dataList.map((e) => e.toJson()).toList();
-    return _data;
+    final data = <String, dynamic>{};
+    data['success'] = success;
+    data['code'] = code;
+    data['message'] = message;
+    data['dataList'] = dataList.map((e) => e.toJson()).toList();
+    return data;
   }
 }
 
 class RequestDtoContentModel {
   RequestDtoContentModel({
     required this.requestId,
-    required this.exchangeStatusCd,
+    required this.requestStatusCd,
     required this.acceptorNickname,
     required this.requesterNickName,
     required this.acceptorProductName,
@@ -43,7 +43,7 @@ class RequestDtoContentModel {
     required this.requesterProductCostRange,
   });
   late final int requestId;
-  late final int exchangeStatusCd;
+  late final int requestStatusCd;
   late final String acceptorNickname;
   late final String requesterNickName;
   late final String acceptorProductName;
@@ -55,7 +55,7 @@ class RequestDtoContentModel {
 
   RequestDtoContentModel.fromJson(Map<String, dynamic> json) {
     requestId = json['requestId'];
-    exchangeStatusCd = json['exchangeStatusCd'];
+    requestStatusCd = json['requestStatusCd'];
     acceptorNickname = json['acceptorNickname'];
     requesterNickName = json['requesterNickName'];
     acceptorProductName = json['acceptorProductName'];
@@ -67,17 +67,17 @@ class RequestDtoContentModel {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['requestId'] = requestId;
-    _data['exchangeStatusCd'] = exchangeStatusCd;
-    _data['acceptorNickname'] = acceptorNickname;
-    _data['requesterNickName'] = requesterNickName;
-    _data['acceptorProductName'] = acceptorProductName;
-    _data['requesterProductName'] = requesterProductName;
-    _data['acceptorProductCost'] = acceptorProductCost;
-    _data['requesterProductCost'] = requesterProductCost;
-    _data['acceptorProductCostRange'] = acceptorProductCostRange;
-    _data['requesterProductCostRange'] = requesterProductCostRange;
-    return _data;
+    final data = <String, dynamic>{};
+    data['requestId'] = requestId;
+    data['requestStatusCd'] = requestStatusCd;
+    data['acceptorNickname'] = acceptorNickname;
+    data['requesterNickName'] = requesterNickName;
+    data['acceptorProductName'] = acceptorProductName;
+    data['requesterProductName'] = requesterProductName;
+    data['acceptorProductCost'] = acceptorProductCost;
+    data['requesterProductCost'] = requesterProductCost;
+    data['acceptorProductCostRange'] = acceptorProductCostRange;
+    data['requesterProductCostRange'] = requesterProductCostRange;
+    return data;
   }
 }

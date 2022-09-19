@@ -7,7 +7,7 @@ class ProductModel {
   String? productExplanation;
   String? userNickname;
   Category? category;
-  ProductStatusCd? productStatusCd;
+  ProductExchangeStatusCd? productExchangeStatusCd;
   int? heartNum;
   int? productCost;
   int? exchangeCostRange;
@@ -18,7 +18,7 @@ class ProductModel {
       this.productExplanation,
       this.userNickname,
       this.category,
-      this.productStatusCd,
+      this.productExchangeStatusCd,
       this.heartNum,
       this.productCost,
       this.exchangeCostRange});
@@ -29,7 +29,7 @@ class ProductModel {
     productExplanation = json['productExplanation'];
     userNickname = json['userNickname'];
     category = Category.objToEnum(CategoryModel.fromJson(json['category']));
-    productStatusCd = ProductStatusCd.intToEnum(json['productStatusCd']);
+    productExchangeStatusCd = ProductExchangeStatusCd.codeToEnum(json['productExchangeStatusCd']);
     heartNum = json['heartNum'];
     productCost = json['productCost'];
     exchangeCostRange = json['exchangeCostRange'];
@@ -44,7 +44,7 @@ class ProductModel {
     if (category != null) {
       data['category'] = Category.enumToObj(category!).toJson();
     }
-    data['productStatusCd'] = productStatusCd?.code;
+    data['productExchangeStatusCd'] = productExchangeStatusCd?.code;
     data['heartNum'] = heartNum;
     data['productCost'] = productCost;
     data['exchangeCostRange'] = exchangeCostRange;
