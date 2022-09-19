@@ -20,18 +20,18 @@ class MyPage extends StatelessWidget {
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: size.getSize(22)),
           child: Column(children: const [
-            UserProfile(),
+            _UserProfile(),
             CustomDivider(),
-            UserActivities(),
+            _UserActivities(),
             CustomDivider(),
-            AccountManagement()
+            _AccountManagement()
           ]),
         ));
   }
 }
 
-class UserProfile extends StatelessWidget {
-  const UserProfile({Key? key}) : super(key: key);
+class _UserProfile extends StatelessWidget {
+  const _UserProfile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +71,8 @@ class UserProfile extends StatelessWidget {
   }
 }
 
-class UserActivities extends StatelessWidget {
-  const UserActivities({Key? key}) : super(key: key);
+class _UserActivities extends StatelessWidget {
+  const _UserActivities({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,14 +80,14 @@ class UserActivities extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Space(height: 16),
-        const TitleText(text: "내 활동"),
+        const _TitleText(text: "내 활동"),
         const Space(height: 21),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            iconTile(Icons.shopping_bag_outlined, "내 물품 목록"),
-            iconTile(Icons.list_alt_rounded, "거래 후기 내역"),
-            iconTile(Icons.local_activity_outlined, "내 활동 3")
+            _iconTile(Icons.shopping_bag_outlined, "내 물품 목록"),
+            _iconTile(Icons.favorite_border_outlined, "좋아요 목록"),
+            _iconTile(Icons.list_alt_rounded, "교환 내역")
           ],
         ),
         const Space(height: 24),
@@ -95,13 +95,13 @@ class UserActivities extends StatelessWidget {
     );
   }
 
-  Widget iconTile(IconData icon, String label) {
+  Widget _iconTile(IconData icon, String label) {
     ScreenSize size = ScreenSize();
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: size.getSize(5)),
       child: Column(children: [
-        Icon(icon, color: grey183, size: size.getSize(50)),
+        Icon(icon, color: grey183, size: size.getSize(48)),
         const Space(height: 5),
         R14Text(text: label)
       ]),
@@ -109,8 +109,8 @@ class UserActivities extends StatelessWidget {
   }
 }
 
-class AccountManagement extends StatelessWidget {
-  const AccountManagement({Key? key}) : super(key: key);
+class _AccountManagement extends StatelessWidget {
+  const _AccountManagement({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -118,17 +118,18 @@ class AccountManagement extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Space(height: 16),
-        const TitleText(text: "계정관리"),
+        const _TitleText(text: "계정관리"),
         const Space(height: 12),
-        listTile("계정 정보 설정"),
-        listTile("로그아웃"),
-        listTile("회원 탈퇴"),
+        _listTile("계정 정보 설정"),
+        _listTile("앱 정보"),
+        _listTile("로그아웃"),
+        _listTile("회원 탈퇴"),
         const Space(height: 24),
       ],
     );
   }
 
-  Widget listTile(String text) {
+  Widget _listTile(String text) {
     ScreenSize size = ScreenSize();
     return Padding(
         padding: EdgeInsets.symmetric(vertical: size.getSize(6)),
@@ -141,8 +142,8 @@ class AccountManagement extends StatelessWidget {
   }
 }
 
-class TitleText extends StatelessWidget {
-  const TitleText({Key? key, this.text}) : super(key: key);
+class _TitleText extends StatelessWidget {
+  const _TitleText({Key? key, this.text}) : super(key: key);
 
   final String? text;
 

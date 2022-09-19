@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
-import 'package:navada_mobile_app/src/screens/heart/heart_view.dart';
 import 'package:navada_mobile_app/src/screens/home/home_view.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view.dart';
 import 'package:navada_mobile_app/src/screens/my_page.dart';
@@ -20,8 +19,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
   final List<Widget> _widgetList = [
     const HomeView(),
+    const Text('1'),
     const MyExchangesView(),
-    const HeartView(),
     const MyPage()
   ];
 
@@ -62,8 +61,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           children: [
             _buildMenu(0, Icons.home_outlined),
             _buildMenu(1, Icons.menu),
-            const SizedBox(width: 70.0),
-            _buildMenu(2, Icons.favorite_border_outlined),
+            const SizedBox(width: 66.0),
+            _buildMenu(2, Icons.compare_arrows),
             _buildMenu(3, Icons.person_outline),
           ],
         ),
