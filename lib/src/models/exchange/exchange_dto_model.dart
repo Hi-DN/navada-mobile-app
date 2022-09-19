@@ -80,6 +80,7 @@ class ExchangeDtoModel {
   bool? acceptorConfirmYn;
   ProductModel? acceptorProduct;
   ProductModel? requesterProduct;
+  bool? exchangeCompleteYn;
 
   ExchangeDtoModel(
       {this.exchangeId,
@@ -88,7 +89,8 @@ class ExchangeDtoModel {
       this.requesterConfirmYn,
       this.acceptorConfirmYn,
       this.acceptorProduct,
-      this.requesterProduct});
+      this.requesterProduct,
+      this.exchangeCompleteYn});
 
   ExchangeDtoModel.fromJson(Map<String, dynamic> json) {
     exchangeId = json['exchangeId'];
@@ -102,6 +104,7 @@ class ExchangeDtoModel {
     requesterProduct = json['requesterProduct'] != null
         ? ProductModel.fromJson(json['requesterProduct'])
         : null;
+    exchangeCompleteYn = json['exchangeCompleteYn'];
   }
 
   Map<String, dynamic> toJson() {
@@ -117,6 +120,7 @@ class ExchangeDtoModel {
     if (requesterProduct != null) {
       data['requesterProduct'] = requesterProduct!.toJson();
     }
+    data['exchangeCompleteYn'] = exchangeCompleteYn;
     return data;
   }
 }

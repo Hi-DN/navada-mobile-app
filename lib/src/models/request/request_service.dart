@@ -8,7 +8,7 @@ class RequestService {
   // 나에게 온 교환신청 리스트 조회
   Future<RequestPageResponse?> getRequestsForMe(int userId, int pageNum) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
-        '/acceptor/$userId/exchange/requests?exchangeStatusCd=0&page=$pageNum',
+        '/acceptor/$userId/exchange/requests?requestStatusCds=0&page=$pageNum',
         tokenYn: false);
 
     if (data['success']) {
@@ -22,7 +22,7 @@ class RequestService {
   Future<RequestPageResponse?> getRequestsForMeIncludingDenied(
       int userId, int pageNum) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
-        '/acceptor/$userId/exchange/requests?exchangeStatusCd=0,2&page=$pageNum',
+        '/acceptor/$userId/exchange/requests?requestStatusCds=0,2&page=$pageNum',
         tokenYn: false);
 
     if (data['success']) {
