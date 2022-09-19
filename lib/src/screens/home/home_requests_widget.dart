@@ -265,7 +265,7 @@ class RequestItem extends StatelessWidget {
       children: [
         B12Text(text: Shortener.shortenStrTo(request!.requesterProductName!, 10)),
         R12Text(
-            text: ' | ${Shortener.shortenStrTo(request!.requesterNickName!, 5)}',
+            text: ' | ${Shortener.shortenStrTo(request!.requesterNickName!, 4)}',
             textColor: grey153)
       ],
     );
