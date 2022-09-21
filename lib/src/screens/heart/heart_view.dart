@@ -3,6 +3,7 @@ import 'package:navada_mobile_app/src/providers/heart_provider.dart';
 import 'package:navada_mobile_app/src/screens/heart/heart_view_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/heart/heart_list_model.dart';
@@ -13,7 +14,6 @@ import '../../widgets/divider.dart';
 import '../../widgets/screen_size.dart';
 import '../../widgets/space.dart';
 import '../../widgets/status_badge.dart';
-import '../../widgets/text_style.dart';
 
 class HeartView extends StatelessWidget {
   const HeartView({Key? key}) : super(key: key);
@@ -139,28 +139,35 @@ class HeartListSection extends StatelessWidget {
                     SizedBox(
                       width: size.getSize(12.0),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        B14Text(text: product.productName),
-                        RichText(
-                            text: TextSpan(children: [
-                          const TextSpan(
-                              text: '원가 ',
-                              style: TextStyle(
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black)),
-                          TextSpan(
-                              text: '${product.productCost}원',
-                              style: const TextStyle(color: Colors.black))
-                        ])),
-                        Space(height: size.getSize(5.0)),
-                        _statusBadge(product),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Shortener.shortenStrWithMaxLines(
+                              product.productName,
+                              1,
+                              TextStyle(
+                                  fontSize: size.getSize(14.0),
+                                  fontWeight: FontWeight.w700)),
+                          RichText(
+                              text: TextSpan(children: [
+                            const TextSpan(
+                                text: '원가 ',
+                                style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black)),
+                            TextSpan(
+                                text: '${product.productCost}원',
+                                style: const TextStyle(color: Colors.black))
+                          ])),
+                          Space(height: size.getSize(5.0)),
+                          _statusBadge(product),
+                        ],
+                      ),
                     ),
-                    Expanded(child: Container()),
+                    SizedBox(width: size.getSize(12.0)),
                     IconButton(
                         onPressed: () {
                           Provider.of<HeartViewModel>(context, listen: false)
