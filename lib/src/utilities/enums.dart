@@ -1,3 +1,4 @@
+
 import 'package:navada_mobile_app/src/models/product/category/category_model.dart';
 
 enum UserLevel { 
@@ -16,41 +17,41 @@ enum UserLevel {
   }
 }
 
-enum ProductStatusCd {
-  REGISTERED(0,'등록'),     
-  TRADING(1,'거래중'),        
-  TRADE_COMPLETED(2,'거래완료');
+enum ProductExchangeStatusCd {
+  REGISTERED('0','등록'),     
+  TRADING('1','거래중'),        
+  TRADE_COMPLETED('2','거래완료');
 
-  const ProductStatusCd(this.code, this.label);
+  const ProductExchangeStatusCd(this.code, this.label);
 
-  final int code;
+  final String code;
   final String label;
 
-  static ProductStatusCd strToEnum(String str) {
-    return ProductStatusCd.values.byName(str);
+  static ProductExchangeStatusCd strToEnum(String str) {
+    return ProductExchangeStatusCd.values.byName(str);
   }
 
-  static ProductStatusCd intToEnum(int indexCode) {
-    return ProductStatusCd.values[indexCode];
+  static ProductExchangeStatusCd codeToEnum(String code) {
+    return ProductExchangeStatusCd.values[int.parse(code)];
   }
 }
 
-enum ExchangeStatusCd {
-  WAIT(0,'대기'),     
-  ACCEPTED(1,'수락'),
-  DENIED(2,'거절');
+enum RequestStatusCd {
+  WAIT('0','대기'),     
+  ACCEPTED('1','수락'),
+  DENIED('2','거절');
   
-  const ExchangeStatusCd(this.code, this.label);
+  const RequestStatusCd(this.code, this.label);
 
-  final int code;
+  final String code;
   final String label;
 
-  static ExchangeStatusCd strToEnum(String str) {
-    return ExchangeStatusCd.values.byName(str);
+  static RequestStatusCd strToEnum(String str) {
+    return RequestStatusCd.values.byName(str);
   }
 
-  static ExchangeStatusCd intToEnum(int indexCode) {
-    return ExchangeStatusCd.values[indexCode];
+  static RequestStatusCd codeToEnum(String code) {
+    return RequestStatusCd.values[int.parse(code)];
   }
 }
 

@@ -218,7 +218,7 @@ class RequestItem extends StatelessWidget {
             width: size.getSize(160.0),
             height: size.getSize(160.0),
           ),
-          if (request!.exchangeStatusCd == ExchangeStatusCd.DENIED)
+          if (request!.requestStatusCd == RequestStatusCd.DENIED)
             _blackTransparentFilter()
         ],
       ),
@@ -252,7 +252,7 @@ class RequestItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
             _costRangeInfo(),
-            if (request!.exchangeStatusCd == ExchangeStatusCd.DENIED)
+            if (request!.requestStatusCd == RequestStatusCd.DENIED)
               _deleteDeniedRequestBtn(),
           ],)
         ],
@@ -265,7 +265,7 @@ class RequestItem extends StatelessWidget {
       children: [
         B12Text(text: Shortener.shortenStrTo(request!.requesterProductName!, 10)),
         R12Text(
-            text: ' | ${Shortener.shortenStrTo(request!.requesterNickName!, 5)}',
+            text: ' | ${Shortener.shortenStrTo(request!.requesterNickName!, 4)}',
             textColor: grey153)
       ],
     );

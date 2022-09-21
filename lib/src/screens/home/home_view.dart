@@ -26,15 +26,14 @@ class HomeView extends StatelessWidget {
     return Scaffold(
         body: MultiProvider(
             providers: [
-          ChangeNotifierProvider(
-              create: (context) => RequestsForMeProvider(user.userId)),
-          ChangeNotifierProvider(create: (context) => HomeViewModel()),
-        ],
+              ChangeNotifierProvider(create: (context) => RequestsForMeProvider(user.userId)),
+              ChangeNotifierProvider(create: (context) => HomeViewModel()),
+            ],
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: size.getSize(22)),
               child: Column(children: [
-                const HomeTopBar(),
-                const CategorySection(),
+                const _HomeTopBar(),
+                const _CategorySection(),
                 const CustomDivider(),
                 Expanded(child: RequestsForMe())
               ]),
@@ -42,8 +41,8 @@ class HomeView extends StatelessWidget {
   }
 }
 
-class HomeTopBar extends StatelessWidget {
-  const HomeTopBar({Key? key}) : super(key: key);
+class _HomeTopBar extends StatelessWidget {
+  const _HomeTopBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +50,9 @@ class HomeTopBar extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: size.getSize(10)),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          _logo(),
-          const Space(width: 15),
-          const Expanded(child: SearchBox())
+          _logo()
         ],
       ),
     );
@@ -70,33 +68,8 @@ class HomeTopBar extends StatelessWidget {
   }
 }
 
-class SearchBox extends StatelessWidget {
-  const SearchBox({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    ScreenSize size = ScreenSize();
-
-    return Container(
-        padding: EdgeInsets.only(left: size.getSize(10)),
-        height: size.getSize(40),
-        decoration: BoxDecoration(
-          border: Border.all(color: grey216, width: 1.0),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(Icons.search, color: grey216, size: size.getSize(24)),
-            const Space(width: 5),
-            const R14Text(text: '검색어를 입력해주세요', textColor: grey216)
-          ],
-        ));
-  }
-}
-
-class CategorySection extends StatelessWidget {
-  const CategorySection({Key? key}) : super(key: key);
+class _CategorySection extends StatelessWidget {
+  const _CategorySection({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -129,13 +102,14 @@ class CategorySection extends StatelessWidget {
   Widget _categoryFirstSlide(CarouselController carouselController) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Expanded(
-          child: Column(children: [
-        const Space(height: 10),
-        CategoryIconsRow(children: _rowContent1),
-        CategoryIconsRow(children: _rowContent2),
-        const Space(height: 18),
-      ])),
-      _nextPageArrowBtn(carouselController)
+          child: Column(
+            children: [
+              const Space(height: 10),
+              _CategoryIconsRow(children: _rowContent1),
+              _CategoryIconsRow(children: _rowContent2),
+              const Space(height: 18),
+            ])),
+            _nextPageArrowBtn(carouselController)
     ]);
   }
 
@@ -154,11 +128,12 @@ class CategorySection extends StatelessWidget {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       _prevPageArrowBtn(carouselController),
       Expanded(
-          child: Column(children: [
-        const Space(height: 10),
-        CategoryIconsRow(children: _rowContent3),
-        const Space(height: 78)
-      ])),
+          child: Column(
+            children: [
+              const Space(height: 10),
+              _CategoryIconsRow(children: _rowContent3),
+              const Space(height: 78)
+            ])),
     ]);
   }
 
@@ -174,32 +149,32 @@ class CategorySection extends StatelessWidget {
   }
 
   final _rowContent1 = const [
-    CategoryIconTile(icon: Icons.card_giftcard_outlined, label: '기프티콘'),
-    CategoryIconTile(icon: Icons.devices, label: '전자기기'),
-    CategoryIconTile(icon: Icons.chair_outlined, label: '가구'),
-    CategoryIconTile(icon: Icons.stroller_outlined, label: '유아용품'),
-    CategoryIconTile(icon: Icons.sports_baseball_outlined, label: '스포츠'),
+    _CategoryIconTile(icon: Icons.card_giftcard_outlined, label: '기프티콘'),
+    _CategoryIconTile(icon: Icons.devices, label: '전자기기'),
+    _CategoryIconTile(icon: Icons.chair_outlined, label: '가구'),
+    _CategoryIconTile(icon: Icons.stroller_outlined, label: '유아용품'),
+    _CategoryIconTile(icon: Icons.sports_baseball_outlined, label: '스포츠'),
   ];
 
   final _rowContent2 = const [
-    CategoryIconTile(icon: Icons.fastfood_outlined, label: '식품'),
-    CategoryIconTile(icon: Icons.brush_outlined, label: '취미용품'),
-    CategoryIconTile(icon: Icons.face_retouching_natural, label: '미용'),
-    CategoryIconTile(icon: Icons.female, label: '여성의류'),
-    CategoryIconTile(icon: Icons.male, label: '남성의류'),
+    _CategoryIconTile(icon: Icons.fastfood_outlined, label: '식품'),
+    _CategoryIconTile(icon: Icons.brush_outlined, label: '취미용품'),
+    _CategoryIconTile(icon: Icons.face_retouching_natural, label: '미용'),
+    _CategoryIconTile(icon: Icons.female, label: '여성의류'),
+    _CategoryIconTile(icon: Icons.male, label: '남성의류'),
   ];
 
   final _rowContent3 = const [
-    CategoryIconTile(icon: Icons.pets_outlined, label: '반려동물'),
-    CategoryIconTile(icon: Icons.menu_book, label: '도서'),
-    CategoryIconTile(icon: Icons.toys_outlined, label: '장난감'),
-    CategoryIconTile(icon: Icons.park_outlined, label: '식물'),
-    CategoryIconTile(icon: Icons.more_horiz, label: '기타'),
+    _CategoryIconTile(icon: Icons.pets_outlined, label: '반려동물'),
+    _CategoryIconTile(icon: Icons.menu_book, label: '도서'),
+    _CategoryIconTile(icon: Icons.toys_outlined, label: '장난감'),
+    _CategoryIconTile(icon: Icons.park_outlined, label: '식물'),
+    _CategoryIconTile(icon: Icons.more_horiz, label: '기타'),
   ];
 }
 
-class CategoryIconsRow extends StatelessWidget {
-  const CategoryIconsRow({Key? key, this.rowNum, this.children})
+class _CategoryIconsRow extends StatelessWidget {
+  const _CategoryIconsRow({Key? key, this.rowNum, this.children})
       : super(key: key);
 
   final int? rowNum;
@@ -220,8 +195,8 @@ class CategoryIconsRow extends StatelessWidget {
   }
 }
 
-class CategoryIconTile extends StatelessWidget {
-  const CategoryIconTile({Key? key, this.icon, this.label}) : super(key: key);
+class _CategoryIconTile extends StatelessWidget {
+  const _CategoryIconTile({Key? key, this.icon, this.label}) : super(key: key);
 
   final IconData? icon;
   final String? label;
