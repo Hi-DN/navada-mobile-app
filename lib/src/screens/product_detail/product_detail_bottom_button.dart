@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/request/request_dto_model.dart';
-import 'package:navada_mobile_app/src/screens/product_detail/product_detail_requests.dart';
+import 'package:navada_mobile_app/src/screens/product_detail/product_detail_acceptance.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:provider/provider.dart';
@@ -21,11 +21,11 @@ class ProductDetailBottomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ProductDetailProvider>(context, listen: false)
+    Provider.of<ProductDetailAcceptanceProvider>(context, listen: false)
         .fetchRequestDtoList(product.productId!);
 
     return product.productExchangeStatusCd == ProductExchangeStatusCd.REGISTERED
-        ? Consumer<ProductDetailProvider>(
+        ? Consumer<ProductDetailAcceptanceProvider>(
             builder: (context, provider, widget) {
               if (provider.fetchCompleted && provider.requestDtoModel.success) {
                 return provider.requestDtoList.isEmpty
@@ -96,7 +96,7 @@ class ProductDetailBottomButton extends StatelessWidget {
               ),
             ),
           ),
-          const ProductDetailRequests(),
+          const ProductDetailAcceptance(),
         ],
       ),
       const SizedBox(height: 20.0),

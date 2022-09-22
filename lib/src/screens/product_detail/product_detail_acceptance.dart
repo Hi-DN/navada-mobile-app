@@ -8,20 +8,20 @@ import '../../widgets/colors.dart';
 import '../../widgets/screen_size.dart';
 import '../../widgets/text_style.dart';
 
-class ProductDetailRequests extends StatefulWidget {
-  const ProductDetailRequests({Key? key}) : super(key: key);
+class ProductDetailAcceptance extends StatefulWidget {
+  const ProductDetailAcceptance({Key? key}) : super(key: key);
 
   @override
-  ProductDetailRequestsState createState() => ProductDetailRequestsState();
+  ProductDetailAcceptanceState createState() => ProductDetailAcceptanceState();
 }
 
-class ProductDetailRequestsState extends State<ProductDetailRequests> {
+class ProductDetailAcceptanceState extends State<ProductDetailAcceptance> {
   final ScreenSize screenSize = ScreenSize();
 
   @override
   Widget build(BuildContext context) {
     List<RequestDtoContentModel> requestList =
-        Provider.of<ProductDetailProvider>(context, listen: false)
+        Provider.of<ProductDetailAcceptanceProvider>(context, listen: false)
             .requestDtoList;
 
     return SizedBox(
@@ -63,8 +63,13 @@ class RequestListSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => ProductDetailAcceptanceViewModel(),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+              create: (context) => ProductDetailAcceptanceViewModel()),
+          ChangeNotifierProvider(
+              create: (context) => ProductDetailAcceptanceProvider()),
+        ],
         child: Center(
           child: Column(
             children: [
@@ -195,20 +200,65 @@ class RequestListSheet extends StatelessWidget {
   }
 
   Widget _acceptRequestButton() {
-    return SizedBox(
-      width: screenSize.getSize(327.0),
-      height: screenSize.getSize(50.0),
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-            elevation: 0.0,
-            primary: navy,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(27.0))),
-        child: const R18Text(
-          text: '교환 수락하기',
-          textColor: Colors.white,
+    return Consumer2<ProductDetailAcceptanceProvider,
+            ProductDetailAcceptanceViewModel>(
+        builder: (context, provider, viewModel, child) {
+      return SizedBox(
+        width: screenSize.getSize(327.0),
+        height: screenSize.getSize(50.0),
+        child: ElevatedButton(
+          onPressed: () async {
+            if (viewModel.selectedRequestId != -1) {
+              await provider
+                  .acceptOneRequest(viewModel.selectedRequestId)
+                  .then((value) => _showResultDialog(context, value));
+            }
+          },
+          style: ElevatedButton.styleFrom(
+              elevation: 0.0,
+              primary: viewModel.selectedRequestId != -1 ? navy : grey153,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(27.0))),
+          child: const R18Text(
+            text: '교환 수락하기',
+            textColor: Colors.white,
+          ),
         ),
+      );
+    });
+  }
+
+  _showResultDialog(BuildContext context, bool success) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => AlertDialog(
+        content: Container(
+            height: screenSize.getSize(70.0),
+            alignment: Alignment.center,
+            child: B16Text(
+                text: success ? '교환신청 수락을 완료했습니다.' : '교환신청 수락에 실패했습니다.')),
+        actions: <Widget>[
+          Center(
+            child: SizedBox(
+              width: screenSize.getSize(120.0),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                style: TextButton.styleFrom(
+                    backgroundColor: green,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0))),
+                child: const R14Text(
+                  text: '확인',
+                  textColor: Colors.white,
+                ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

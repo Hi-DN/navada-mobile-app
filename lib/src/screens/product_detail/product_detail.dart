@@ -33,7 +33,10 @@ class ProductDetail extends StatelessWidget {
           providers: [
             ChangeNotifierProvider(
                 create: (context) => ProductDetailViewModel(like, likeNum)),
-            ChangeNotifierProvider(create: (context) => ProductDetailProvider())
+            ChangeNotifierProvider(
+                create: (context) => ProductDetailProvider()),
+            ChangeNotifierProvider(
+                create: (context) => ProductDetailAcceptanceProvider())
           ],
           builder: (context, child) {
             return Column(
@@ -70,7 +73,6 @@ class ProductDetail extends StatelessWidget {
     return Stack(children: [
       Container(
         width: double.infinity,
-        // height: MediaQuery.of(context).size.height * 0.5,
         child: Image.asset(
           'assets/images/test.jpeg',
           fit: BoxFit.cover,

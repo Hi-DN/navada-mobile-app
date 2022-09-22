@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 
+// 상품 상세 : 메인 화면
 class ProductDetailViewModel extends ChangeNotifier {
   ProductDetailViewModel(bool initialLike, int initialLikeNum) {
     _like = initialLike;
@@ -25,6 +26,7 @@ class ProductDetailViewModel extends ChangeNotifier {
   }
 }
 
+// 상품 상세 : 교환 수락하기 모달 화면
 class ProductDetailAcceptanceViewModel extends ChangeNotifier {
   int _selectedRequestId = -1;
   int get selectedRequestId => _selectedRequestId;

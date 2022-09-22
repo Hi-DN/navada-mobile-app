@@ -2,6 +2,8 @@ import 'package:navada_mobile_app/src/models/api/http_client.dart';
 import 'package:navada_mobile_app/src/models/request/request_dto_model.dart';
 import 'package:navada_mobile_app/src/models/request/request_model.dart';
 
+import '../exchange/exchange_model.dart';
+
 HttpClient _httpClient = HttpClient();
 
 class RequestService {
@@ -107,6 +109,18 @@ class RequestService {
 
     if (data['success']) {
       return RequestModel.fromJson(data['data']);
+    } else {
+      return null;
+    }
+  }
+
+  //교환 신청 수락
+  Future<ExchangeModel?> acceptRequest(int requestId) async {
+    Map<String, dynamic> data = await _httpClient
+        .postRequest('/exchange/request/$requestId', {}, tokenYn: false);
+
+    if (data['success']) {
+      return ExchangeModel.fromJson(data);
     } else {
       return null;
     }
