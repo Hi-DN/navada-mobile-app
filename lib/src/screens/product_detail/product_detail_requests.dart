@@ -38,70 +38,56 @@ class ProductDetailRequestsState extends State<ProductDetailRequests> {
           textColor: Colors.white,
         ),
         onPressed: () {
-          _showRequestListSheet(
-              Provider.of<ProductDetailViewModel>(context, listen: false).like,
-              requestList);
+          _showRequestListSheet(requestList);
         },
       ),
     );
   }
 
-  void _showRequestListSheet(
-      bool like, List<RequestDtoContentModel> requestList) {
+  void _showRequestListSheet(List<RequestDtoContentModel> requestList) {
     showModalBottomSheet(
         context: context,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         builder: (context) {
-          return RequestListSheet(initialLike: like, requestList: requestList);
+          return RequestListSheet(requestList: requestList);
         });
   }
 }
 
 class RequestListSheet extends StatelessWidget {
-  bool initialLike;
   List<RequestDtoContentModel> requestList;
   ScreenSize screenSize = ScreenSize();
 
-  RequestListSheet(
-      {Key? key, required this.initialLike, required this.requestList})
-      : super(key: key);
+  RequestListSheet({Key? key, required this.requestList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // ignore: avoid_print
-    print("sheet build!");
-
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-              create: (context) => ProductDetailViewModel(initialLike))
-        ],
-        builder: (context, child) {
-          return Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 20.0),
-                Container(
-                  width: screenSize.getSize(42.0),
-                  height: screenSize.getSize(5.0),
-                  decoration: BoxDecoration(
-                      color: const Color(0xFFE2E2E2),
-                      borderRadius: BorderRadius.circular(15.0)),
-                ),
-                const SizedBox(height: 10.0),
-                _explanationText(requestList.length),
-                const SizedBox(height: 10.0),
-                Expanded(
-                  child: _requestListView(requestList),
-                ),
-                const SizedBox(height: 20.0),
-                _acceptRequestButton(),
-                const SizedBox(height: 20.0),
-              ],
-            ),
-          );
-        });
+    return ChangeNotifierProvider(
+        create: (context) => ProductDetailAcceptanceViewModel(),
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 20.0),
+              Container(
+                width: screenSize.getSize(42.0),
+                height: screenSize.getSize(5.0),
+                decoration: BoxDecoration(
+                    color: const Color(0xFFE2E2E2),
+                    borderRadius: BorderRadius.circular(15.0)),
+              ),
+              const SizedBox(height: 10.0),
+              _explanationText(requestList.length),
+              const SizedBox(height: 10.0),
+              Expanded(
+                child: _requestListView(requestList),
+              ),
+              const SizedBox(height: 20.0),
+              _acceptRequestButton(),
+              const SizedBox(height: 20.0),
+            ],
+          ),
+        ));
   }
 
   Widget _requestListView(List<RequestDtoContentModel> requestList) {
@@ -175,14 +161,15 @@ class RequestListSheet extends StatelessWidget {
                   height: screenSize.getSize(20.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      Provider.of<ProductDetailViewModel>(context,
+                      Provider.of<ProductDetailAcceptanceViewModel>(context,
                               listen: false)
                           .setSelectedRequestId(request.requestId);
                     },
                     style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(10.0),
                         elevation: 0.0,
-                        primary: Provider.of<ProductDetailViewModel>(context)
+                        primary: Provider.of<ProductDetailAcceptanceViewModel>(
+                                        context)
                                     .selectedRequestId ==
                                 request.requestId
                             ? green

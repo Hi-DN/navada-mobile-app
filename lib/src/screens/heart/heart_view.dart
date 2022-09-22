@@ -23,7 +23,11 @@ class HeartView extends StatelessWidget {
     ScreenSize size = ScreenSize();
 
     return Scaffold(
-      appBar: CustomAppBar(titleText: '관심 상품 목록'),
+      appBar: CustomAppBar(
+        titleText: '관심 상품 목록',
+        leadingYn: true,
+        onTap: () => Navigator.pop(context),
+      ),
       body: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => HeartViewModel()),
@@ -121,7 +125,10 @@ class HeartListSection extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return ProductDetail(product: product, like: true);
+                    return ProductDetail(
+                        product: product,
+                        like: true,
+                        likeNum: product.heartNum!);
                   })).then((value) =>
                           Provider.of<HeartProvider>(context, listen: false)
                               .fetchHeartList());

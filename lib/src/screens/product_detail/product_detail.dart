@@ -16,9 +16,14 @@ import '../../widgets/colors.dart';
 class ProductDetail extends StatelessWidget {
   final ProductModel product;
   bool like;
+  int likeNum;
   ScreenSize screenSize = ScreenSize();
 
-  ProductDetail({Key? key, required this.product, required this.like})
+  ProductDetail(
+      {Key? key,
+      required this.product,
+      required this.like,
+      required this.likeNum})
       : super(key: key);
 
   @override
@@ -27,13 +32,11 @@ class ProductDetail extends StatelessWidget {
       body: MultiProvider(
           providers: [
             ChangeNotifierProvider(
-                create: (context) => ProductDetailViewModel(true)),
+                create: (context) => ProductDetailViewModel(like, likeNum)),
             ChangeNotifierProvider(create: (context) => ProductDetailProvider())
           ],
           builder: (context, child) {
             return Column(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(flex: 1, child: _productImagesSection(context)),
                 Flexible(
@@ -49,7 +52,6 @@ class ProductDetail extends StatelessWidget {
                             child:
                                 UserInfoSection(productId: product.productId!)),
                         Flexible(flex: 5, child: _productInfoSection(product)),
-                        // const Expanded(child: SizedBox()),
                         Flexible(flex: 1, child: _reportSection()),
                         Flexible(
                             flex: 2,
@@ -118,20 +120,30 @@ class ProductDetail extends StatelessWidget {
             ),
             Consumer2<ProductDetailViewModel, ProductDetailProvider>(
                 builder: (context, viewProvider, provider, widget) {
-              return IconButton(
-                  onPressed: () {
-                    viewProvider.setLikeValue();
-                    viewProvider.like
-                        ? provider.saveHeart(product.productId!)
-                        : provider.deleteHeart(product.productId!);
-                  },
-                  icon: Icon(
-                    viewProvider.like
-                        ? Icons.favorite
-                        : Icons.favorite_border_outlined,
-                    color: const Color(0xFFDD8560),
-                    size: 35.0,
-                  ));
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      viewProvider.setLikeValue();
+                      viewProvider.like
+                          ? provider.saveHeart(product.productId!)
+                          : provider.deleteHeart(product.productId!);
+                    },
+                    icon: Icon(
+                      viewProvider.like
+                          ? Icons.favorite
+                          : Icons.favorite_border_outlined,
+                      color: const Color(0xFFDD8560),
+                      size: 35.0,
+                    ),
+                  ),
+                  R14Text(
+                    text: viewProvider.likeNum.toString(),
+                    textColor: const Color(0xFFDD8560),
+                  )
+                ],
+              );
             })
           ],
         ),
