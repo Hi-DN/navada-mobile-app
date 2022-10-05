@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
+import 'package:navada_mobile_app/src/screens/create_product/create_product_view.dart';
 import 'package:navada_mobile_app/src/screens/home/home_view.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view.dart';
 import 'package:navada_mobile_app/src/screens/my_page.dart';
@@ -43,7 +44,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         padding: const EdgeInsets.only(top:35),
         child: FloatingActionButton(
           onPressed: () {
-            debugPrint('+ 버튼 클릭');
+            Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) => const CreateProductView()));
           },
           tooltip: 'Increment',
           backgroundColor: green,
