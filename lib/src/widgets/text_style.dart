@@ -75,17 +75,21 @@ class B10Text extends StatelessWidget {
 }
 
 class R12Text extends StatelessWidget {
-  const R12Text({Key? key, @required this.text, this.textColor = black})
+  const R12Text({Key? key, @required this.text, this.textColor=black, this.params})
       : super(key: key);
 
   final String? text;
   final Color textColor;
+  final TextParams? params;
 
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
-    return Text(text!,
-        style: styleR.copyWith(fontSize: size.getSize(12), color: textColor));
+    return CustomText(
+      text: text!,
+      style: styleR.copyWith(fontSize: size.getSize(12), color: textColor),
+      params: params,
+    );
   }
 }
 
@@ -222,4 +226,58 @@ class B20Text extends StatelessWidget {
     return Text(text!,
         style: styleB.copyWith(fontSize: size.getSize(20), color: textColor));
   }
+}
+
+class CustomText extends StatelessWidget {
+  const CustomText({Key? key, @required this.text, this.style, this.params})
+     : super(key: key);
+  
+  final String? text;
+  final TextStyle? style;
+  final TextParams? params;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text!,
+      style: style,
+      strutStyle: params!.strutStyle,
+      textAlign: params!.textAlign,
+      textDirection: params!.textDirection,
+      locale: params!.locale,
+      softWrap: params!.softWrap,
+      overflow: params!.overflow,
+      textScaleFactor: params!.textScaleFactor,
+      maxLines: params!.maxLines,
+      semanticsLabel: params!.semanticsLabel,
+      textWidthBasis: params!.textWidthBasis,
+      textHeightBehavior: params!.textHeightBehavior,
+    );
+  }
+}
+
+class TextParams {
+  const TextParams({Key? key, 
+  this.style, 
+  this.strutStyle,
+  this.textAlign,
+  this.textDirection,
+  this.locale,
+  this.softWrap,
+  this.overflow,
+  this.textScaleFactor, this.maxLines,
+  this.semanticsLabel, this.textWidthBasis,this.textHeightBehavior});
+
+  final TextStyle? style;
+  final StrutStyle? strutStyle;
+  final TextAlign? textAlign;
+  final TextDirection? textDirection;
+  final Locale? locale;
+  final bool? softWrap;
+  final TextOverflow? overflow;
+  final double? textScaleFactor;
+  final int? maxLines;
+  final String? semanticsLabel;
+  final TextWidthBasis? textWidthBasis;
+  final TextHeightBehavior? textHeightBehavior;
 }
