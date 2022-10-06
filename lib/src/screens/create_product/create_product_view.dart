@@ -1,7 +1,11 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:navada_mobile_app/src/models/product/product_model.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/create_product_provicder.dart';
 import 'package:navada_mobile_app/src/screens/create_product/create_product_view_model.dart';
+import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
@@ -17,62 +21,37 @@ class CreateProductView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int userId = Provider.of<UserProvider>(context, listen: false).user.userId;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => CreateProductViewModel()),
-        ChangeNotifierProvider(create: (context) => CreateProductProvider()),
+        ChangeNotifierProvider(create: (context) => CreateProductProvider(userId)),
       ],
-      child: Consumer<CreateProductViewModel>(builder: 
-        (BuildContext context, CreateProductViewModel viewModel, Widget? _) {
-        
-        return GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Scaffold(
-            appBar: CustomAppBar(
-              titleText: "교환 물품 등록하기",
-              leadingYn: true,
-              onTap: () => Navigator.of(context).pop(),
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: const [
-                  _ProductInfoEnteringSection(),
-                  CustomDivider(),
-                  _SearchOtherProductSection(),
-                  Space(height: 70),
-                  _ConfirmBtn(),
-                  Space(height: 30),
-                ],
-              ),
-            ),
-          ),
-        );
-      })
+      child: const MaterialApp(home: CreateProductScreen())
     );
   }
 }
-
-class _ProductInfoEnteringSection extends StatefulWidget {
-  const _ProductInfoEnteringSection({Key? key}) : super(key: key);
+class CreateProductScreen extends StatefulWidget {
+  const CreateProductScreen({Key? key}) : super(key: key);
 
   @override
-  State<_ProductInfoEnteringSection> createState() => __ProductInfoEnteringSectionState();
+  State<CreateProductScreen> createState() => _CreateProductScreenState();
 }
 
-class __ProductInfoEnteringSectionState extends State<_ProductInfoEnteringSection> {
-  String? _productName;
-  Category? _productCategory;
-  int? _productPrice;
-  int? _productExchangeCost;
-  String? _productExplanation;
-
+class _CreateProductScreenState extends State<CreateProductScreen> {
+  ScreenSize size = ScreenSize();
+  var _scrollController;
   FocusNode? _productNameFNode;
   FocusNode? _productCategoryFNode;
   FocusNode? _productPriceFNode;
   FocusNode? _productExchangeCostFNode;
   FocusNode? _productExplanationFNode;
 
-  ScreenSize size = ScreenSize();
+  String? _productName;
+  Category? _productCategory;
+  int? _productPrice;
+  int? _productExchangeCost;
+  String? _productExplanation;
 
   @override
   void initState() {
@@ -96,6 +75,32 @@ class __ProductInfoEnteringSectionState extends State<_ProductInfoEnteringSectio
 
   @override
   Widget build(BuildContext context) {
+    _scrollController = PrimaryScrollController.of(context);
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: CustomAppBar(
+          titleText: "교환 물품 등록하기",
+          leadingYn: true,
+          onTap: () => Navigator.of(context, rootNavigator: true).pop(context)
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _productInfoEnteringSection(),
+              const CustomDivider(),
+              const _SearchOtherProductSection(),
+              const Space(height: 70),
+              _confirmBtn(context),
+              const Space(height: 30),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _productInfoEnteringSection() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: size.getSize(20)),
       child: Column(
@@ -122,17 +127,19 @@ class __ProductInfoEnteringSectionState extends State<_ProductInfoEnteringSectio
     return SizedBox(
       width: size.getSize(200),
       child: TextFormField(
+        maxLength: 20,
         focusNode: _productNameFNode,
         style: styleR.copyWith(fontSize: size.getSize(16)),
         onChanged: (value) {
           setState(() {
             _productName = value;
+            Provider.of<CreateProductProvider>(context, listen: false).setProductName(value);
           });
-          Provider.of<CreateProductProvider>(context, listen: false).setProductName(_productName!);
         },
         decoration: InputDecoration(
           hintText: '물품 이름을 입력해주세요',
           hintStyle: styleR.copyWith(fontSize: size.getSize(16), color: grey183),
+          counterText: "",
           contentPadding: EdgeInsets.symmetric(
             horizontal: size.getSize(10.0),
             vertical: size.getSize(15.0),
@@ -169,8 +176,8 @@ class __ProductInfoEnteringSectionState extends State<_ProductInfoEnteringSectio
           onChanged: (value) {
             setState(() {
               _productCategory = Category.idToEnum(int.parse(value.toString()));
+              Provider.of<CreateProductProvider>(context, listen: false).setProductCategory(_productCategory!);
             });
-            Provider.of<CreateProductProvider>(context, listen: false).setProductCategory(_productCategory!);
           }
         ),
       ),
@@ -218,9 +225,10 @@ class __ProductInfoEnteringSectionState extends State<_ProductInfoEnteringSectio
             onChanged: (value) {
               setState(() {
                 _productPrice = int.parse(value);
+                Provider.of<CreateProductProvider>(context, listen: false).setProductPrice(int.parse(value));
               });
-              Provider.of<CreateProductProvider>(context, listen: false).setProductPrice(_productPrice!);
             },
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
             decoration: InputDecoration(
               isDense: true,
               contentPadding: EdgeInsets.symmetric(
@@ -257,11 +265,12 @@ class __ProductInfoEnteringSectionState extends State<_ProductInfoEnteringSectio
                   focusNode: _productExchangeCostFNode,
                   textAlign: TextAlign.right,
                   style: styleR.copyWith(fontSize: size.getSize(16)),
+                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
                   onChanged: (value) {
                     setState(() {
                       _productExchangeCost = int.parse(value);
+                      Provider.of<CreateProductProvider>(context, listen: false).setProductExchangeCost(int.parse(value));
                     });
-                    Provider.of<CreateProductProvider>(context, listen: false).setProductExchangeCost(_productExchangeCost!);
                   },
                   decoration: InputDecoration(
                     isDense: true,
@@ -292,8 +301,8 @@ class __ProductInfoEnteringSectionState extends State<_ProductInfoEnteringSectio
       onChanged: (value) {
         setState(() {
           _productExplanation = value;
+          Provider.of<CreateProductProvider>(context, listen: false).setProductExplanation(value);
         });
-        Provider.of<CreateProductProvider>(context, listen: false).setProductExplanation(_productExplanation!);
       },
       maxLength: 200,
       maxLines: 7,
@@ -311,6 +320,54 @@ class __ProductInfoEnteringSectionState extends State<_ProductInfoEnteringSectio
           borderRadius: BorderRadius.circular(size.getSize(5.0)),
           borderSide: const BorderSide(color: green, width: 1.0)),
       ),
+    );
+  }
+
+  Widget _confirmBtn(BuildContext context) {
+    return Consumer<CreateProductProvider>(builder: 
+      (BuildContext context, CreateProductProvider provider, Widget? _) {
+      
+      return LongCircledBtn(
+        text: "글 등록하기",
+        onTap: () async {
+          if(!provider.checkValidProductName()) {
+            _checkField(_productNameFNode!, "물품명을 확인해주세요!");
+          } else if(!provider.checkValidProductCategory()) {
+            _checkField(_productCategoryFNode!, "카테고리를 확인해주세요!");
+          } else if(!provider.checkValidProductPrice()) {
+            _checkField(_productPriceFNode!, "가격을 확인해주세요!");
+          } else if(!provider.checkValidProductExchangeCost()) {
+            _checkField(_productExchangeCostFNode!, "희망가격범위를 확인해주세요! (원가 이하)");
+          } else if(!provider.checkValidProductExplanation()) {
+            _checkField(_productExplanationFNode!, "물품 설명을 확인해주세요!");
+          } else {
+            ProductModel? product = await Provider.of<CreateProductProvider>(context, listen: false).createProduct();
+            if(product != null) { 
+              _showSnackBarDurationForSec("글이 등록되었습니다🥰");
+              // ignore: use_build_context_synchronously
+              Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (BuildContext context) => ProductDetail(product: product, like: false)));
+            } else {
+              _showSnackBarDurationForSec("물품 등록에 실패했습니다ㅠㅠ");
+            }
+          }
+        } 
+      );
+    });
+  }
+
+  _checkField(FocusNode fnode, String snackBarText) {
+    FocusScope.of(context).requestFocus(fnode);
+    _scrollController?.jumpTo(0.0);
+    _showSnackBarDurationForSec(snackBarText);
+  }
+
+  _showSnackBarDurationForSec(String snackBarText) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds:1),
+        content: R16Text(text: snackBarText, textColor: white),
+      )
     );
   }
 }
@@ -348,14 +405,5 @@ class _SearchOtherProductSection extends StatelessWidget {
           child: const R16Text(text: "바로 교환할 물품을 검색해보세요!", textColor: grey183,))
       ],
     );
-  }
-}
-
-class _ConfirmBtn extends StatelessWidget {
-  const _ConfirmBtn({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const LongCircledBtn(text: "글 등록하기");
   }
 }
