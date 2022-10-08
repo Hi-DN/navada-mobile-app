@@ -9,6 +9,7 @@ import '../models/request/request_model.dart';
 
 class RequestExchangeProvider extends ChangeNotifier {
   final RequestService _requestService = RequestService();
+  final ProductService _productService = ProductService();
 
   bool _initialFetched = false;
   bool get initialFetched => _initialFetched;
@@ -26,7 +27,7 @@ class RequestExchangeProvider extends ChangeNotifier {
 
   fetchProductsList(acceptorProductId) async {
     ProductPageModel model =
-        await getProductsForRequest(UserProvider.userId, acceptorProductId);
+        await _productService.getProductsForRequest(UserProvider.userId, acceptorProductId);
 
     _productPageModel = model;
     _productList = _productPageModel.content!;

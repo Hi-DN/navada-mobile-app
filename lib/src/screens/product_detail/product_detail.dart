@@ -79,7 +79,7 @@ class ProductDetail extends StatelessWidget {
         ),
       ),
       IconButton(
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () => Navigator.of(context, rootNavigator: true).pop(context),
         padding: const EdgeInsets.only(top: 50.0),
         icon: const Icon(
           Icons.arrow_back,
