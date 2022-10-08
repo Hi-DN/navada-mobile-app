@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/search_products_provider.dart';
 import 'package:navada_mobile_app/src/screens/search_products/search_products_view_model.dart';
+import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/product/product_search_page_model.dart';
 import '../../widgets/colors.dart';
+import '../../widgets/divider.dart';
 
 class SearchProductsView extends StatelessWidget {
   SearchProductsView({Key? key}) : super(key: key);
@@ -22,7 +26,7 @@ class SearchProductsView extends StatelessWidget {
           children: [
             Flexible(flex: 2, child: _buildSearchField()),
             Flexible(flex: 3, child: _buildOptionSection()),
-            Flexible(flex: 15, child: _buildListSection())
+            Flexible(flex: 15, child: _buildListSection(context))
           ],
         ),
       ),
@@ -79,10 +83,113 @@ class SearchProductsView extends StatelessWidget {
     );
   }
 
-  Widget _buildListSection() {
-    return Container(
-      width: screenSize.getSize(328.0),
-      color: Colors.yellow,
+  Widget _buildListSection(context) {
+    SearchProductsViewModel viewModel =
+        Provider.of<SearchProductsViewModel>(context, listen: false);
+
+    Provider.of<SearchProductsProvider>(context, listen: false)
+        .getSearchedProducts(
+            UserProvider.userId,
+            viewModel.searchValue,
+            viewModel.categoryIds,
+            viewModel.lowerCostBound,
+            viewModel.upperCostBound,
+            viewModel.sortMap);
+
+    return Consumer<SearchProductsProvider>(
+        builder: (context, provider, widget) {
+      if (provider.productSearchDtoList != null) {
+        return ListView.builder(
+            itemBuilder: (context, index) {
+              ProductSearchDtoModel product =
+                  provider.productSearchDtoList![index];
+              // int heartId = heartList[index].heartId;
+              return _buildListItem(product, context);
+            },
+            itemCount: provider.productSearchDtoList!.length);
+      }
+      return const Center(child: CircularProgressIndicator());
+    });
+  }
+
+  Widget _buildListItem(ProductSearchDtoModel product, BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: screenSize.getSize(8.0),
+        ),
+        InkWell(
+          onTap: () {},
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: Image.asset(
+                  'assets/images/test.jpeg',
+                  width: screenSize.getSize(65.0),
+                  height: screenSize.getSize(65.0),
+                ),
+              ),
+              SizedBox(
+                width: screenSize.getSize(12.0),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                              text: Shortener.shortenStrTo(
+                                  product.productName, 10),
+                              style: const TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                          TextSpan(
+                              text: Shortener.shortenStrTo(
+                                  ' | ${product.userNickname}', 10),
+                              style: const TextStyle(color: Colors.grey))
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RichText(
+                            text: TextSpan(children: [
+                          const TextSpan(
+                              text: '원가 ',
+                              style: TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                          TextSpan(
+                              text: '${product.productCost}원',
+                              style: const TextStyle(color: Colors.black))
+                        ])),
+                        IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              product.like!
+                                  ? Icons.favorite
+                                  : Icons.favorite_border_outlined,
+                              size: screenSize.getSize(25.0),
+                              color: Colors.red,
+                            ))
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Space(height: screenSize.getSize(8.0)),
+        const CustomDivider()
+      ],
     );
   }
 
@@ -190,7 +297,7 @@ class SearchProductsView extends StatelessWidget {
                     : const Icon(Icons.check_box_outlined)),
           ),
           const Space(width: 3.0),
-          R12Text(
+          R14Text(
               text: '교환 가능한 물품만 보기',
               textColor:
                   Provider.of<SearchProductsViewModel>(context).onlyExchangeable

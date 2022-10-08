@@ -59,7 +59,6 @@ class ProductService {
       throw Exception('getProductsForRequest() fail!');
     }
   }
-
 }
 
 Future<ProductSearchPageModel?> searchProducts(
@@ -69,11 +68,16 @@ Future<ProductSearchPageModel?> searchProducts(
     int? lowerCostBound,
     int? upperCostBound,
     String? sort) async {
+  String productNameOpt =
+      productName != null ? '&productName=$productName' : '';
+  String categoryOpt = categoryIds != null ? '&categoryIds=$categoryIds' : '';
+  String lowerCostOpt =
+      lowerCostBound != null ? '&lowerCostBound=$lowerCostBound' : '';
+  String upperCostOpt =
+      upperCostBound != null ? '&upperCostBound=$upperCostBound' : '';
+
   Map<String, dynamic> data = await _httpClient.getRequest(
-      '/user/$userId/products/search?'
-      'productName=$productName&categoryIds=$categoryIds'
-      '&lowerCostBound=$lowerCostBound&upperCostBound=$upperCostBound'
-      '&sort=$sort',
+      '/user/$userId/products/search?$productNameOpt$categoryOpt$lowerCostOpt$upperCostOpt&sort=$sort',
       tokenYn: false);
 
   if (data['success']) {

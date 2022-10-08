@@ -7,8 +7,9 @@ class SearchProductsProvider extends ChangeNotifier {
   ProductSearchPageModel? _productSearchPageModel;
   ProductSearchPageModel? get productSearchPageModel => _productSearchPageModel;
 
-  late List<ProductSearchDtoModel> _productSearchDtoList;
-  List<ProductSearchDtoModel> get productSearchDtoList => _productSearchDtoList;
+  List<ProductSearchDtoModel>? _productSearchDtoList;
+  List<ProductSearchDtoModel>? get productSearchDtoList =>
+      _productSearchDtoList;
 
   int _totalElements = 0;
   int get totalElements => _totalElements;
@@ -16,7 +17,7 @@ class SearchProductsProvider extends ChangeNotifier {
   getSearchedProducts(userId, categoryIds, productName, lowerCostBound,
       upperCostBound, sort) async {
     ProductSearchPageModel? model = await searchProducts(
-        userId, categoryIds, productName, lowerCostBound, upperCostBound, sort);
+        userId, productName, categoryIds, lowerCostBound, upperCostBound, sort);
 
     _productSearchPageModel = model;
     _productSearchDtoList = _productSearchPageModel!.content!;

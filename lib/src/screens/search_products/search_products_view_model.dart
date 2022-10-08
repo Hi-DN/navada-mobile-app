@@ -6,8 +6,8 @@ class SearchProductsViewModel extends ChangeNotifier {
   bool get onlyExchangeable => _onlyExchangeable;
 
   // 검색값
-  String _searchValue = '';
-  String get searchValue => _searchValue;
+  String? _searchValue;
+  String? get searchValue => _searchValue;
 
   // 카테고리 선택
   List<int>? _categoryIds;
@@ -22,11 +22,13 @@ class SearchProductsViewModel extends ChangeNotifier {
 
   // 최신순 / 좋아요순
   final Map<String, String> _sortMap = {
-    '최신순': 'productId, DESC',
+    '최신순': 'productId,DESC',
     '좋아요순': 'heartNum,DESC'
   };
+
   String _sort = '최신순';
-  String get sort => _sort;
+  String? get sort => _sort;
+  String? get sortMap => _sortMap[_sort];
 
   void toggleCheckBox() {
     _onlyExchangeable = !_onlyExchangeable;
