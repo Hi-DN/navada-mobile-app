@@ -7,13 +7,14 @@ import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_mode
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
-import 'package:navada_mobile_app/src/widgets/my_exchange_card.dart';
-import 'package:navada_mobile_app/src/widgets/my_exchange_status_sign.dart';
 import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/my_exchange_card.dart';
+import 'widgets/my_exchange_status_sign.dart';
 
 // ignore: must_be_immutable
 class TradingAndCompletedTab extends StatelessWidget {
