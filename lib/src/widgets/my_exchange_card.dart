@@ -49,17 +49,17 @@ class MyExchangeCard extends StatelessWidget {
         children: [
           _exampleImage(),
           const Space(width: 5),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              R12Text(
-                text: productName,
-                params: const TextParams(maxLines: 1)),
-              nickName!,
-              R10Text(text: "원가 $cost원"),
-              R10Text(text: "± $costRange원", textColor: grey183,)
-            ],
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [Expanded(child: R12Text(text: productName))]),
+                nickName!,
+                R10Text(text: "원가 $cost원"),
+                R10Text(text: "± $costRange원", textColor: grey183,)
+              ],
+            ),
           )
         ],
       ),
