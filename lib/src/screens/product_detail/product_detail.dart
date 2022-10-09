@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/providers/product_detail_provider.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_bottom_button.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_view_model.dart';
+import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
@@ -15,50 +16,63 @@ import '../../widgets/colors.dart';
 class ProductDetail extends StatelessWidget {
   final ProductModel product;
   bool like;
+  int likeNum;
   ScreenSize screenSize = ScreenSize();
 
-  ProductDetail({Key? key, required this.product, required this.like})
+  ProductDetail(
+      {Key? key,
+      required this.product,
+      required this.like,
+      required this.likeNum})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: MultiProvider(
-            providers: [
-          ChangeNotifierProvider(
-              create: (context) => ProductDetailViewModel(true)),
-          ChangeNotifierProvider(create: (context) => ProductDetailProvider())
-        ],
-            builder: (context, child) {
-              return Column(
-                children: [
-                  _productImagesSection(context),
-                  Expanded(
-                    child: Container(
-                      width: screenSize.getSize(335.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          UserInfoSection(productId: product.productId!),
-                          _productInfoSection(product),
-                          _reportSection(),
-                          Expanded(
-                              child:
-                                  ProductDetailBottomButton(product: product))
-                        ],
-                      ),
+      body: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+                create: (context) => ProductDetailViewModel(like, likeNum)),
+            ChangeNotifierProvider(
+                create: (context) => ProductDetailProvider()),
+            ChangeNotifierProvider(
+                create: (context) => ProductDetailAcceptanceProvider())
+          ],
+          builder: (context, child) {
+            return Column(
+              children: [
+                Flexible(flex: 1, child: _productImagesSection(context)),
+                Flexible(
+                  flex: 1,
+                  child: Container(
+                    width: screenSize.getSize(335.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                            flex: 2,
+                            child:
+                                UserInfoSection(productId: product.productId!)),
+                        Flexible(flex: 5, child: _productInfoSection(product)),
+                        Flexible(flex: 1, child: _reportSection()),
+                        Flexible(
+                            flex: 2,
+                            child: ProductDetailBottomButton(product: product)),
+                      ],
                     ),
-                  )
-                ],
-              );
-            }));
+                  ),
+                )
+              ],
+            );
+          }),
+    );
   }
 
   Widget _productImagesSection(BuildContext context) {
     return Stack(children: [
       Container(
         width: double.infinity,
-        height: MediaQuery.of(context).size.height * 0.5,
         child: Image.asset(
           'assets/images/test.jpeg',
           fit: BoxFit.cover,
@@ -78,18 +92,20 @@ class ProductDetail extends StatelessWidget {
 
   Widget _productInfoSection(ProductModel product) {
     return Container(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  R20Text(text: product.productName),
+                  Shortener.shortenStrWithMaxLines(product.productName, 1,
+                      TextStyle(fontSize: screenSize.getSize(20.0))),
                   const SizedBox(height: 8.0),
                   R14Text(
                     text: "원가 : ${product.productCost}원",
@@ -103,9 +119,13 @@ class ProductDetail extends StatelessWidget {
                   )
                 ],
               ),
-              Consumer2<ProductDetailViewModel, ProductDetailProvider>(
-                  builder: (context, viewProvider, provider, widget) {
-                return IconButton(
+            ),
+            Consumer2<ProductDetailViewModel, ProductDetailProvider>(
+                builder: (context, viewProvider, provider, widget) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
                     onPressed: () {
                       viewProvider.setLikeValue();
                       viewProvider.like
@@ -118,23 +138,38 @@ class ProductDetail extends StatelessWidget {
                           : Icons.favorite_border_outlined,
                       color: const Color(0xFFDD8560),
                       size: 35.0,
-                    ));
-              })
-            ],
+                    ),
+                  ),
+                  R14Text(
+                    text: viewProvider.likeNum.toString(),
+                    textColor: const Color(0xFFDD8560),
+                  )
+                ],
+              );
+            })
+          ],
+        ),
+        SizedBox(height: screenSize.getSize(8.0)),
+        const Divider(
+          color: green,
+          thickness: 1.0,
+        ),
+        SizedBox(height: screenSize.getSize(8.0)),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Text(
+              product.productExplanation!,
+              style: TextStyle(
+                color: navy,
+                fontSize: screenSize.getSize(14.0),
+                // letterSpacing: 2,
+                // wordSpacing: 2
+              ),
+            ),
           ),
-          const SizedBox(height: 8.0),
-          const Divider(
-            color: green,
-            thickness: 1.0,
-          ),
-          const SizedBox(height: 8.0),
-          R14Text(
-            text: product.productExplanation,
-            textColor: navy,
-          )
-        ],
-      ),
-    );
+        ),
+      ],
+    ));
   }
 
   Widget _reportSection() {

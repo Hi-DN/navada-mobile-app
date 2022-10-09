@@ -1,6 +1,7 @@
 import 'package:navada_mobile_app/src/models/api/http_client.dart';
 import 'package:navada_mobile_app/src/models/product/product_list_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
+import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
 
 HttpClient _httpClient = HttpClient();
 
@@ -58,5 +59,30 @@ class ProductService {
       throw Exception('getProductsForRequest() fail!');
     }
   }
+}
 
+Future<ProductSearchPageModel?> searchProducts(
+    int? userId,
+    String? productName,
+    List<int>? categoryIds,
+    int? lowerCostBound,
+    int? upperCostBound,
+    String? sort) async {
+  String productNameOpt =
+      productName != null ? '&productName=$productName' : '';
+  String categoryOpt = categoryIds != null ? '&categoryIds=$categoryIds' : '';
+  String lowerCostOpt =
+      lowerCostBound != null ? '&lowerCostBound=$lowerCostBound' : '';
+  String upperCostOpt =
+      upperCostBound != null ? '&upperCostBound=$upperCostBound' : '';
+
+  Map<String, dynamic> data = await _httpClient.getRequest(
+      '/user/$userId/products/search?$productNameOpt$categoryOpt$lowerCostOpt$upperCostOpt&sort=$sort',
+      tokenYn: false);
+
+  if (data['success']) {
+    return ProductSearchPageModel.fromJson(data);
+  } else {
+    return null;
+  }
 }

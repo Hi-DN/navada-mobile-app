@@ -13,7 +13,6 @@ TextStyle styleB =
 TextStyle styleL =
     const TextStyle(height: 1.2, color: black, fontWeight: FontWeight.w100);
 
-    
 class R8Text extends StatelessWidget {
   const R8Text({Key? key, @required this.text, this.textColor = black})
       : super(key: key);

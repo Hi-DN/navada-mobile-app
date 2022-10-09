@@ -53,58 +53,64 @@ class RequestExchangeView extends StatelessWidget {
   }
 
   Widget _acceptorProductInfo(ProductModel acceptorProduct) {
-    return SizedBox(
-        height: screenSize.getSize(220.0),
-        child: Container(
-          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-          child: Column(
+    return Container(
+      padding: const EdgeInsets.only(top: 15.0, bottom: 5.0),
+      height: screenSize.getSize(220.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _setRichText(acceptorProduct.userNickname!, ' 님의 물품', 16.0),
+          const SizedBox(height: 10.0),
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _setRichText(acceptorProduct.userNickname!, ' 님의 물품', 16.0),
-              const Expanded(child: SizedBox(height: 10.0)),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(5.0),
-                    child: Image.asset(
-                      'assets/images/test.jpeg',
-                      fit: BoxFit.cover,
-                      width: screenSize.getSize(99.0),
-                      height: screenSize.getSize(99.0),
-                    ),
-                  ),
-                  const SizedBox(width: 12.0),
-                  Expanded(
-                    child: SizedBox(
-                      height: screenSize.getSize(99.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Expanded(child: SizedBox()),
-                          _setRichText(
-                              '상품명 ', acceptorProduct.productName!, 14.0),
-                          const SizedBox(height: 3.0),
-                          _setRichText(
-                              '원가  ', '${acceptorProduct.productCost!}원', 14.0),
-                          const SizedBox(height: 3.0),
-                          _setRichText(
-                              '희망가격\n',
-                              '${acceptorProduct.getLowerBound()}원 ~ ${acceptorProduct.getUpperBound()}원',
-                              14.0),
-                          const Expanded(child: SizedBox()),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+              ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: Image.asset(
+                  'assets/images/test.jpeg',
+                  fit: BoxFit.cover,
+                  width: screenSize.getSize(99.0),
+                  height: screenSize.getSize(99.0),
+                ),
               ),
-              const Expanded(child: SizedBox(height: 10.0)),
-              _setRichText('상품설명\n', acceptorProduct.productExplanation!, 14.0)
+              const SizedBox(width: 12.0),
+              Expanded(
+                child: SizedBox(
+                  height: screenSize.getSize(99.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Expanded(child: SizedBox()),
+                      _setRichText('상품명 ', acceptorProduct.productName!, 14.0),
+                      const SizedBox(height: 3.0),
+                      _setRichText(
+                          '원가  ', '${acceptorProduct.productCost!}원', 14.0),
+                      const SizedBox(height: 3.0),
+                      _setRichText(
+                          '희망가격\n',
+                          '${acceptorProduct.getLowerBound()}원 ~ ${acceptorProduct.getUpperBound()}원',
+                          14.0),
+                      const Expanded(child: SizedBox()),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
-        ));
+          const SizedBox(height: 10.0),
+          Text(
+            '상품설명',
+            style: TextStyle(
+                fontSize: screenSize.getSize(14.0),
+                fontWeight: FontWeight.w700),
+          ),
+          Expanded(
+              child: SingleChildScrollView(
+            child: Text(acceptorProduct.productExplanation!),
+          ))
+        ],
+      ),
+    );
   }
 }
 
@@ -342,20 +348,27 @@ class MyProductList extends StatelessWidget {
 
 Widget _setRichText(String key, String value, double fontSize) {
   return RichText(
+      maxLines: key == '상품명 '
+          ? 1
+          : key == '상품설명\n'
+              ? 4
+              : 2,
+      overflow: TextOverflow.ellipsis,
       text: TextSpan(
-    children: [
-      TextSpan(
-          text: key,
-          style: TextStyle(
+        children: [
+          TextSpan(
+              text: key,
+              style: TextStyle(
+                  fontSize: fontSize,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w700)),
+          TextSpan(
+            text: value,
+            style: TextStyle(
               fontSize: fontSize,
               color: Colors.black,
-              fontWeight: FontWeight.w700)),
-      TextSpan(
-          text: value,
-          style: TextStyle(
-            fontSize: fontSize,
-            color: Colors.black,
-          ))
-    ],
-  ));
+            ),
+          )
+        ],
+      ));
 }

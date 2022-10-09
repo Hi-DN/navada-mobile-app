@@ -46,20 +46,20 @@ class HeartListModel {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['success'] = success;
-    _data['code'] = code;
-    _data['message'] = message;
-    _data['content'] = content.map((e) => e.toJson()).toList();
-    _data['pageable'] = pageable.toJson();
-    _data['totalPages'] = totalPages;
-    _data['totalElements'] = totalElements;
-    _data['empty'] = empty;
-    _data['first'] = first;
-    _data['last'] = last;
-    _data['numberOfElements'] = numberOfElements;
-    _data['size'] = size;
-    return _data;
+    final data = <String, dynamic>{};
+    data['success'] = success;
+    data['code'] = code;
+    data['message'] = message;
+    data['content'] = content.map((e) => e.toJson()).toList();
+    data['pageable'] = pageable.toJson();
+    data['totalPages'] = totalPages;
+    data['totalElements'] = totalElements;
+    data['empty'] = empty;
+    data['first'] = first;
+    data['last'] = last;
+    data['numberOfElements'] = numberOfElements;
+    data['size'] = size;
+    return data;
   }
 }
 
@@ -83,12 +83,12 @@ class HeartListContentModel {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['createdDate'] = createdDate;
-    _data['modifiedDate'] = modifiedDate;
-    _data['heartId'] = heartId;
-    _data['product'] = product.toJson();
-    return _data;
+    final data = <String, dynamic>{};
+    data['createdDate'] = createdDate;
+    data['modifiedDate'] = modifiedDate;
+    data['heartId'] = heartId;
+    data['product'] = product.toJson();
+    return data;
   }
 }
 
@@ -118,14 +118,14 @@ class Pageable {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['sort'] = sort.toJson();
-    _data['pageNumber'] = pageNumber;
-    _data['pageSize'] = pageSize;
-    _data['offset'] = offset;
-    _data['paged'] = paged;
-    _data['unpaged'] = unpaged;
-    return _data;
+    final data = <String, dynamic>{};
+    data['sort'] = sort.toJson();
+    data['pageNumber'] = pageNumber;
+    data['pageSize'] = pageSize;
+    data['offset'] = offset;
+    data['paged'] = paged;
+    data['unpaged'] = unpaged;
+    return data;
   }
 }
 
@@ -146,10 +146,10 @@ class Sort {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['sorted'] = sorted;
-    _data['unsorted'] = unsorted;
-    _data['empty'] = empty;
-    return _data;
+    final data = <String, dynamic>{};
+    data['sorted'] = sorted;
+    data['unsorted'] = unsorted;
+    data['empty'] = empty;
+    return data;
   }
 }

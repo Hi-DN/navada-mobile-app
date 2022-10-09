@@ -1,3 +1,5 @@
+import 'package:navada_mobile_app/src/utilities/enums.dart';
+
 class RequestDtoModel {
   RequestDtoModel({
     required this.success,
@@ -43,7 +45,7 @@ class RequestDtoContentModel {
     required this.requesterProductCostRange,
   });
   late final int requestId;
-  late final int requestStatusCd;
+  late final RequestStatusCd requestStatusCd;
   late final String acceptorNickname;
   late final String requesterNickName;
   late final String acceptorProductName;
@@ -55,7 +57,7 @@ class RequestDtoContentModel {
 
   RequestDtoContentModel.fromJson(Map<String, dynamic> json) {
     requestId = json['requestId'];
-    requestStatusCd = json['requestStatusCd'];
+    requestStatusCd = RequestStatusCd.codeToEnum(json['requestStatusCd']);
     acceptorNickname = json['acceptorNickname'];
     requesterNickName = json['requesterNickName'];
     acceptorProductName = json['acceptorProductName'];

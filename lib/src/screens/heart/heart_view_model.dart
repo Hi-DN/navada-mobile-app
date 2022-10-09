@@ -13,14 +13,11 @@ class HeartViewModel with ChangeNotifier {
   }
 
   void createIconList(int? length) {
-    print('createIconList >> length=$length');
     _iconBoolList = List<bool>.generate(length!, (index) => true);
   }
 
   void onHeartButtonTapped(int index) {
     _iconBoolList[index] = !_iconBoolList[index];
-    print(
-        'HeartButtonTapped!! index = $index, iconList[index]=${_iconBoolList[index]}');
     notifyListeners();
   }
 }
