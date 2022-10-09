@@ -5,7 +5,6 @@ import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
 import 'package:navada_mobile_app/src/screens/home/home_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
-import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
 import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
@@ -263,10 +262,8 @@ class RequestItem extends StatelessWidget {
   _productAndRequesterInfo() {
     return Row(
       children: [
-        B12Text(text: Shortener.shortenStrTo(request!.requesterProductName!, 9)),
-        R12Text(
-            text: ' | ${Shortener.shortenStrTo(request!.requesterNickName!, 4)}',
-            textColor: grey153)
+        B12Text(text: request!.requesterProductName),
+        Expanded(child: R12Text(text: ' | ${request!.requesterNickName!}', textColor: grey153))
       ],
     );
   }
