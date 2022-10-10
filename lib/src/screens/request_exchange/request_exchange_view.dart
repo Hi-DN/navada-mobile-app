@@ -297,7 +297,8 @@ class MyProductList extends StatelessWidget {
             height: screenSize.getSize(70.0),
             alignment: Alignment.center,
             child: B16Text(
-                text: '${requestProductIdList.length}개의 물품에 대해 교환신청 하시겠습니까?')),
+                text:
+                    '${requestProductIdList.length}개의 물품에 대해 \n교환신청 하시겠습니까?')),
         actions: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

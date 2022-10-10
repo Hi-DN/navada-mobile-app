@@ -1,23 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:navada_mobile_app/src/models/product/product_service.dart';
 import 'package:navada_mobile_app/src/models/request/request_service.dart';
 import 'package:navada_mobile_app/src/models/user/user_service.dart';
 
 import '../models/exchange/exchange_model.dart';
 import '../models/heart/heart_service.dart';
+import '../models/product/product_model.dart';
 import '../models/request/request_dto_model.dart';
 import '../models/user/user_model.dart';
 import '../models/user/user_provider.dart';
 
-final HeartService _heartService = HeartService();
 final int _userId = UserProvider.userId;
+final HeartService _heartService = HeartService();
 final RequestService _requestService = RequestService();
+final ProductService _productService = ProductService();
 
 // 상품 상세 : 메인 화면
 class ProductDetailProvider extends ChangeNotifier {
-  User? _userOfProduct;
+  ProductModel? _product;
+  ProductModel? get product => _product;
+
+  User? _userOfProduct; //해당 물품의 유저
   User? get userOfProduct => _userOfProduct;
 
-  void fetchUserInfo(int productId) async {
+  void fetchProductAndUser(int productId) async {
+    ProductModel? model = await _productService.getProduct(productId);
+    _product = model;
+
     UserModel userModel = await getUserByProductId(productId);
     _userOfProduct = userModel.user;
 

@@ -24,20 +24,21 @@ class ProductDetailBottomButton extends StatelessWidget {
     Provider.of<ProductDetailAcceptanceProvider>(context, listen: false)
         .fetchRequestDtoList(product.productId!);
 
-    return product.productExchangeStatusCd == ProductExchangeStatusCd.REGISTERED
-        ? Consumer<ProductDetailAcceptanceProvider>(
-            builder: (context, provider, widget) {
-              if (provider.fetchCompleted && provider.requestDtoModel.success) {
-                return provider.requestDtoList.isEmpty
-                    ? _oneBottomButton(context, product)
-                    : _twoBottomButtons(
-                        context, product, provider.requestDtoList);
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          )
-        : _canNotTradeButton(product.productExchangeStatusCd!);
+    return Consumer<ProductDetailAcceptanceProvider>(
+        builder: (context, provider, child) {
+      if (product.productExchangeStatusCd ==
+          ProductExchangeStatusCd.REGISTERED) {
+        if (provider.fetchCompleted && provider.requestDtoModel.success) {
+          return provider.requestDtoList.isEmpty
+              ? _oneBottomButton(context, product)
+              : _twoBottomButtons(context, product, provider.requestDtoList);
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      } else {
+        return _canNotTradeButton(product.productExchangeStatusCd!);
+      }
+    });
   }
 
   Widget _oneBottomButton(BuildContext context, ProductModel product) {
