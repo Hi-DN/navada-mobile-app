@@ -5,16 +5,16 @@ import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.d
 import 'package:navada_mobile_app/src/screens/complete_exchange/complete_exchange_view.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
-import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
-import 'package:navada_mobile_app/src/widgets/my_exchange_card.dart';
-import 'package:navada_mobile_app/src/widgets/my_exchange_status_sign.dart';
 import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/my_exchange_card.dart';
+import 'widgets/my_exchange_status_sign.dart';
 
 // ignore: must_be_immutable
 class TradingAndCompletedTab extends StatelessWidget {
@@ -224,13 +224,13 @@ class ExchangeItem extends StatelessWidget {
         requesterProductName: requesterProduct?.productName,
         requesterNickname: Row(children: [
                   B10Text(text: "신청 ", textColor: isTrading ? green : navy),
-                  R10Text(text: Shortener.shortenStrTo(requesterProduct?.userNickname, 6), textColor: grey183),]),
+                  Expanded(child: R10Text(text: requesterProduct?.userNickname, textColor: grey183)),]),
         requesterProductCost: requesterProduct?.productCost,
         requesterProductCostRange: requesterProduct?.exchangeCostRange,
         acceptorProductName: acceptorProduct?.productName,
         acceptorNickname: Row(children: [
                   B10Text(text: "수락 ", textColor: isTrading ? green : navy),
-                  R10Text(text: Shortener.shortenStrTo(acceptorProduct?.userNickname, 6), textColor: grey183),]),
+                  Expanded(child: R10Text(text: acceptorProduct?.userNickname, textColor: grey183)),]),
         acceptorProductCost: acceptorProduct?.productCost,
         acceptorProductCostRange: acceptorProduct?.exchangeCostRange
       ),

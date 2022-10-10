@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
-import 'package:navada_mobile_app/src/widgets/my_exchange_status_sign.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
+
+import 'my_exchange_status_sign.dart';
 
 class MyExchangeCard extends StatelessWidget {
   const MyExchangeCard({Key? key, this.statusSign, this.params}) : super(key: key);
@@ -53,9 +54,7 @@ class MyExchangeCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              R12Text(
-                text: productName,
-                params: const TextParams(maxLines: 1)),
+              Row(children: [Expanded(child: R12Text(text: productName))]),
               nickName!,
               R10Text(text: "원가 $cost원"),
               R10Text(text: "± $costRange원", textColor: grey183,)
