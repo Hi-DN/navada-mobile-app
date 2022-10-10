@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/providers/heart_provider.dart';
 import 'package:navada_mobile_app/src/screens/heart/heart_view_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
-import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:provider/provider.dart';
 
@@ -206,23 +205,5 @@ class HeartListSection extends StatelessWidget {
           );
         },
         itemCount: heartList.length);
-  }
-
-  Widget _statusBadge(ProductModel product) {
-    switch (product.productExchangeStatusCd) {
-      case ProductExchangeStatusCd.REGISTERED:
-        return Container();
-      case ProductExchangeStatusCd.TRADING:
-        return const StatusBadge(
-          label: '교환중',
-          backgroundColor: green,
-        );
-      case ProductExchangeStatusCd.TRADE_COMPLETED:
-        return const StatusBadge(
-          label: '교환완료',
-          backgroundColor: navy,
-        );
-    }
-    return Container();
   }
 }
