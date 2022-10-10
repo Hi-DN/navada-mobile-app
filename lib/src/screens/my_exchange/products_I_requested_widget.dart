@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/request/request_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
-import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
-import 'package:navada_mobile_app/src/widgets/my_exchange_card.dart';
-import 'package:navada_mobile_app/src/widgets/my_exchange_status_sign.dart';
 import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/my_exchange_card.dart';
+import 'widgets/my_exchange_status_sign.dart';
 
 // ignore: must_be_immutable
 class ProductsThatIRequested extends StatelessWidget {
@@ -210,13 +210,14 @@ class RequestItem extends StatelessWidget {
         requesterProductName: request?.requesterProductName,
         requesterNickname: Row(children: [
                   B10Text(text: "신청 ", textColor: isWait ? yellow : grey153),
-                  R10Text(text: Shortener.shortenStrTo(request?.requesterNickName, 6), textColor: grey183),]),
+                  Expanded(child: R10Text(text: request?.requesterNickName, textColor: grey183))]),
         requesterProductCost: request?.requesterProductCost,
         requesterProductCostRange: request?.requesterProductCostRange,
         acceptorProductName: request?.acceptorProductName,
         acceptorNickname: Row(children: [
                   B10Text(text: isWait ? "대기 " : "거절 ", textColor: isWait ? yellow : grey153),
-                  R10Text(text: Shortener.shortenStrTo(request?.acceptorNickname, 6), textColor: grey183),]),
+                  Expanded(child: R10Text(text: request?.acceptorNickname, textColor: grey183))
+                  ]),
         acceptorProductCost: request?.acceptorProductCost,
         acceptorProductCostRange: request?.acceptorProductCostRange
       ),
