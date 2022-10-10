@@ -5,14 +5,17 @@ import 'package:navada_mobile_app/src/providers/search_products_provider.dart';
 import 'package:navada_mobile_app/src/screens/search_products/search_products_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
+import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
+import 'package:navada_mobile_app/src/widgets/status_badge.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product/product_search_page_model.dart';
 import '../../widgets/colors.dart';
 import '../../widgets/divider.dart';
+import '../product_detail/product_detail.dart';
 
 class SearchProductsView extends StatelessWidget {
   SearchProductsView({Key? key}) : super(key: key);
@@ -99,8 +102,19 @@ class SearchProductsView extends StatelessWidget {
             itemBuilder: (context, index) {
               ProductSearchDtoModel product =
                   provider.productSearchDtoList![index];
-              // int heartId = heartList[index].heartId;
-              return _buildListItem(product);
+              return InkWell(
+                child: _buildListItem(context, product),
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return ProductDetail(
+                        productId: product.productId!, like: product.like!);
+                  })).then((value) => Provider.of<SearchProductsProvider>(
+                              context,
+                              listen: false)
+                          .getSearchedProducts(UserProvider.userId, viewModel));
+                },
+              );
             },
             itemCount: provider.productSearchDtoList!.length);
       }
@@ -108,31 +122,31 @@ class SearchProductsView extends StatelessWidget {
     });
   }
 
-  Widget _buildListItem(ProductSearchDtoModel product) {
+  Widget _buildListItem(BuildContext context, ProductSearchDtoModel product) {
     return Column(
       children: [
         SizedBox(
           height: screenSize.getSize(8.0),
         ),
-        InkWell(
-          onTap: () {},
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(5.0),
-                child: Image.asset(
-                  'assets/images/test.jpeg',
-                  width: screenSize.getSize(65.0),
-                  height: screenSize.getSize(65.0),
-                ),
+        Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(5.0),
+              child: Image.asset(
+                'assets/images/test.jpeg',
+                width: screenSize.getSize(65.0),
+                height: screenSize.getSize(65.0),
               ),
-              SizedBox(
-                width: screenSize.getSize(12.0),
-              ),
-              Expanded(
+            ),
+            SizedBox(
+              width: screenSize.getSize(12.0),
+            ),
+            Expanded(
+              child: SizedBox(
+                height: screenSize.getSize(70.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     RichText(
                       text: TextSpan(
@@ -168,20 +182,30 @@ class SearchProductsView extends StatelessWidget {
                         ])),
                         IconButton(
                             onPressed: () {},
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
                             icon: Icon(
                               product.like!
                                   ? Icons.favorite
                                   : Icons.favorite_border_outlined,
-                              size: screenSize.getSize(25.0),
+                              size: screenSize.getSize(20.0),
                               color: Colors.red,
                             ))
                       ],
                     ),
+                    Row(
+                      children: [
+                        CostRangeBadge(cost: product.exchangeCostRange),
+                        Space(width: screenSize.getSize(10.0)),
+                        StatusBadge_new(
+                            statusCd: product.productExchangeStatusCd)
+                      ],
+                    )
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         Space(height: screenSize.getSize(8.0)),
         const CustomDivider()
