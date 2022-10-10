@@ -196,7 +196,7 @@ class SearchProductsView extends StatelessWidget {
                       children: [
                         CostRangeBadge(cost: product.exchangeCostRange),
                         Space(width: screenSize.getSize(10.0)),
-                        StatusBadge_new(
+                        ExchangeStatusBadge(
                             statusCd: product.productExchangeStatusCd)
                       ],
                     )

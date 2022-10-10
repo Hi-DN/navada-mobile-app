@@ -26,8 +26,8 @@ class StatusBadge extends StatelessWidget {
   }
 }
 
-class StatusBadge_new extends StatelessWidget {
-  const StatusBadge_new({Key? key, this.statusCd}) : super(key: key);
+class ExchangeStatusBadge extends StatelessWidget {
+  const ExchangeStatusBadge({Key? key, this.statusCd}) : super(key: key);
 
   final ProductExchangeStatusCd? statusCd;
 

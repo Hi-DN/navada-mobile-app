@@ -167,7 +167,7 @@ class HeartListSection extends StatelessWidget {
                                 style: const TextStyle(color: Colors.black))
                           ])),
                           Space(height: size.getSize(5.0)),
-                          StatusBadge_new(
+                          ExchangeStatusBadge(
                               statusCd: product.productExchangeStatusCd)
                         ],
                       ),
