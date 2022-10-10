@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/search_products_provider.dart';
 import 'package:navada_mobile_app/src/screens/search_products/search_products_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
@@ -92,7 +91,7 @@ class SearchProductsView extends StatelessWidget {
     SearchProductsViewModel viewModel =
         Provider.of<SearchProductsViewModel>(context, listen: false);
     Provider.of<SearchProductsProvider>(context, listen: false)
-        .getSearchedProducts(UserProvider.userId, viewModel);
+        .getSearchedProducts(viewModel);
 
     return Consumer<SearchProductsProvider>(
         builder: (context, provider, widget) {
@@ -112,7 +111,7 @@ class SearchProductsView extends StatelessWidget {
                   })).then((value) => Provider.of<SearchProductsProvider>(
                               context,
                               listen: false)
-                          .getSearchedProducts(UserProvider.userId, viewModel));
+                          .getSearchedProducts(viewModel));
                 },
               );
             },
@@ -268,7 +267,7 @@ class SearchProductsView extends StatelessWidget {
     return CupertinoActionSheetAction(
         onPressed: () {
           viewModel.setSortValue(sortValue);
-          provider.getSearchedProducts(UserProvider.userId, viewModel);
+          provider.getSearchedProducts(viewModel);
           Navigator.of(context).pop();
         },
         child: Row(
@@ -335,8 +334,8 @@ class SearchProductsView extends StatelessWidget {
   }
 
   Widget _exchangeableOnlyCheckButton() {
-    return Consumer<SearchProductsViewModel>(
-        builder: (context, viewModel, child) {
+    return Consumer2<SearchProductsProvider, SearchProductsViewModel>(
+        builder: (context, provider, viewModel, child) {
       return Row(
         children: [
           Container(
@@ -349,6 +348,7 @@ class SearchProductsView extends StatelessWidget {
                 onPressed: () {
                   Provider.of<SearchProductsViewModel>(context, listen: false)
                       .toggleCheckBox();
+                  provider.getSearchedProducts(viewModel);
                 },
                 icon: Provider.of<SearchProductsViewModel>(context)
                         .onlyExchangeable
@@ -422,7 +422,7 @@ class SearchProductsView extends StatelessWidget {
                   ),
                   backgroundColor: green),
               onPressed: () {
-                provider.getSearchedProducts(UserProvider.userId, viewModel);
+                provider.getSearchedProducts(viewModel);
                 Navigator.of(context).pop();
               },
               child: const R20Text(text: '적용하기', textColor: Colors.white),
