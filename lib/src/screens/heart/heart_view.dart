@@ -126,9 +126,7 @@ class HeartListSection extends StatelessWidget {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (BuildContext context) {
                     return ProductDetail(
-                        product: product,
-                        like: true,
-                        likeNum: product.heartNum!);
+                        productId: product.productId!, like: true);
                   })).then((value) =>
                           Provider.of<HeartProvider>(context, listen: false)
                               .fetchHeartList());
@@ -170,7 +168,8 @@ class HeartListSection extends StatelessWidget {
                                 style: const TextStyle(color: Colors.black))
                           ])),
                           Space(height: size.getSize(5.0)),
-                          _statusBadge(product),
+                          StatusBadge_new(
+                              statusCd: product.productExchangeStatusCd)
                         ],
                       ),
                     ),
