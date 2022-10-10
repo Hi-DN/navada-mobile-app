@@ -1,11 +1,10 @@
-
 import 'package:navada_mobile_app/src/models/product/category/category_model.dart';
 
-enum UserLevel { 
-  LV1_OUTSIDER(1,'외지인'), 
-  LV2_RESIDENT(2,'주민'), 
-  LV3_NATIVE(3,'토박이'), 
-  LV4_HEADMAN(4,'촌장'); 
+enum UserLevel {
+  LV1_OUTSIDER(1, '외지인'),
+  LV2_RESIDENT(2, '주민'),
+  LV3_NATIVE(3, '토박이'),
+  LV4_HEADMAN(4, '촌장');
 
   const UserLevel(this.level, this.label);
 
@@ -18,9 +17,9 @@ enum UserLevel {
 }
 
 enum ProductExchangeStatusCd {
-  REGISTERED('0','등록'),     
-  TRADING('1','거래중'),        
-  TRADE_COMPLETED('2','거래완료');
+  REGISTERED('0', '교환대기'),
+  TRADING('1', '거래중'),
+  TRADE_COMPLETED('2', '거래완료');
 
   const ProductExchangeStatusCd(this.code, this.label);
 
@@ -37,10 +36,10 @@ enum ProductExchangeStatusCd {
 }
 
 enum RequestStatusCd {
-  WAIT('0','대기'),     
-  ACCEPTED('1','수락'),
-  DENIED('2','거절');
-  
+  WAIT('0', '대기'),
+  ACCEPTED('1', '수락'),
+  DENIED('2', '거절');
+
   const RequestStatusCd(this.code, this.label);
 
   final String code;
@@ -56,29 +55,29 @@ enum RequestStatusCd {
 }
 
 enum Category {
-  GIFTICON(1,'기프티콘'),
-  ELECTRONIC_DEVICES(2,'전자기기'),
-  FURNITURE(3,'가구'),
-  BABY_STUFF(4,'유아용품'),
-  SPORTS(5,'스포츠'),
-  FOOD(6,'식품'),
-  HOBBY(7,'취미용품'),
-  BEAUTY(8,'미용'),
-  FEMALE_CLOTHES(9,'여성의류'),
-  MALE_CLOTHES(10,'남성의류'),
-  PET_STUFF(11,'반려동물용품'),
-  BOOKS(12,'도서'),
-  TOYS(13,'장난감'),
-  PLANT(14,'식물'),
-  ETC(15,'기타용품');
-  
+  GIFTICON(1, '기프티콘'),
+  ELECTRONIC_DEVICES(2, '전자기기'),
+  FURNITURE(3, '가구'),
+  BABY_STUFF(4, '유아용품'),
+  SPORTS(5, '스포츠'),
+  FOOD(6, '식품'),
+  HOBBY(7, '취미용품'),
+  BEAUTY(8, '미용'),
+  FEMALE_CLOTHES(9, '여성의류'),
+  MALE_CLOTHES(10, '남성의류'),
+  PET_STUFF(11, '반려동물용품'),
+  BOOKS(12, '도서'),
+  TOYS(13, '장난감'),
+  PLANT(14, '식물'),
+  ETC(15, '기타용품');
+
   const Category(this.id, this.label);
 
   final int id;
   final String label;
 
   static Category idToEnum(int id) {
-    return Category.values[id-1];
+    return Category.values[id - 1];
   }
 
   static Category objToEnum(CategoryModel categoryModel) {
@@ -90,7 +89,7 @@ enum Category {
   }
 
   static String idToLabel(int id) {
-    return Category.values[id-1].label;
+    return Category.values[id - 1].label;
   }
 
   static int labelToId(String label) {

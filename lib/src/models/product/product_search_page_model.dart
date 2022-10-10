@@ -1,3 +1,5 @@
+import '../../utilities/enums.dart';
+
 class ProductSearchPageModel {
   bool? success;
   int? code;
@@ -75,7 +77,7 @@ class ProductSearchDtoModel {
   String? userNickname;
   int? productCost;
   int? exchangeCostRange;
-  String? productExchangeStatusCd;
+  ProductExchangeStatusCd? productExchangeStatusCd;
   bool? like;
 
   ProductSearchDtoModel(
@@ -93,7 +95,8 @@ class ProductSearchDtoModel {
     userNickname = json['userNickname'];
     productCost = json['productCost'];
     exchangeCostRange = json['exchangeCostRange'];
-    productExchangeStatusCd = json['productExchangeStatusCd'];
+    productExchangeStatusCd =
+        ProductExchangeStatusCd.codeToEnum(json['productExchangeStatusCd']);
     like = json['like'];
   }
 
@@ -104,7 +107,7 @@ class ProductSearchDtoModel {
     data['userNickname'] = userNickname;
     data['productCost'] = productCost;
     data['exchangeCostRange'] = exchangeCostRange;
-    data['productExchangeStatusCd'] = productExchangeStatusCd;
+    data['productExchangeStatusCd'] = productExchangeStatusCd?.code;
     data['like'] = like;
     return data;
   }
