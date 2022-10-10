@@ -162,26 +162,18 @@ class RequestListSheet extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: screenSize.getSize(20.0),
-                  height: screenSize.getSize(20.0),
-                  child: ElevatedButton(
+                  child: IconButton(
+                    icon: Provider.of<ProductDetailAcceptanceViewModel>(context)
+                                .selectedRequestId ==
+                            request.requestId
+                        ? const Icon(Icons.radio_button_checked, color: green)
+                        : const Icon(Icons.radio_button_unchecked,
+                            color: grey153),
                     onPressed: () {
                       Provider.of<ProductDetailAcceptanceViewModel>(context,
                               listen: false)
                           .setSelectedRequestId(request.requestId);
                     },
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(10.0),
-                        elevation: 0.0,
-                        primary: Provider.of<ProductDetailAcceptanceViewModel>(
-                                        context)
-                                    .selectedRequestId ==
-                                request.requestId
-                            ? green
-                            : Colors.white,
-                        shape: const CircleBorder(
-                            side: BorderSide(width: 2.5, color: grey153))),
-                    child: Container(),
                   ),
                 ),
                 const SizedBox(width: 11.0),

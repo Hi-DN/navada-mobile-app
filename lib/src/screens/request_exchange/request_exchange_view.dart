@@ -226,27 +226,19 @@ class MyProductList extends StatelessWidget {
                 Consumer<RequestExchangeViewModel>(
                     builder: (context, provider, child) {
                   return SizedBox(
-                    width: screenSize.getSize(20.0),
-                    height: screenSize.getSize(20.0),
-                    child: ElevatedButton(
+                    child: IconButton(
+                      icon: provider.isSelectedId(product.productId!)
+                          ? const Icon(Icons.radio_button_checked, color: green)
+                          : const Icon(Icons.radio_button_unchecked,
+                              color: grey153),
                       onPressed: () {
                         provider.isSelectedId(product.productId!)
                             ? provider.removeProductId(product.productId!)
                             : provider.addProductId(product.productId!);
                       },
-                      style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.all(10.0),
-                          elevation: 0.0,
-                          primary: provider.isSelectedId(product.productId!)
-                              ? green
-                              : Colors.white,
-                          shape: const CircleBorder(
-                              side: BorderSide(width: 2.5, color: grey153))),
-                      child: Container(),
                     ),
                   );
                 }),
-                const SizedBox(width: 11.0),
               ],
             ),
           ),
