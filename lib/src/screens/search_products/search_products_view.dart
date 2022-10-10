@@ -294,7 +294,9 @@ class SearchProductsView extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0)),
                   builder: (context) {
-                    return _showCategoryModal(context, provider, viewModel);
+                    return ChangeNotifierProvider.value(
+                        value: viewModel,
+                        child: _showCategoryModal(context, provider));
                   });
             },
             style: ElevatedButton.styleFrom(
@@ -368,8 +370,8 @@ class SearchProductsView extends StatelessWidget {
     });
   }
 
-  Widget _showCategoryModal(BuildContext context,
-      SearchProductsProvider provider, SearchProductsViewModel viewModel) {
+  Widget _showCategoryModal(
+      BuildContext context, SearchProductsProvider provider) {
     ScrollController scrollController = ScrollController();
     return Column(
       children: [
@@ -389,12 +391,16 @@ class SearchProductsView extends StatelessWidget {
                         children: [
                           Text('  ${Category.idToLabel(categoryId)}'),
                           IconButton(
-                            icon: viewModel.categoryIds.contains(categoryId)
+                            icon: Provider.of<SearchProductsViewModel>(context)
+                                    .categoryIds
+                                    .contains(categoryId)
                                 ? const Icon(Icons.radio_button_checked)
                                 : const Icon(Icons.radio_button_unchecked),
                             color: green,
                             onPressed: () =>
-                                viewModel.setCategoryIds(categoryId),
+                                Provider.of<SearchProductsViewModel>(context,
+                                        listen: false)
+                                    .setCategoryIds(categoryId),
                           )
                         ],
                       ),
@@ -409,112 +415,27 @@ class SearchProductsView extends StatelessWidget {
               },
               itemCount: Category.values.length),
         ),
-        SizedBox(
-            height: 70.0,
-            width: double.infinity,
-            child: TextButton(
-              style: TextButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
+        Consumer<SearchProductsViewModel>(builder: (context, viewModel, child) {
+          return SizedBox(
+              height: 70.0,
+              width: double.infinity,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                      ),
                     ),
-                  ),
-                  backgroundColor: green),
-              onPressed: () {
-                provider.getSearchedProducts(viewModel);
-                Navigator.of(context).pop();
-              },
-              child: const R20Text(text: '적용하기', textColor: Colors.white),
-            ))
+                    backgroundColor: green),
+                onPressed: () {
+                  provider.getSearchedProducts(viewModel);
+                  Navigator.of(context).pop();
+                },
+                child: const R20Text(text: '적용하기', textColor: Colors.white),
+              ));
+        })
       ],
     );
   }
 }
-
-// class CategoryBottomSheet extends StatelessWidget {
-//   SearchProductsProvider provider;
-//   SearchProductsViewModel viewModel;
-//
-//   CategoryBottomSheet(
-//       {Key? key, required this.provider, required this.viewModel})
-//       : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MultiProvider(providers: [
-//       ChangeNotifierProvider(create: (context) => SearchProductsViewModel()),
-//     ], child: _categoryListView(provider, viewModel));
-//   }
-//
-//   Widget _categoryListView(
-//       SearchProductsProvider provider, SearchProductsViewModel viewModel) {
-//     ScrollController scrollController = ScrollController();
-//     return Column(
-//       children: [
-//         Expanded(
-//           child: ListView.builder(
-//               controller: scrollController,
-//               itemBuilder: (context, index) {
-//
-//                 int categoryId = index + 1;
-//                 return Container(
-//                   padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-//                   child: Column(
-//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                     children: [
-//                       const Space(height: 6.0),
-//                       Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                           Text('  ${Category.idToLabel(categoryId)}'),
-//                           IconButton(
-//                             icon: viewModel.categoryIds.contains(categoryId)
-//                                 ? const Icon(Icons.radio_button_checked)
-//                                 : const Icon(Icons.radio_button_unchecked),
-//                             color: green,
-//                             onPressed: () {
-//                               // Provider.of<SearchProductsViewModel>(context,
-//                               //         listen: false)
-//                               //     .setCategoryIds(categoryId);
-//                               viewModel.setCategoryIds(categoryId);
-//                             },
-//                           )
-//                         ],
-//                       ),
-//                       const Space(height: 5.0),
-//                       Container(
-//                           width: double.infinity,
-//                           height: 1.0,
-//                           color: Colors.grey),
-//                     ],
-//                   ),
-//                 );
-//               },
-//               itemCount: Category.values.length),
-//         ),
-//         Consumer<SearchProductsViewModel>(
-//             builder: (context, viewModel2, child) {
-//           return SizedBox(
-//               height: 70.0,
-//               width: double.infinity,
-//               child: TextButton(
-//                 style: TextButton.styleFrom(
-//                     shape: const RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.only(
-//                         bottomLeft: Radius.circular(20.0),
-//                         bottomRight: Radius.circular(20.0),
-//                       ),
-//                     ),
-//                     backgroundColor: green),
-//                 onPressed: () {
-//                   provider.getSearchedProducts(UserProvider.userId, viewModel);
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: const R20Text(text: '적용하기', textColor: Colors.white),
-//               ));
-//         }),
-//       ],
-//     );
-//   }
-// }
