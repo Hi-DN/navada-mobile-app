@@ -39,6 +39,7 @@ class _UserProfile extends StatelessWidget {
     ScreenSize size = ScreenSize();
     User user = Provider.of<UserProvider>(context, listen: false).user;
 
+    TODO://주소넣기
     return Padding(
       padding: EdgeInsets.symmetric(vertical: size.getSize(27)),
       child: Column(

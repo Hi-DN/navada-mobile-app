@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
-import 'package:navada_mobile_app/src/providers/create_product_provicder.dart';
+import 'package:navada_mobile_app/src/providers/create_product_provider.dart';
 import 'package:navada_mobile_app/src/screens/create_product/create_product_view_model.dart';
+import 'package:navada_mobile_app/src/screens/create_product/search_other_products_modal.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
@@ -45,11 +46,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   FocusNode? _productExchangeCostFNode;
   FocusNode? _productExplanationFNode;
 
-  String? _productName;
   Category? _productCategory;
-  int? _productPrice;
-  int? _productExchangeCost;
-  String? _productExplanation;
 
   @override
   void initState() {
@@ -132,7 +129,6 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
         style: styleR.copyWith(fontSize: size.getSize(16)),
         onChanged: (value) {
           setState(() {
-            _productName = value;
             Provider.of<CreateProductProvider>(context, listen: false)
                 .setProductName(value);
           });
@@ -230,9 +226,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
             style: styleR.copyWith(fontSize: size.getSize(16)),
             onChanged: (value) {
               setState(() {
-                _productPrice = int.parse(value);
-                Provider.of<CreateProductProvider>(context, listen: false)
-                    .setProductPrice(int.parse(value));
+                Provider.of<CreateProductProvider>(context, listen: false).setProductPrice(int.parse(value));
               });
             },
             inputFormatters: [
@@ -282,9 +276,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
                   ],
                   onChanged: (value) {
                     setState(() {
-                      _productExchangeCost = int.parse(value);
-                      Provider.of<CreateProductProvider>(context, listen: false)
-                          .setProductExchangeCost(int.parse(value));
+                      Provider.of<CreateProductProvider>(context, listen: false).setProductExchangeCost(int.parse(value));
                     });
                   },
                   decoration: InputDecoration(
@@ -314,9 +306,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       style: styleR.copyWith(fontSize: size.getSize(16)),
       onChanged: (value) {
         setState(() {
-          _productExplanation = value;
-          Provider.of<CreateProductProvider>(context, listen: false)
-              .setProductExplanation(value);
+          Provider.of<CreateProductProvider>(context, listen: false).setProductExplanation(value);
         });
       },
       maxLength: 200,
@@ -378,7 +368,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 
   _checkField(FocusNode fnode, String snackBarText) {
     FocusScope.of(context).requestFocus(fnode);
-    _scrollController?.jumpTo(0.0);
+    _scrollController.jumpTo(0.0);
     _showSnackBarDurationForSec(snackBarText);
   }
 
@@ -401,37 +391,58 @@ class _SearchOtherProductSection extends StatelessWidget {
       child: Column(
         children: [
           const Space(height: 30),
-          _searchBtn(),
+          _searchBtn(context),
           const Space(height: 30),
         ],
       ),
     );
   }
 
-  Widget _searchBtn() {
+  Widget _searchBtn(BuildContext context) {
     ScreenSize size = ScreenSize();
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.search,
-          color: grey183,
-          size: size.getSize(28),
-        ),
-        const Space(width: 10),
-        Container(
-            padding: EdgeInsets.only(
-                top: size.getSize(10),
-                left: size.getSize(10),
-                bottom: size.getSize(15),
-                right: size.getSize(60)),
-            decoration: const BoxDecoration(
-                border: Border(bottom: BorderSide(color: grey183))),
-            child: const R16Text(
-              text: "바로 교환할 물품을 검색해보세요!",
-              textColor: grey183,
-            ))
-      ],
+    return GestureDetector(
+      onTap: () => _showSearchOtherProductsModal(context),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.search,
+            color: grey183,
+            size: size.getSize(28),
+          ),
+          const Space(width: 10),
+          Container(
+              padding: EdgeInsets.only(
+                  top: size.getSize(10),
+                  left: size.getSize(10),
+                  bottom: size.getSize(15),
+                  right: size.getSize(60)),
+              decoration: const BoxDecoration(
+                  border: Border(bottom: BorderSide(color: grey183))),
+              child: const R16Text(
+                text: "바로 교환할 물품을 검색해보세요!",
+                textColor: grey183,
+              ))
+        ],
+      ),
+    );
+  }
+
+  _showSearchOtherProductsModal(BuildContext context) {
+      ScreenSize size = ScreenSize();
+      final provider = Provider.of<CreateProductProvider>(context, listen: false);
+
+      showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(size.getSize(30)), 
+          topRight: Radius.circular(size.getSize(30))),
+      ),
+      builder: (context) {
+        return ChangeNotifierProvider.value(value: provider, child: const SearchOtherProductsModal());
+      },
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
+import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_service.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
@@ -14,12 +15,16 @@ class CreateProductProvider extends ChangeNotifier {
   int? _productPrice;
   int? _productExchangeCost;
   String? _productExplanation;  
+  final List<ProductModel> _otherProducts = [];
+
+  List<ProductModel> get otherProducts => _otherProducts;
 
   setProductName(String productName) {_productName = productName;}
   setProductCategory(Category productCategory) {_productCategory = productCategory;}
   setProductPrice(int productPrice) {_productPrice = productPrice;}
   setProductExchangeCost(int productExchangeCost) {_productExchangeCost = productExchangeCost;}
   setProductExplanation(String productExplanation) {_productExplanation = productExplanation;}
+  addOtherProducts(ProductModel product) {_otherProducts.add(product);}
 
   bool checkValidProductName() {
     if(_productName == null || _productName == "") return false;
@@ -47,8 +52,6 @@ class CreateProductProvider extends ChangeNotifier {
   }
 
   Future<ProductModel?> createProduct() async {
-    bool success = true;
-
     ProductParams params = ProductParams(
       productName: _productName,
       categoryId: _productCategory?.id,
@@ -60,5 +63,11 @@ class CreateProductProvider extends ChangeNotifier {
     ProductModel? product = await _productService.createProduct(_userId, params);
     if(product == null) return null;
     return product;
+  }
+
+  Future<ProductSearchPageModel> getProductsBySearchWord(String? searchWord, int pageNum) async {
+    ProductSearchPageModel? pageResponse = await _productService.searchProducts(_userId, searchWord, [], null, null, null, pageNum);
+
+    return pageResponse!;
   }
 }

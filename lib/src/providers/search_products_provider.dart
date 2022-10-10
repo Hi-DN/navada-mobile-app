@@ -7,6 +7,8 @@ import '../models/product/product_service.dart';
 import '../models/user/user_provider.dart';
 
 class SearchProductsProvider extends ChangeNotifier {
+  final ProductService _productService = ProductService();
+
   ProductSearchPageModel? _productSearchPageModel;
   ProductSearchPageModel? get productSearchPageModel => _productSearchPageModel;
 
@@ -20,13 +22,14 @@ class SearchProductsProvider extends ChangeNotifier {
   getSearchedProducts(SearchProductsViewModel viewModel) async {
     _productSearchPageModel = null;
 
-    ProductSearchPageModel? model = await searchProducts(
+    ProductSearchPageModel? model = await _productService.searchProducts(
         UserProvider.userId,
         viewModel.searchValue,
         viewModel.categoryIds,
         viewModel.lowerCostBound,
         viewModel.upperCostBound,
-        viewModel.sortMap);
+        viewModel.sortMap,
+        null);
 
     _productSearchPageModel = model;
     _productSearchDtoList = _productSearchPageModel!.content!;
