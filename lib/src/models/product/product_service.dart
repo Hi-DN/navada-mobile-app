@@ -64,20 +64,22 @@ class ProductService {
 Future<ProductSearchPageModel?> searchProducts(
     int? userId,
     String? productName,
-    List<int>? categoryIds,
+    List<int> categoryIds,
     int? lowerCostBound,
     int? upperCostBound,
     String? sort) async {
-  String productNameOpt =
+  String productNameStr =
       productName != null ? '&productName=$productName' : '';
-  String categoryOpt = categoryIds != null ? '&categoryIds=$categoryIds' : '';
-  String lowerCostOpt =
+  String categoryStr = categoryIds.isNotEmpty
+      ? '&categoryIds=${categoryIds.toString().substring(1, categoryIds.toString().length - 1).replaceAll(' ', '')}'
+      : '';
+  String lowerCostStr =
       lowerCostBound != null ? '&lowerCostBound=$lowerCostBound' : '';
-  String upperCostOpt =
+  String upperCostStr =
       upperCostBound != null ? '&upperCostBound=$upperCostBound' : '';
 
   Map<String, dynamic> data = await _httpClient.getRequest(
-      '/user/$userId/products/search?$productNameOpt$categoryOpt$lowerCostOpt$upperCostOpt&sort=$sort',
+      '/user/$userId/products/search?$productNameStr$categoryStr$lowerCostStr$upperCostStr&sort=$sort',
       tokenYn: false);
 
   if (data['success']) {

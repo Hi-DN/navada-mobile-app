@@ -10,8 +10,8 @@ class SearchProductsViewModel extends ChangeNotifier {
   String? get searchValue => _searchValue;
 
   // 카테고리 선택
-  List<int>? _categoryIds;
-  List<int>? get categoryIds => _categoryIds;
+  List<int> _categoryIds = [];
+  List<int> get categoryIds => _categoryIds;
 
   // 희망 가격범위
   int? _lowerCostBound;
@@ -32,6 +32,20 @@ class SearchProductsViewModel extends ChangeNotifier {
 
   void toggleCheckBox() {
     _onlyExchangeable = !_onlyExchangeable;
+    notifyListeners();
+  }
+
+  void setSortValue(String sortValue) {
+    _sort = sortValue;
+    notifyListeners();
+  }
+
+  void setCategoryIds(int categoryId) {
+    if (_categoryIds.contains(categoryId)) {
+      _categoryIds.remove(categoryId);
+    } else {
+      _categoryIds.add(categoryId);
+    }
     notifyListeners();
   }
 }

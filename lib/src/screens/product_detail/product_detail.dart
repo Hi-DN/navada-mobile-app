@@ -10,20 +10,16 @@ import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product/product_model.dart';
+import '../../models/user/user_model.dart';
 import '../../widgets/colors.dart';
 
 // ignore: must_be_immutable
 class ProductDetail extends StatelessWidget {
-  final ProductModel product;
+  final int productId;
   bool like;
-  int likeNum;
   ScreenSize screenSize = ScreenSize();
 
-  ProductDetail(
-      {Key? key,
-      required this.product,
-      required this.like,
-      required this.likeNum})
+  ProductDetail({Key? key, required this.productId, required this.like})
       : super(key: key);
 
   @override
@@ -32,41 +28,101 @@ class ProductDetail extends StatelessWidget {
       body: MultiProvider(
           providers: [
             ChangeNotifierProvider(
-                create: (context) => ProductDetailViewModel(like, likeNum)),
+                create: (context) => ProductDetailViewModel(like)),
             ChangeNotifierProvider(
                 create: (context) => ProductDetailProvider()),
             ChangeNotifierProvider(
                 create: (context) => ProductDetailAcceptanceProvider())
           ],
           builder: (context, child) {
-            return Column(
-              children: [
-                Flexible(flex: 1, child: _productImagesSection(context)),
-                Flexible(
-                  flex: 1,
-                  child: Container(
-                    width: screenSize.getSize(335.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Flexible(
-                            flex: 2,
-                            child:
-                                UserInfoSection(productId: product.productId!)),
-                        Flexible(flex: 5, child: _productInfoSection(product)),
-                        Flexible(flex: 1, child: _reportSection()),
-                        Flexible(
-                            flex: 2,
-                            child: ProductDetailBottomButton(product: product)),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            );
+            return _buildProductDetail(context);
           }),
     );
+  }
+
+  Widget _buildProductDetail(BuildContext context) {
+    Provider.of<ProductDetailProvider>(context, listen: false)
+        .fetchProductAndUser(productId);
+
+    return Consumer<ProductDetailProvider>(builder: (context, provider, child) {
+      if (provider.product != null) {
+        Provider.of<ProductDetailViewModel>(context, listen: false)
+            .setLikeNum(provider.product!.heartNum!);
+        return Column(
+          children: [
+            Flexible(flex: 1, child: _productImagesSection(context)),
+            Flexible(
+              flex: 1,
+              child: Container(
+                width: screenSize.getSize(335.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                        flex: 2,
+                        child: _userInfoSection(provider.userOfProduct)),
+                    Flexible(
+                        flex: 5, child: _productInfoSection(provider.product!)),
+                    Flexible(flex: 1, child: _reportSection()),
+                    Flexible(
+                        flex: 2,
+                        child: ProductDetailBottomButton(
+                            product: provider.product!)),
+                  ],
+                ),
+              ),
+            )
+          ],
+        );
+      } else {
+        return const Center(child: CircularProgressIndicator());
+      }
+    });
+  }
+
+  Widget _userInfoSection(User? userOfProduct) {
+    if (userOfProduct != null) {
+      return Container(
+        padding: const EdgeInsets.only(top: 10.0),
+        child: Row(
+          children: [
+            const CircleAvatar(
+              radius: 25.0,
+              backgroundColor: grey153,
+              child: CircleAvatar(
+                radius: 23.0,
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.person,
+                  color: grey153,
+                ),
+              ),
+            ),
+            SizedBox(width: screenSize.getSize(10.0)),
+            R14Text(
+              text: userOfProduct.userNickname,
+              textColor: const Color(0xFF5B5B5A),
+            ),
+            SizedBox(width: screenSize.getSize(10.0)),
+            Row(
+              children: [
+                const Icon(
+                  Icons.star_outline,
+                  color: green,
+                ),
+                R14Text(
+                  text: "${userOfProduct.userRating}",
+                  textColor: green,
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+    } else {
+      return const Center(child: CircularProgressIndicator());
+    }
   }
 
   Widget _productImagesSection(BuildContext context) {
@@ -79,7 +135,8 @@ class ProductDetail extends StatelessWidget {
         ),
       ),
       IconButton(
-        onPressed: () => Navigator.of(context, rootNavigator: true).pop(context),
+        onPressed: () =>
+            Navigator.of(context, rootNavigator: true).pop(context),
         padding: const EdgeInsets.only(top: 50.0),
         icon: const Icon(
           Icons.arrow_back,
@@ -91,8 +148,7 @@ class ProductDetail extends StatelessWidget {
   }
 
   Widget _productInfoSection(ProductModel product) {
-    return Container(
-        child: Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -169,7 +225,7 @@ class ProductDetail extends StatelessWidget {
           ),
         ),
       ],
-    ));
+    );
   }
 
   Widget _reportSection() {
@@ -184,65 +240,6 @@ class ProductDetail extends StatelessWidget {
               decoration: TextDecoration.underline,
             ),
           )),
-    );
-  }
-}
-
-// ignore: must_be_immutable
-class UserInfoSection extends StatelessWidget {
-  ScreenSize screenSize = ScreenSize();
-  int productId;
-  UserInfoSection({Key? key, required this.productId}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Provider.of<ProductDetailProvider>(context, listen: false)
-        .fetchUserInfo(productId);
-
-    return Consumer<ProductDetailProvider>(
-      builder: (context, provider, widget) {
-        if (provider.userOfProduct != null) {
-          return Container(
-            padding: const EdgeInsets.only(top: 10.0),
-            child: Row(
-              children: [
-                const CircleAvatar(
-                  radius: 25.0,
-                  backgroundColor: grey153,
-                  child: CircleAvatar(
-                    radius: 23.0,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.person,
-                      color: grey153,
-                    ),
-                  ),
-                ),
-                SizedBox(width: screenSize.getSize(10.0)),
-                R14Text(
-                  text: provider.userOfProduct?.userNickname,
-                  textColor: const Color(0xFF5B5B5A),
-                ),
-                SizedBox(width: screenSize.getSize(10.0)),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.star_outline,
-                      color: green,
-                    ),
-                    R14Text(
-                      text: "${provider.userOfProduct?.userRating}",
-                      textColor: green,
-                    ),
-                  ],
-                )
-              ],
-            ),
-          );
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
     );
   }
 }

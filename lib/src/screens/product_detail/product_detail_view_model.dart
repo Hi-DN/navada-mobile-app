@@ -4,9 +4,8 @@ import 'package:flutter/cupertino.dart';
 
 // 상품 상세 : 메인 화면
 class ProductDetailViewModel extends ChangeNotifier {
-  ProductDetailViewModel(bool initialLike, int initialLikeNum) {
+  ProductDetailViewModel(bool initialLike) {
     _like = initialLike;
-    _likeNum = initialLikeNum;
   }
 
   late bool _like;
@@ -14,6 +13,11 @@ class ProductDetailViewModel extends ChangeNotifier {
 
   late int _likeNum;
   int get likeNum => _likeNum;
+
+  void setLikeNum(int likeNum) {
+    _likeNum = likeNum;
+    notifyListeners();
+  }
 
   void setLikeValue() {
     _like = !_like;

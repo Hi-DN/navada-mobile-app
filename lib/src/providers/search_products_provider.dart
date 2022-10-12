@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
+import 'package:navada_mobile_app/src/screens/search_products/search_products_view_model.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 import '../models/product/product_service.dart';
+import '../models/user/user_provider.dart';
 
 class SearchProductsProvider extends ChangeNotifier {
   ProductSearchPageModel? _productSearchPageModel;
@@ -14,14 +17,28 @@ class SearchProductsProvider extends ChangeNotifier {
   int _totalElements = 0;
   int get totalElements => _totalElements;
 
-  getSearchedProducts(userId, categoryIds, productName, lowerCostBound,
-      upperCostBound, sort) async {
+  getSearchedProducts(SearchProductsViewModel viewModel) async {
+    _productSearchPageModel = null;
+
     ProductSearchPageModel? model = await searchProducts(
-        userId, productName, categoryIds, lowerCostBound, upperCostBound, sort);
+        UserProvider.userId,
+        viewModel.searchValue,
+        viewModel.categoryIds,
+        viewModel.lowerCostBound,
+        viewModel.upperCostBound,
+        viewModel.sortMap);
 
     _productSearchPageModel = model;
     _productSearchDtoList = _productSearchPageModel!.content!;
-    _totalElements = _productSearchPageModel!.totalElements!;
+
+    if (viewModel.onlyExchangeable) {
+      _productSearchDtoList = _productSearchDtoList
+          ?.where((p) =>
+              p.productExchangeStatusCd == ProductExchangeStatusCd.REGISTERED)
+          .toList();
+    }
+
+    _totalElements = _productSearchDtoList!.length;
 
     notifyListeners();
   }
