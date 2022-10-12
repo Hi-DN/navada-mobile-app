@@ -15,16 +15,25 @@ class CreateProductProvider extends ChangeNotifier {
   int? _productPrice;
   int? _productExchangeCost;
   String? _productExplanation;  
-  final List<ProductModel> _otherProducts = [];
+  final List<ProductSearchDtoModel> _otherProducts = [];
 
-  List<ProductModel> get otherProducts => _otherProducts;
+  List<ProductSearchDtoModel> get otherProducts => _otherProducts;
 
   setProductName(String productName) {_productName = productName;}
   setProductCategory(Category productCategory) {_productCategory = productCategory;}
   setProductPrice(int productPrice) {_productPrice = productPrice;}
   setProductExchangeCost(int productExchangeCost) {_productExchangeCost = productExchangeCost;}
   setProductExplanation(String productExplanation) {_productExplanation = productExplanation;}
-  addOtherProducts(ProductModel product) {_otherProducts.add(product);}
+
+  addOtherProducts(ProductSearchDtoModel product) {
+    _otherProducts.add(product); 
+    notifyListeners();
+  }
+
+  removeFromOtherProducts(int productId) {
+    _otherProducts.removeWhere((element) => element.productId == productId);
+    notifyListeners();
+  }
 
   bool checkValidProductName() {
     if(_productName == null || _productName == "") return false;

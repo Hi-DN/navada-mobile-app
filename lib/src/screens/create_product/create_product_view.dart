@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
+import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/create_product_provider.dart';
 import 'package:navada_mobile_app/src/screens/create_product/create_product_view_model.dart';
@@ -84,7 +85,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
             children: [
               _productInfoEnteringSection(),
               const CustomDivider(),
-              const _SearchOtherProductSection(),
+              _SearchOtherProductSection(),
               const Space(height: 70),
               _confirmBtn(context),
               const Space(height: 30),
@@ -381,27 +382,32 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 }
 
 class _SearchOtherProductSection extends StatelessWidget {
-  const _SearchOtherProductSection({Key? key}) : super(key: key);
+  _SearchOtherProductSection({Key? key}) : super(key: key);
+
+  late BuildContext _context;
 
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
+    _context = context;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: size.getSize(20)),
       child: Column(
         children: [
           const Space(height: 30),
-          _searchBtn(context),
+          _searchBtn(),
           const Space(height: 30),
+          _selectedOtherProductListSection()
         ],
       ),
     );
   }
 
-  Widget _searchBtn(BuildContext context) {
+  Widget _searchBtn() {
     ScreenSize size = ScreenSize();
     return GestureDetector(
-      onTap: () => _showSearchOtherProductsModal(context),
+      onTap: () => _showSearchOtherProductsModal(),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -428,12 +434,12 @@ class _SearchOtherProductSection extends StatelessWidget {
     );
   }
 
-  _showSearchOtherProductsModal(BuildContext context) {
+  _showSearchOtherProductsModal() {
       ScreenSize size = ScreenSize();
-      final provider = Provider.of<CreateProductProvider>(context, listen: false);
+      final provider = Provider.of<CreateProductProvider>(_context, listen: false);
 
       showModalBottomSheet(
-      context: context,
+      context: _context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -444,5 +450,74 @@ class _SearchOtherProductSection extends StatelessWidget {
         return ChangeNotifierProvider.value(value: provider, child: const SearchOtherProductsModal());
       },
     );
+  }
+
+  Widget _selectedOtherProductListSection() {
+    List<ProductSearchDtoModel> products = Provider.of<CreateProductProvider>(_context).otherProducts;
+    debugPrint(products.toString());
+    return ListView.separated(
+        padding: const EdgeInsets.all(0.0),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: products.length,
+        itemBuilder: (context, index) {
+          ProductSearchDtoModel product = products[index];
+
+          return _selectedOtherProductTile(product);
+        },
+        separatorBuilder: (context, index) {
+          return const Space(height: 10);
+        });
+  }
+
+  Widget _selectedOtherProductTile(ProductSearchDtoModel product) {
+    ScreenSize size = ScreenSize();
+    return Container(
+      padding: EdgeInsets.all(size.getSize(14)),
+      decoration: BoxDecoration(
+        color: grey239,
+        borderRadius: BorderRadius.circular(size.getSize(10))
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _exampleImage(),
+              const Space(width: 15),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                B14Text(text: product.productName),
+                Row(children: [const B14Text(text: "교환상대 "), R14Text(text: product.userNickname)],),
+                Row(children: [const B14Text(text: "원가 "), R14Text(text: "${product.productCost}원")],),
+              ]),
+            ],
+          ),
+          const Expanded(child: SizedBox()),
+          _deleteProductBtn(product.productId!),
+        ],
+      ),
+    );
+  }
+
+  Widget _exampleImage() {
+    ScreenSize size = ScreenSize();
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size.getSize(5)),
+      child: Image.asset(
+        'assets/images/test.jpeg',
+        width: size.getSize(65.0),
+        height: size.getSize(65.0),
+      )
+    );
+  }
+
+  Widget _deleteProductBtn(int productId) {
+    ScreenSize size = ScreenSize();
+    return GestureDetector(
+          onTap: () {
+            Provider.of<CreateProductProvider>(_context, listen: false).removeFromOtherProducts(productId);
+          },
+          child: Icon(Icons.remove_circle, color: grey183, size: size.getSize(22)));
   }
 }

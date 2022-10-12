@@ -7,12 +7,11 @@ import 'package:navada_mobile_app/src/providers/create_product_provider.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
+import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
-
-//TODO: 프로덕트 리스트 다시 불러올 때 아이디 확인해서 체크 표시하기 
 
 class SearchOtherProductsModal extends StatefulWidget {
   const SearchOtherProductsModal({Key? key}) : super(key: key);
@@ -36,6 +35,7 @@ class _SearchOtherProductsModalState extends State<SearchOtherProductsModal> {
   void initState() {
     super.initState();
     _searchFNode = FocusNode();
+    checkedProducts = Provider.of<CreateProductProvider>(context, listen: false).otherProducts;
   }
 
   @override
@@ -68,7 +68,7 @@ class _SearchOtherProductsModalState extends State<SearchOtherProductsModal> {
                   _greyStick(),
                   const Space(height: 15),
                   _searchSection(),
-                  const Space(height: 15),
+                  const Space(height: 10),
                   _checkedProductThumbnailList(),
                   const CustomDivider(),
                   const Space(height: 15),
@@ -119,7 +119,7 @@ class _SearchOtherProductsModalState extends State<SearchOtherProductsModal> {
 
   Widget _checkedProductThumbnailList() {
     return SizedBox(
-      height: size.getSize(72),
+      height: size.getSize(68),
       child: ListView.separated(
         padding: const EdgeInsets.all(0.0),
         shrinkWrap: false,
@@ -144,14 +144,14 @@ class _SearchOtherProductsModalState extends State<SearchOtherProductsModal> {
           borderRadius: BorderRadius.circular(size.getSize(5)),
           child: Image.asset(
             'assets/images/test.jpeg',
-            width: size.getSize(60.0),
-            height: size.getSize(60.0),
+            width: size.getSize(56.0),
+            height: size.getSize(56.0),
           ),
         ),
         GestureDetector(
           onTap: () {
             setState(() {
-              checkedProducts.remove(product);
+              Provider.of<CreateProductProvider>(context, listen: false).removeFromOtherProducts(product.productId!);
             });
           },
           child: Icon(Icons.remove_circle, color: grey183, size: size.getSize(18)))
@@ -165,21 +165,23 @@ class _SearchOtherProductsModalState extends State<SearchOtherProductsModal> {
       onChanged: (value) async {
         setState(() {
           searchedProducts = [];
+          pageNum = 0;
           lastLoaded=false;
+          searchWord = value;
         });
         ProductSearchPageModel? pageResponse;
+        if(!lastLoaded) {
+          pageResponse = await Provider.of<CreateProductProvider>(context, listen: false)
+              .getProductsBySearchWord(value, pageNum);
+        }
+        setState(() {
           if(!lastLoaded) {
-            pageResponse = await Provider.of<CreateProductProvider>(context, listen: false)
-                .getProductsBySearchWord(value, pageNum);
-          }
-          setState(() {
-            if(!lastLoaded) {
-              if(pageResponse!.last!) lastLoaded = true;
+            if(pageResponse!.last!) lastLoaded = true;
 
-              List<ProductSearchDtoModel> dataList = pageResponse.content!;
-              searchedProducts.addAll(dataList);
-            }
-          });
+            List<ProductSearchDtoModel> dataList = pageResponse.content!;
+            searchedProducts.addAll(dataList);
+          }
+        });
         },
         maxLines: 1,
         decoration: InputDecoration(
@@ -201,20 +203,63 @@ class _SearchOtherProductsModalState extends State<SearchOtherProductsModal> {
 
   Widget _searchedProductListSection() {
     return Expanded(
-      child: ListView.separated(
-        padding: const EdgeInsets.all(0.0),
-        shrinkWrap: true,
-        itemCount: searchedProducts.length,
-        itemBuilder: (context, index) {
-          ProductSearchDtoModel product = searchedProducts[index];
-          bool isChecked = checkedProducts.contains(product);
-
-          return _searchProductTile(product, isChecked);
-        },
-        separatorBuilder: (context, index) {
-          return const Space(height: 10);
-        }),
+      child: Stack(
+        children: [
+          NotificationListener<ScrollNotification>(
+            onNotification: _scrollNotification,
+            child: ListView.separated(
+              padding: EdgeInsets.only(bottom: size.getSize(64)),
+              shrinkWrap: true,
+              itemCount: searchedProducts.length,
+              itemBuilder: (context, index) {
+                ProductSearchDtoModel product = searchedProducts[index];
+                bool isChecked = checkedProducts.any((element) => element.productId == product.productId);
+              
+                return _searchProductTile(product, isChecked);
+              },
+              separatorBuilder: (context, index) {
+                return const Space(height: 10);
+              }),
+          ),
+          IgnorePointer(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [white.withOpacity(0.9), white.withOpacity(0.1), white.withOpacity(0)],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter
+                )
+              ),
+            ),
+          ),
+          Align(alignment: Alignment.bottomCenter, child: _confirmBtn())
+        ],
+      ),
     );
+  }
+
+  bool _scrollNotification(ScrollNotification scrollInfo) {
+    if(!lastLoaded && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+      ProductSearchPageModel? pageResponse;
+      pageNum++;
+
+      Provider.of<CreateProductProvider>(context, listen: false)
+      .getProductsBySearchWord(searchWord, pageNum).then(
+        (value) {
+          pageResponse = value;
+          setState(() {
+            if(pageResponse!.last!) {
+              lastLoaded = true;
+            }
+
+            List<ProductSearchDtoModel> dataList = pageResponse!.content!;
+            searchedProducts.addAll(dataList);
+          });
+        }
+      );
+    }
+
+    return true;
   }
 
   Widget _searchProductTile(ProductSearchDtoModel product, bool isChecked) {
@@ -268,9 +313,9 @@ class _SearchOtherProductsModalState extends State<SearchOtherProductsModal> {
       onTap: () {
         setState(() {
           if(isChecked) {
-            checkedProducts.remove(product);
+            Provider.of<CreateProductProvider>(context, listen: false).removeFromOtherProducts(product.productId!);
           } else {
-            checkedProducts.add(product);
+            Provider.of<CreateProductProvider>(context, listen: false).addOtherProducts(product);
           }
         });
       },
@@ -287,6 +332,13 @@ class _SearchOtherProductsModalState extends State<SearchOtherProductsModal> {
           color: white,
         )
       ),
+    );
+  }
+
+  Widget _confirmBtn() {
+    return LongCircledBtn(
+      text: "완료",
+      onTap: () => Navigator.of(context).pop()
     );
   }
 }
