@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
+import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
-import 'package:navada_mobile_app/src/providers/create_product_provicder.dart';
+import 'package:navada_mobile_app/src/providers/create_product_provider.dart';
+import 'package:navada_mobile_app/src/screens/create_product/search_other_products_modal.dart';
 import 'package:navada_mobile_app/src/screens/create_product/create_product_view_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
@@ -45,11 +47,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   FocusNode? _productExchangeCostFNode;
   FocusNode? _productExplanationFNode;
 
-  String? _productName;
   Category? _productCategory;
-  int? _productPrice;
-  int? _productExchangeCost;
-  String? _productExplanation;
 
   @override
   void initState() {
@@ -87,8 +85,8 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
             children: [
               _productInfoEnteringSection(),
               const CustomDivider(),
-              const _SearchOtherProductSection(),
-              const Space(height: 70),
+              _SearchOtherProductSection(),
+              const Space(height: 20),
               _confirmBtn(context),
               const Space(height: 30),
             ],
@@ -132,7 +130,6 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
         style: styleR.copyWith(fontSize: size.getSize(16)),
         onChanged: (value) {
           setState(() {
-            _productName = value;
             Provider.of<CreateProductProvider>(context, listen: false)
                 .setProductName(value);
           });
@@ -230,9 +227,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
             style: styleR.copyWith(fontSize: size.getSize(16)),
             onChanged: (value) {
               setState(() {
-                _productPrice = int.parse(value);
-                Provider.of<CreateProductProvider>(context, listen: false)
-                    .setProductPrice(int.parse(value));
+                Provider.of<CreateProductProvider>(context, listen: false).setProductPrice(int.parse(value));
               });
             },
             inputFormatters: [
@@ -282,9 +277,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
                   ],
                   onChanged: (value) {
                     setState(() {
-                      _productExchangeCost = int.parse(value);
-                      Provider.of<CreateProductProvider>(context, listen: false)
-                          .setProductExchangeCost(int.parse(value));
+                      Provider.of<CreateProductProvider>(context, listen: false).setProductExchangeCost(int.parse(value));
                     });
                   },
                   decoration: InputDecoration(
@@ -314,9 +307,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       style: styleR.copyWith(fontSize: size.getSize(16)),
       onChanged: (value) {
         setState(() {
-          _productExplanation = value;
-          Provider.of<CreateProductProvider>(context, listen: false)
-              .setProductExplanation(value);
+          Provider.of<CreateProductProvider>(context, listen: false).setProductExplanation(value);
         });
       },
       maxLength: 200,
@@ -356,11 +347,15 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
             } else if (!provider.checkValidProductExplanation()) {
               _checkField(_productExplanationFNode!, "물품 설명을 확인해주세요!");
             } else {
-              ProductModel? product = await Provider.of<CreateProductProvider>(
-                      context,
-                      listen: false)
+              ProductModel? product = await Provider.of<CreateProductProvider>(context,listen: false)
                   .createProduct();
               if (product != null) {
+                // ignore: use_build_context_synchronously
+                bool isRequestingToOtherProducts = !(Provider.of<CreateProductProvider>(context, listen: false).isOtherProductsEmpty);
+                if(isRequestingToOtherProducts) {
+                  // ignore: use_build_context_synchronously
+                  await Provider.of<CreateProductProvider>(context, listen: false).requestToOtherProducts(product.productId!);
+                }
                 _showSnackBarDurationForSec("글이 등록되었습니다🥰");
                 // ignore: use_build_context_synchronously
                 Navigator.pushReplacement(
@@ -378,7 +373,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 
   _checkField(FocusNode fnode, String snackBarText) {
     FocusScope.of(context).requestFocus(fnode);
-    _scrollController?.jumpTo(0.0);
+    _scrollController.jumpTo(0.0);
     _showSnackBarDurationForSec(snackBarText);
   }
 
@@ -391,18 +386,26 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 }
 
 class _SearchOtherProductSection extends StatelessWidget {
-  const _SearchOtherProductSection({Key? key}) : super(key: key);
+  _SearchOtherProductSection({Key? key}) : super(key: key);
+
+  late BuildContext _context;
 
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
+    _context = context;
+    bool isRequestingToOtherProducts = !(Provider.of<CreateProductProvider>(context, listen: false).isOtherProductsEmpty);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: size.getSize(20)),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Space(height: 30),
           _searchBtn(),
           const Space(height: 30),
+          _selectedOtherProductListSection(),
+          isRequestingToOtherProducts ? const Space(height: 70) : Container(),
+          isRequestingToOtherProducts ? _warnings() : Container()
         ],
       ),
     );
@@ -410,28 +413,123 @@ class _SearchOtherProductSection extends StatelessWidget {
 
   Widget _searchBtn() {
     ScreenSize size = ScreenSize();
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.search,
-          color: grey183,
-          size: size.getSize(28),
-        ),
-        const Space(width: 10),
-        Container(
-            padding: EdgeInsets.only(
-                top: size.getSize(10),
-                left: size.getSize(10),
-                bottom: size.getSize(15),
-                right: size.getSize(60)),
-            decoration: const BoxDecoration(
-                border: Border(bottom: BorderSide(color: grey183))),
-            child: const R16Text(
-              text: "바로 교환할 물품을 검색해보세요!",
-              textColor: grey183,
-            ))
-      ],
+    return GestureDetector(
+      onTap: () => _showSearchOtherProductsModal(),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.search,
+            color: grey183,
+            size: size.getSize(28),
+          ),
+          const Space(width: 10),
+          Container(
+              padding: EdgeInsets.only(
+                  top: size.getSize(10),
+                  left: size.getSize(10),
+                  bottom: size.getSize(15),
+                  right: size.getSize(60)),
+              decoration: const BoxDecoration(
+                  border: Border(bottom: BorderSide(color: grey183))),
+              child: const R16Text(
+                text: "바로 교환할 물품을 검색해보세요!",
+                textColor: grey183,
+              ))
+        ],
+      ),
     );
+  }
+
+  _showSearchOtherProductsModal() {
+      ScreenSize size = ScreenSize();
+      final provider = Provider.of<CreateProductProvider>(_context, listen: false);
+
+      showModalBottomSheet(
+      context: _context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(size.getSize(30)), 
+          topRight: Radius.circular(size.getSize(30))),
+      ),
+      builder: (context) {
+        return ChangeNotifierProvider.value(value: provider, child: const SearchOtherProductsModal());
+      },
+    );
+  }
+
+  Widget _selectedOtherProductListSection() {
+    List<ProductSearchDtoModel> products = Provider.of<CreateProductProvider>(_context).otherProducts;
+    return ListView.separated(
+        padding: const EdgeInsets.all(0.0),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: products.length,
+        itemBuilder: (context, index) {
+          ProductSearchDtoModel product = products[index];
+
+          return _selectedOtherProductTile(product);
+        },
+        separatorBuilder: (context, index) {
+          return const Space(height: 10);
+        });
+  }
+
+  Widget _selectedOtherProductTile(ProductSearchDtoModel product) {
+    ScreenSize size = ScreenSize();
+    return Container(
+      padding: EdgeInsets.all(size.getSize(14)),
+      decoration: BoxDecoration(
+        color: grey239,
+        borderRadius: BorderRadius.circular(size.getSize(10))
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _exampleImage(),
+              const Space(width: 15),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                B14Text(text: product.productName),
+                Row(children: [const B14Text(text: "교환상대 "), R14Text(text: product.userNickname)],),
+                Row(children: [const B14Text(text: "원가 "), R14Text(text: "${product.productCost}원")],),
+              ]),
+            ],
+          ),
+          const Expanded(child: SizedBox()),
+          _deleteProductBtn(product.productId!),
+        ],
+      ),
+    );
+  }
+
+  Widget _exampleImage() {
+    ScreenSize size = ScreenSize();
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size.getSize(5)),
+      child: Image.asset(
+        'assets/images/test.jpeg',
+        width: size.getSize(65.0),
+        height: size.getSize(65.0),
+      )
+    );
+  }
+
+  Widget _deleteProductBtn(int productId) {
+    ScreenSize size = ScreenSize();
+    return GestureDetector(
+          onTap: () {
+            Provider.of<CreateProductProvider>(_context, listen: false).removeFromOtherProducts(productId);
+          },
+          child: Icon(Icons.remove_circle, color: grey183, size: size.getSize(22)));
+  }
+
+  Widget _warnings() {
+    return const R12Text(
+      text: "  ※ 바로 교환 신청하는 경우, 교환 상품이 자동으로 등록됩니다.\n  ※ 여러 상품에 교환 신청하는 경우,\n    가장 먼저 수락되는 상품과 자동으로 교환이 이루어집니다.", 
+      textColor: grey153,);
   }
 }

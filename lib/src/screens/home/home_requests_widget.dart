@@ -24,11 +24,10 @@ class RequestsForMe extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     return Scaffold(
-        body: Column(
-      children: [
-        _titleSection(),
-        Expanded(child: _buildScreenDependingOnDataState()),
-      ],
+      body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          _titleSection(),
+          Expanded(child: _buildScreenDependingOnDataState()),
+        ],
     ));
   }
 
@@ -38,44 +37,57 @@ class RequestsForMe extends StatelessWidget {
         (BuildContext context, RequestsForMeProvider provider, Widget? _) {
       return Padding(
         padding: EdgeInsets.symmetric(vertical: size.getSize(18)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [_sectionTitle(), _deniedVisibleCheckBox()],
-        ),
+        child: 
+          Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            _sectionTitle(),
+            _deniedVisibleCheckBox()
+          ],
+        )
       );
     });
   }
 
   Widget _sectionTitle() {
+    ScreenSize size = ScreenSize();
     User user = Provider.of<UserProvider>(_context!, listen: false).user;
-    return Row(
-      children: [
-        B16Text(text: user.userNickname),
-        const R16Text(text: '님에게 온 교환 요청'),
-      ],
-    );
+    return RichText(
+      text: TextSpan(children: [
+          TextSpan(
+          text: user.userNickname,
+          style: styleB.copyWith(fontSize: size.getSize(16))),
+      TextSpan(
+          text: '님에게 온 교환 요청',
+          style: styleR.copyWith(fontSize: size.getSize(16)))
+    ]));
   }
 
   Widget _deniedVisibleCheckBox() {
+    ScreenSize size = ScreenSize();
     return Consumer2<HomeViewModel, RequestsForMeProvider>(builder:
         (BuildContext context, HomeViewModel homeViewModel,
             RequestsForMeProvider requestsForMeProvider, Widget? _) {
-      return Row(children: [
-        Checkbox(
-            visualDensity:
-                const VisualDensity(horizontal: -3.0, vertical: -4.0),
-            value: homeViewModel.isDeniedVisible,
-            side: const BorderSide(color: grey183),
-            activeColor: grey183,
-            onChanged: (value) {
-              homeViewModel.setDeniedVisible(value!);
-              requestsForMeProvider.fetchDependingOnDeniedCheck(value);
-            }),
-        const R12Text(
-          text: '거절한 요청도 보기',
-          textColor: grey183,
-        )
-      ]);
+      return SizedBox(
+        width: size.getSize(130),
+        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          Checkbox(
+              visualDensity:
+                  const VisualDensity(horizontal: -3.0, vertical: -4.0),
+              value: homeViewModel.isDeniedVisible,
+              side: const BorderSide(color: grey183),
+              activeColor: grey183,
+              onChanged: (value) {
+                homeViewModel.setDeniedVisible(value!);
+                requestsForMeProvider.fetchDependingOnDeniedCheck(value);
+              }),
+          const R12Text(
+            text: '거절한 요청도 보기',
+            textColor: grey183,
+          )
+        ]),
+      );
     });
   }
 
