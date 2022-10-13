@@ -17,16 +17,19 @@ class SearchProductsProvider extends ChangeNotifier {
   int _totalElements = 0;
   int get totalElements => _totalElements;
 
+  final ProductService _productService = ProductService();
+
   getSearchedProducts(SearchProductsViewModel viewModel) async {
     _productSearchPageModel = null;
 
-    ProductSearchPageModel? model = await searchProducts(
+    ProductSearchPageModel? model = await _productService.searchProducts(
         UserProvider.userId,
         viewModel.searchValue,
         viewModel.categoryIds,
         viewModel.lowerCostBound,
         viewModel.upperCostBound,
-        viewModel.sortMap);
+        viewModel.sortMap,
+        0);
 
     _productSearchPageModel = model;
     _productSearchDtoList = _productSearchPageModel!.content!;
