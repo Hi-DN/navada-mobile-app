@@ -86,7 +86,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
               _productInfoEnteringSection(),
               const CustomDivider(),
               _SearchOtherProductSection(),
-              const Space(height: 70),
+              const Space(height: 20),
               _confirmBtn(context),
               const Space(height: 30),
             ],
@@ -347,11 +347,15 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
             } else if (!provider.checkValidProductExplanation()) {
               _checkField(_productExplanationFNode!, "물품 설명을 확인해주세요!");
             } else {
-              ProductModel? product = await Provider.of<CreateProductProvider>(
-                      context,
-                      listen: false)
+              ProductModel? product = await Provider.of<CreateProductProvider>(context,listen: false)
                   .createProduct();
               if (product != null) {
+                // ignore: use_build_context_synchronously
+                bool isRequestingToOtherProducts = !(Provider.of<CreateProductProvider>(context, listen: false).isOtherProductsEmpty);
+                if(isRequestingToOtherProducts) {
+                  // ignore: use_build_context_synchronously
+                  await Provider.of<CreateProductProvider>(context, listen: false).requestToOtherProducts(product.productId!);
+                }
                 _showSnackBarDurationForSec("글이 등록되었습니다🥰");
                 // ignore: use_build_context_synchronously
                 Navigator.pushReplacement(
@@ -390,15 +394,18 @@ class _SearchOtherProductSection extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
     _context = context;
-
+    bool isRequestingToOtherProducts = !(Provider.of<CreateProductProvider>(context, listen: false).isOtherProductsEmpty);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: size.getSize(20)),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Space(height: 30),
           _searchBtn(),
           const Space(height: 30),
-          _selectedOtherProductListSection()
+          _selectedOtherProductListSection(),
+          isRequestingToOtherProducts ? const Space(height: 70) : Container(),
+          isRequestingToOtherProducts ? _warnings() : Container()
         ],
       ),
     );
@@ -454,7 +461,6 @@ class _SearchOtherProductSection extends StatelessWidget {
 
   Widget _selectedOtherProductListSection() {
     List<ProductSearchDtoModel> products = Provider.of<CreateProductProvider>(_context).otherProducts;
-    debugPrint(products.toString());
     return ListView.separated(
         padding: const EdgeInsets.all(0.0),
         shrinkWrap: true,
@@ -519,5 +525,11 @@ class _SearchOtherProductSection extends StatelessWidget {
             Provider.of<CreateProductProvider>(_context, listen: false).removeFromOtherProducts(productId);
           },
           child: Icon(Icons.remove_circle, color: grey183, size: size.getSize(22)));
+  }
+
+  Widget _warnings() {
+    return const R12Text(
+      text: "  ※ 바로 교환 신청하는 경우, 교환 상품이 자동으로 등록됩니다.\n  ※ 여러 상품에 교환 신청하는 경우,\n    가장 먼저 수락되는 상품과 자동으로 교환이 이루어집니다.", 
+      textColor: grey153,);
   }
 }

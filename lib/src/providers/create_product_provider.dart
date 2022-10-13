@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_service.dart';
+import 'package:navada_mobile_app/src/models/request/request_service.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class CreateProductProvider extends ChangeNotifier {
@@ -9,6 +10,7 @@ class CreateProductProvider extends ChangeNotifier {
   final int _userId;
   
   final ProductService _productService = ProductService();
+  final RequestService _requestService = RequestService();
   
   String? _productName;
   Category? _productCategory;
@@ -18,6 +20,7 @@ class CreateProductProvider extends ChangeNotifier {
   final List<ProductSearchDtoModel> _otherProducts = [];
 
   List<ProductSearchDtoModel> get otherProducts => _otherProducts;
+  bool get isOtherProductsEmpty => _otherProducts.isEmpty;
 
   setProductName(String productName) {_productName = productName;}
   setProductCategory(Category productCategory) {_productCategory = productCategory;}
@@ -78,5 +81,11 @@ class CreateProductProvider extends ChangeNotifier {
     ProductSearchPageModel? pageResponse = await _productService.searchProducts(_userId, searchWord, [], null, null, null, pageNum);
 
     return pageResponse!;
+  }
+
+  Future<void> requestToOtherProducts(int productId) async {
+    for(int i=0; i<_otherProducts.length; i++) {
+      _requestService.createRequest(productId, _otherProducts[i].productId!);
+    }
   }
 }
