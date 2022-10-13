@@ -200,6 +200,7 @@ class RequestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenSize size = ScreenSize();
     bool isWait = request?.requestStatusCd == RequestStatusCd.WAIT;
 
     return MyExchangeCard(
@@ -210,13 +211,17 @@ class RequestItem extends StatelessWidget {
         requesterProductName: request?.requesterProductName,
         requesterNickname: Row(children: [
                   B10Text(text: "신청 ", textColor: isWait ? yellow : grey153),
-                  Expanded(child: R10Text(text: request?.requesterNickName, textColor: grey183))]),
+                  SizedBox(
+                    width: size.getSize(66),
+                    child: R10Text(text: request?.requesterNickName, textColor: grey183))]),
         requesterProductCost: request?.requesterProductCost,
         requesterProductCostRange: request?.requesterProductCostRange,
         acceptorProductName: request?.acceptorProductName,
         acceptorNickname: Row(children: [
                   B10Text(text: isWait ? "대기 " : "거절 ", textColor: isWait ? yellow : grey153),
-                  Expanded(child: R10Text(text: request?.acceptorNickname, textColor: grey183))
+                  SizedBox(
+                    width: size.getSize(66),
+                    child: R10Text(text: request?.acceptorNickname, textColor: grey183,))
                   ]),
         acceptorProductCost: request?.acceptorProductCost,
         acceptorProductCostRange: request?.acceptorProductCostRange
