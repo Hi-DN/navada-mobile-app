@@ -212,6 +212,7 @@ class ExchangeItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenSize size = ScreenSize();
     bool isTrading = exchange?.acceptorProduct!.productExchangeStatusCd == ProductExchangeStatusCd.TRADING;
     ProductModel? requesterProduct = exchange?.requesterProduct;
     ProductModel? acceptorProduct = exchange?.acceptorProduct;
@@ -224,13 +225,17 @@ class ExchangeItem extends StatelessWidget {
         requesterProductName: requesterProduct?.productName,
         requesterNickname: Row(children: [
                   B10Text(text: "신청 ", textColor: isTrading ? green : navy),
-                  Expanded(child: R10Text(text: requesterProduct?.userNickname, textColor: grey183)),]),
+                  SizedBox(
+                    width: size.getSize(66),
+                    child: R10Text(text: requesterProduct?.userNickname, textColor: grey183)),]),
         requesterProductCost: requesterProduct?.productCost,
         requesterProductCostRange: requesterProduct?.exchangeCostRange,
         acceptorProductName: acceptorProduct?.productName,
         acceptorNickname: Row(children: [
                   B10Text(text: "수락 ", textColor: isTrading ? green : navy),
-                  Expanded(child: R10Text(text: acceptorProduct?.userNickname, textColor: grey183)),]),
+                  SizedBox(
+                    width: size.getSize(66),
+                    child: R10Text(text: acceptorProduct?.userNickname, textColor: grey183)),]),
         acceptorProductCost: acceptorProduct?.productCost,
         acceptorProductCostRange: acceptorProduct?.exchangeCostRange
       ),

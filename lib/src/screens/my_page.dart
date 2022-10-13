@@ -51,9 +51,17 @@ class _UserProfile extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    B20Text(text: user.userNickname),
-                    const Space(height: 5),
-                    R14Text(text: user.userLevel.label)
+                    B16Text(text: user.userNickname),
+                    const Space(height: 2),
+                    R14Text(text: user.userLevel.label),
+                    const Space(height: 2),
+                    Row(
+                      children: [
+                        Icon(Icons.location_on, size: size.getSize(15), color: grey183),
+                        const Space(width: 2),
+                        R14Text(text: user.userAddress, textColor: grey183),
+                      ],
+                    )
                   ],
                 ),
               ],

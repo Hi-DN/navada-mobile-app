@@ -59,32 +59,38 @@ class ProductService {
       throw Exception('getProductsForRequest() fail!');
     }
   }
-}
 
-Future<ProductSearchPageModel?> searchProducts(
-    int? userId,
-    String? productName,
-    List<int> categoryIds,
-    int? lowerCostBound,
-    int? upperCostBound,
-    String? sort) async {
-  String productNameStr =
-      productName != null ? '&productName=$productName' : '';
-  String categoryStr = categoryIds.isNotEmpty
-      ? '&categoryIds=${categoryIds.toString().substring(1, categoryIds.toString().length - 1).replaceAll(' ', '')}'
-      : '';
-  String lowerCostStr =
-      lowerCostBound != null ? '&lowerCostBound=$lowerCostBound' : '';
-  String upperCostStr =
-      upperCostBound != null ? '&upperCostBound=$upperCostBound' : '';
+  // 상품검색
+  Future<ProductSearchPageModel?> searchProducts(
+      int? userId,
+      String? productName,
+      List<int> categoryIds,
+      int? lowerCostBound,
+      int? upperCostBound,
+      String? sort,
+      int? pageNum) async {
+    String productNameStr =
+        productName != null ? '&productName=$productName' : '';
+    String categoryStr = categoryIds.isNotEmpty
+        ? '&categoryIds=${categoryIds.toString().substring(1, categoryIds.toString().length - 1).replaceAll(' ', '')}'
+        : '';
+    String lowerCostStr =
+        lowerCostBound != null ? '&lowerCostBound=$lowerCostBound' : '';
+    String upperCostStr =
+        upperCostBound != null ? '&upperCostBound=$upperCostBound' : '';
+    String sortStr =
+      sort != null ? '&sort=$sort' : '';
+    pageNum ??= 0;
 
-  Map<String, dynamic> data = await _httpClient.getRequest(
-      '/user/$userId/products/search?$productNameStr$categoryStr$lowerCostStr$upperCostStr&sort=$sort',
-      tokenYn: false);
+    Map<String, dynamic> data = await _httpClient.getRequest(
+        '/user/$userId/products/search?$productNameStr$categoryStr$lowerCostStr$upperCostStr$sortStr&page=$pageNum',
+        tokenYn: false);
 
-  if (data['success']) {
-    return ProductSearchPageModel.fromJson(data);
-  } else {
-    return null;
+    if (data['success']) {
+      return ProductSearchPageModel.fromJson(data);
+    } else {
+      return null;
+    }
   }
 }
+
