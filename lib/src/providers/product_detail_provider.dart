@@ -15,21 +15,69 @@ final HeartService _heartService = HeartService();
 final RequestService _requestService = RequestService();
 final ProductService _productService = ProductService();
 
-// 상품 상세 : 메인 화면
 class ProductDetailProvider extends ChangeNotifier {
+  // 물품 정보
   ProductModel? _product;
   ProductModel? get product => _product;
 
-  User? _userOfProduct; //해당 물품의 유저
+  // 해당 물품의 유저
+  User? _userOfProduct;
   User? get userOfProduct => _userOfProduct;
 
-  void fetchProductAndUser(int productId) async {
+  // 해당 물품으로부터 내 물품에 온 요청 목록
+  RequestDtoModel? _requestDtoModel;
+  RequestDtoModel? get requestDtoModel => _requestDtoModel;
+
+  List<RequestDtoContentModel> _requestDtoList = [];
+  List<RequestDtoContentModel> get requestDtoList => _requestDtoList;
+
+  bool _productFetched = false;
+  bool get productFetched => _productFetched;
+
+  bool _userFetched = false;
+  bool get userFetched => _userFetched;
+
+  bool _requestsFetched = false;
+  bool get requestsFetched => _requestsFetched;
+
+  ExchangeModel? _exchangeModel;
+  ExchangeModel? get exchangeModel => _exchangeModel;
+
+  void fetchProductDetailInfo(int productId) {
+    _fetchProduct(productId);
+    _fetchUser(productId);
+    _fetchRequestDtoList(productId);
+  }
+
+  void _fetchProduct(int productId) async {
+    _productFetched = false;
+
     ProductModel? model = await _productService.getProduct(productId);
     _product = model;
+
+    _productFetched = true;
+    notifyListeners();
+  }
+
+  void _fetchUser(int productId) async {
+    _userFetched = false;
 
     UserModel userModel = await getUserByProductId(productId);
     _userOfProduct = userModel.user;
 
+    _userFetched = true;
+    notifyListeners();
+  }
+
+  void _fetchRequestDtoList(int productId) async {
+    _requestsFetched = false;
+
+    RequestDtoModel model =
+        await _requestService.getRequestsByCertainProduct(productId, _userId);
+    _requestDtoModel = model;
+    _requestDtoList = _requestDtoModel!.dataList;
+
+    _requestsFetched = true;
     notifyListeners();
   }
 
@@ -40,32 +88,8 @@ class ProductDetailProvider extends ChangeNotifier {
   void saveHeart(int productId) async {
     await _heartService.saveHeart(productId, _userId);
   }
-}
 
-// 상품 상세 : 교환 수락하기 모달 화면
-class ProductDetailAcceptanceProvider extends ChangeNotifier {
-  bool _fetchCompleted = false;
-  bool get fetchCompleted => _fetchCompleted;
-
-  late RequestDtoModel _requestDtoModel;
-  RequestDtoModel get requestDtoModel => _requestDtoModel;
-
-  List<RequestDtoContentModel> _requestDtoList = [];
-  List<RequestDtoContentModel> get requestDtoList => _requestDtoList;
-
-  void fetchRequestDtoList(int productId) async {
-    RequestDtoModel model =
-        await _requestService.getRequestsByCertainProduct(productId, _userId);
-    _requestDtoModel = model;
-    _requestDtoList = _requestDtoModel.dataList;
-    _fetchCompleted = true;
-
-    notifyListeners();
-  }
-
-  ExchangeModel? _exchangeModel;
-  ExchangeModel? get exchangeModel => _exchangeModel;
-
+  // 교환 수락
   Future<bool> acceptOneRequest(int requestId) async {
     bool result;
 
