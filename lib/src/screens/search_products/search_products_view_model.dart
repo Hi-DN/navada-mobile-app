@@ -22,8 +22,8 @@ class SearchProductsViewModel extends ChangeNotifier {
 
   // 최신순 / 좋아요순
   final Map<String, String> _sortMap = {
-    '최신순': 'productId,DESC',
-    '좋아요순': 'heartNum,DESC'
+    '최신순': 'product_id,DESC',
+    '좋아요순': 'heart_num,DESC'
   };
 
   String _sort = '최신순';

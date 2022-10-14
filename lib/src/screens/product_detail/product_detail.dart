@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/providers/product_detail_provider.dart';
-import 'package:navada_mobile_app/src/screens/product_detail/product_detail_bottom_button.dart';
+import 'package:navada_mobile_app/src/screens/product_detail/product_detail_request_modal.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
@@ -11,7 +11,9 @@ import 'package:provider/provider.dart';
 
 import '../../models/product/product_model.dart';
 import '../../models/user/user_model.dart';
+import '../../utilities/enums.dart';
 import '../../widgets/colors.dart';
+import '../request_exchange/request_exchange_view.dart';
 
 // ignore: must_be_immutable
 class ProductDetail extends StatelessWidget {
@@ -29,10 +31,7 @@ class ProductDetail extends StatelessWidget {
           providers: [
             ChangeNotifierProvider(
                 create: (context) => ProductDetailViewModel(like)),
-            ChangeNotifierProvider(
-                create: (context) => ProductDetailProvider()),
-            ChangeNotifierProvider(
-                create: (context) => ProductDetailAcceptanceProvider())
+            ChangeNotifierProvider(create: (context) => ProductDetailProvider())
           ],
           builder: (context, child) {
             return _buildProductDetail(context);
@@ -42,12 +41,16 @@ class ProductDetail extends StatelessWidget {
 
   Widget _buildProductDetail(BuildContext context) {
     Provider.of<ProductDetailProvider>(context, listen: false)
-        .fetchProductAndUser(productId);
+        .fetchProductDetailInfo(productId);
+    ProductDetailViewModel viewModel =
+        Provider.of<ProductDetailViewModel>(context, listen: false);
 
     return Consumer<ProductDetailProvider>(builder: (context, provider, child) {
-      if (provider.product != null) {
-        Provider.of<ProductDetailViewModel>(context, listen: false)
-            .setLikeNum(provider.product!.heartNum!);
+      if (provider.productFetched &&
+          provider.userFetched &&
+          provider.requestsFetched &&
+          !viewModel.likeNumFetched) {
+        viewModel.setLikeNum(provider.product!.heartNum!);
         return Column(
           children: [
             Flexible(flex: 1, child: _productImagesSection(context)),
@@ -66,9 +69,7 @@ class ProductDetail extends StatelessWidget {
                         flex: 5, child: _productInfoSection(provider.product!)),
                     Flexible(flex: 1, child: _reportSection()),
                     Flexible(
-                        flex: 2,
-                        child: ProductDetailBottomButton(
-                            product: provider.product!)),
+                        flex: 2, child: productDetailBottomButton(context)),
                   ],
                 ),
               ),
@@ -137,7 +138,7 @@ class ProductDetail extends StatelessWidget {
       IconButton(
         onPressed: () =>
             Navigator.of(context, rootNavigator: true).pop(context),
-        padding: const EdgeInsets.only(top: 50.0),
+        padding: const EdgeInsets.only(top: 20.0),
         icon: const Icon(
           Icons.arrow_back,
           color: Color(0xFF747474),
@@ -218,8 +219,6 @@ class ProductDetail extends StatelessWidget {
               style: TextStyle(
                 color: navy,
                 fontSize: screenSize.getSize(14.0),
-                // letterSpacing: 2,
-                // wordSpacing: 2
               ),
             ),
           ),
@@ -241,5 +240,136 @@ class ProductDetail extends StatelessWidget {
             ),
           )),
     );
+  }
+
+  Widget productDetailBottomButton(BuildContext context) {
+    ProductDetailProvider provider =
+        Provider.of<ProductDetailProvider>(context, listen: false);
+    return (provider.product!.productExchangeStatusCd ==
+            ProductExchangeStatusCd.REGISTERED)
+        ? (provider.requestDtoList.isEmpty)
+            ? _oneBottomButton(context)
+            : _twoBottomButtons(context)
+        : _canNotTradeButton(context);
+  }
+
+  Widget _oneBottomButton(BuildContext context) {
+    return Column(children: [
+      Expanded(child: Container()),
+      SizedBox(
+        width: 327.0,
+        height: screenSize.getSize(45.0),
+        child: ElevatedButton(
+          onPressed: () {
+            _pushRequestExchangeView(context);
+          },
+          style: ElevatedButton.styleFrom(
+              elevation: 0.0,
+              primary: green,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0))),
+          child: const R18Text(
+            text: '교환 신청하기',
+            textColor: Colors.white,
+          ),
+        ),
+      ),
+      const SizedBox(height: 20.0),
+    ]);
+  }
+
+  Widget _twoBottomButtons(BuildContext context) {
+    return Column(children: [
+      Expanded(child: Container()),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: screenSize.getSize(160.0),
+            height: screenSize.getSize(45.0),
+            child: ElevatedButton(
+              onPressed: () {
+                _pushRequestExchangeView(context);
+              },
+              style: ElevatedButton.styleFrom(
+                  elevation: 0.0,
+                  primary: green,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0))),
+              child: const R18Text(
+                text: '새로 신청하기',
+                textColor: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+              width: screenSize.getSize(160.0),
+              height: screenSize.getSize(45.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  _showRequestListModal(context);
+                },
+                style: ElevatedButton.styleFrom(
+                    elevation: 0.0,
+                    primary: navy,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0))),
+                child: const R18Text(
+                  text: '교환 수락하기',
+                  textColor: Colors.white,
+                ),
+              ))
+        ],
+      ),
+      const SizedBox(height: 20.0),
+    ]);
+  }
+
+  _showRequestListModal(BuildContext context) {
+    ProductDetailProvider provider =
+        Provider.of<ProductDetailProvider>(context, listen: false);
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return ChangeNotifierProvider.value(
+            value: provider, child: RequestListModal(initialLike: like));
+      },
+    );
+  }
+
+  _pushRequestExchangeView(BuildContext context) {
+    ProductDetailProvider provider =
+        Provider.of<ProductDetailProvider>(context, listen: false);
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      return RequestExchangeView(acceptorProduct: provider.product!);
+    }));
+  }
+
+  Widget _canNotTradeButton(BuildContext context) {
+    ProductExchangeStatusCd productExchangeStatusCd =
+        Provider.of<ProductDetailProvider>(context, listen: false)
+            .product!
+            .productExchangeStatusCd!;
+
+    return Column(children: [
+      Expanded(child: Container()),
+      SizedBox(
+        width: screenSize.getSize(327.0),
+        height: screenSize.getSize(45.0),
+        child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.0), color: grey153),
+            child: Center(
+                child: R18Text(
+              text: productExchangeStatusCd == ProductExchangeStatusCd.TRADING
+                  ? '교환중인 물품입니다.'
+                  : '교환 완료된 물품입니다.',
+              textColor: Colors.white,
+            ))),
+      ),
+      const SizedBox(height: 20.0),
+    ]);
   }
 }
