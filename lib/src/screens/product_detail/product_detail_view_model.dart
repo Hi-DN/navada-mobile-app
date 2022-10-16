@@ -32,7 +32,7 @@ class ProductDetailViewModel extends ChangeNotifier {
 
   void setLikeValue() {
     _like = !_like;
-    if (_like && _likeNum != null) {
+    if (_like) {
       _likeNum += 1;
     } else {
       _likeNum = max(0, _likeNum - 1);
