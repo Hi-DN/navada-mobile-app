@@ -83,6 +83,8 @@ class RequestModel {
   int? requesterProductCost;
   int? acceptorProductCostRange;
   int? requesterProductCostRange;
+  String? acceptorProductExplanation;
+  String? requesterProductExplanation;
 
   RequestModel(
       {this.requestId,
@@ -94,7 +96,9 @@ class RequestModel {
       this.acceptorProductCost,
       this.requesterProductCost,
       this.acceptorProductCostRange,
-      this.requesterProductCostRange});
+      this.requesterProductCostRange,
+      this.acceptorProductExplanation,
+      this.requesterProductExplanation});
 
   RequestModel.fromJson(Map<String, dynamic> json) {
     requestId = json['requestId'];
@@ -107,6 +111,8 @@ class RequestModel {
     requesterProductCost = json['requesterProductCost'];
     acceptorProductCostRange = json['acceptorProductCostRange'];
     requesterProductCostRange = json['requesterProductCostRange'];
+    acceptorProductExplanation = json['acceptorProductExplanation'];
+    requesterProductExplanation = json['requesterProductExplanation'];
   }
 
   Map<String, dynamic> toJson() {
@@ -121,6 +127,8 @@ class RequestModel {
     data['requesterProductCost'] = requesterProductCost;
     data['acceptorProductCostRange'] = acceptorProductCostRange;
     data['requesterProductCostRange'] = requesterProductCostRange;
+    data['acceptorProductExplanation'] = acceptorProductExplanation;
+    data['requesterProductExplanation'] = requesterProductExplanation;
     return data;
   }
 }

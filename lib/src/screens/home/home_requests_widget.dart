@@ -3,6 +3,7 @@ import 'package:navada_mobile_app/src/models/request/request_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
+import 'package:navada_mobile_app/src/screens/accept_request/accept_request_view.dart';
 import 'package:navada_mobile_app/src/screens/home/home_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
@@ -209,13 +210,17 @@ class RequestItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _exampleImage(),
-        const Space(height: 8),
-        _requesterProjectInfo()
-      ],
+    return GestureDetector(
+      onTap: () => Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) => AcceptRequestView(request: request!))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _exampleImage(),
+          const Space(height: 8),
+          _requesterProjectInfo()
+        ],
+      ),
     );
   }
 
