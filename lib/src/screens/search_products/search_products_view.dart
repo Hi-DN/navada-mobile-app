@@ -22,45 +22,70 @@ class SearchProductsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: screenSize.getSize(330.0),
-        padding: EdgeInsets.only(top: screenSize.getSize(5.0)),
-        child: Column(
-          children: [
-            Flexible(flex: 2, child: _buildSearchField()),
-            Flexible(flex: 3, child: _buildOptionSection(context)),
-            Flexible(flex: 15, child: _buildListSection(context))
-          ],
+    return Scaffold(
+      body: Center(
+        child: Container(
+          width: screenSize.getSize(330.0),
+          padding: EdgeInsets.only(top: screenSize.getSize(5.0)),
+          child: Column(
+            children: [
+              Flexible(flex: 2, child: _buildSearchField(context)),
+              Flexible(flex: 3, child: _buildOptionSection(context)),
+              Flexible(flex: 15, child: _buildListSection(context))
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildSearchField() {
+  Widget _buildSearchField(BuildContext context) {
+    SearchProductsViewModel viewModel =
+        Provider.of<SearchProductsViewModel>(context, listen: false);
+    SearchProductsProvider provider =
+        Provider.of<SearchProductsProvider>(context, listen: false);
+
     return Center(
-        child: Container(
-            height: screenSize.getSize(40.0),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black12,
-                width: screenSize.getSize(2.0),
-              ),
-              borderRadius: BorderRadius.circular(32),
+        child: InkWell(
+      onTap: () async {
+        String? value = await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) {
+          return SearchProductsInputProductName(
+              initialValue: viewModel.searchValue);
+        }));
+        viewModel.setSearchValue(value);
+        provider.getSearchedProducts(viewModel);
+      },
+      child: Container(
+          height: screenSize.getSize(40.0),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.black12,
+              width: screenSize.getSize(2.0),
             ),
-            child: Row(
-              children: [
-                Space(width: screenSize.getSize(8.0)),
-                Icon(
-                  Icons.search,
-                  size: screenSize.getSize(25.0),
-                  color: Colors.black12,
-                ),
-                Expanded(
-                  child: Container(),
-                )
-              ],
-            )));
+            borderRadius: BorderRadius.circular(32),
+          ),
+          child: Row(
+            children: [
+              Space(width: screenSize.getSize(8.0)),
+              Icon(
+                Icons.search,
+                size: screenSize.getSize(25.0),
+                color: Colors.black12,
+              ),
+              Space(width: screenSize.getSize(8.0)),
+              Expanded(
+                child:
+                    Provider.of<SearchProductsViewModel>(context).searchValue ==
+                            null
+                        ? Container()
+                        : Container(
+                            child: Text(viewModel.searchValue!),
+                          ),
+              )
+            ],
+          )),
+    ));
   }
 
   Widget _buildOptionSection(BuildContext context) {
@@ -549,6 +574,91 @@ class SearchProductsView extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: green),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SearchProductsInputProductName extends StatelessWidget {
+  SearchProductsInputProductName({Key? key, required this.initialValue})
+      : super(key: key);
+
+  String? initialValue;
+  ScreenSize screenSize = ScreenSize();
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    if (initialValue != null) _controller.text = initialValue!;
+    return Scaffold(
+      body: SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: SingleChildScrollView(
+            child: Container(
+              padding:
+                  const EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
+              height: screenSize.getSize(600.0),
+              alignment: Alignment.topCenter,
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                  iconSize: screenSize.getSize(30.0),
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: screenSize.getSize(40.0),
+                    child: TextField(
+                      controller: _controller,
+                      onSubmitted: (value) => Navigator.of(context).pop(
+                          _controller.value.text.isNotEmpty
+                              ? _controller.value.text
+                              : null),
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.only(left: screenSize.getSize(15.0)),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            _controller.clear();
+                          },
+                          icon: const Icon(Icons.cancel, color: Colors.black38),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0),
+                          borderSide: const BorderSide(
+                              color: Colors.black12, width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0),
+                          borderSide: const BorderSide(
+                              color: Colors.black12, width: 2.0),
+                        ),
+                      ),
+                      cursorColor: Colors.black12,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(
+                      _controller.value.text.isNotEmpty
+                          ? _controller.value.text
+                          : null),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.search, color: Colors.black54),
+                  iconSize: screenSize.getSize(30.0),
+                )
+              ]),
+            ),
           ),
         ),
       ),

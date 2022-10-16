@@ -41,6 +41,11 @@ class SearchProductsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setSearchValue(String? searchValue) {
+    _searchValue = searchValue;
+    notifyListeners();
+  }
+
   void setSortValue(String sortValue) {
     _sort = sortValue;
     notifyListeners();
