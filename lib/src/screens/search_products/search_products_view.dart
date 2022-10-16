@@ -180,7 +180,11 @@ class SearchProductsView extends StatelessWidget {
                               style: const TextStyle(color: Colors.black))
                         ])),
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Provider.of<SearchProductsProvider>(context,
+                                      listen: false)
+                                  .onHeartButtonTapped(product);
+                            },
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             icon: Icon(
