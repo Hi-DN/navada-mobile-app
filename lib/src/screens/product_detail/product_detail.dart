@@ -48,9 +48,10 @@ class ProductDetail extends StatelessWidget {
     return Consumer<ProductDetailProvider>(builder: (context, provider, child) {
       if (provider.productFetched &&
           provider.userFetched &&
-          provider.requestsFetched &&
-          !viewModel.likeNumFetched) {
-        viewModel.setLikeNum(provider.product!.heartNum!);
+          provider.requestsFetched) {
+        if (!viewModel.likeNumFetched) {
+          viewModel.setLikeNum(provider.product!.heartNum!);
+        }
         return Column(
           children: [
             Flexible(flex: 1, child: _productImagesSection(context)),

@@ -5,6 +5,12 @@ class SearchProductsViewModel extends ChangeNotifier {
   bool _onlyExchangeable = false;
   bool get onlyExchangeable => _onlyExchangeable;
 
+  TextEditingController _lowerCostController = TextEditingController();
+  TextEditingController get lowerCostController => _lowerCostController;
+
+  TextEditingController _upperCostController = TextEditingController();
+  TextEditingController get upperCostController => _upperCostController;
+
   // 검색값
   String? _searchValue;
   String? get searchValue => _searchValue;
@@ -47,5 +53,30 @@ class SearchProductsViewModel extends ChangeNotifier {
       _categoryIds.add(categoryId);
     }
     notifyListeners();
+  }
+
+  void setLowerCostBound(int? lowerCostBound) {
+    _lowerCostBound = lowerCostBound;
+    notifyListeners();
+  }
+
+  void setUpperCostBound(int? upperCostBound) {
+    _upperCostBound = upperCostBound;
+    notifyListeners();
+  }
+
+  void resetCostBound() {
+    _lowerCostController.clear();
+    _upperCostController.clear();
+  }
+
+  void applyCostBound() {
+    _lowerCostController.value.text.isNotEmpty
+        ? setLowerCostBound(int.parse(_lowerCostController.value.text))
+        : setLowerCostBound(null);
+
+    _upperCostController.value.text.isNotEmpty
+        ? setUpperCostBound(int.parse(_upperCostController.value.text))
+        : setUpperCostBound(null);
   }
 }

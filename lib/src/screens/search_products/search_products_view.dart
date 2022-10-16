@@ -78,7 +78,7 @@ class SearchProductsView extends StatelessWidget {
               Space(width: screenSize.getSize(5.0)),
               _categorySelection(),
               Space(width: screenSize.getSize(5.0)),
-              _costRangeSection()
+              _costRangeSelection(context)
             ],
           ),
           _exchangeableOnlyCheckButton()
@@ -292,7 +292,7 @@ class SearchProductsView extends StatelessWidget {
               showModalBottomSheet(
                   context: context,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0)),
+                      borderRadius: BorderRadius.circular(20.0)),
                   builder: (context) {
                     return ChangeNotifierProvider.value(
                         value: viewModel,
@@ -313,26 +313,44 @@ class SearchProductsView extends StatelessWidget {
     });
   }
 
-  Widget _costRangeSection() {
-    return Consumer<SearchProductsViewModel>(
-        builder: (context, viewModel, child) {
-      return SizedBox(
-          width: screenSize.getSize(35.0),
-          height: screenSize.getSize(35.0),
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-                elevation: 0.0,
-                primary: const Color(0xFFEBF5CF),
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(2.0)),
-            child: Icon(
-              Icons.filter_list,
-              size: screenSize.getSize(20.0),
-              color: const Color(0xFF14142B),
-            ),
-          ));
-    });
+  Widget _costRangeSelection(BuildContext context) {
+    SearchProductsViewModel viewModel =
+        Provider.of<SearchProductsViewModel>(context, listen: false);
+    SearchProductsProvider provider =
+        Provider.of<SearchProductsProvider>(context, listen: false);
+    return SizedBox(
+        width: screenSize.getSize(35.0),
+        height: screenSize.getSize(35.0),
+        child: ElevatedButton(
+          onPressed: () {
+            showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        topLeft: Radius.circular(20.0))),
+                builder: (context2) {
+                  return ChangeNotifierProvider.value(
+                      value: viewModel,
+                      child: Container(
+                          color: Colors.transparent,
+                          padding:
+                              const EdgeInsets.only(left: 15.0, right: 15.0),
+                          child: Center(
+                              child: _showCostRangeModal(context, provider))));
+                });
+          },
+          style: ElevatedButton.styleFrom(
+              elevation: 0.0,
+              primary: const Color(0xFFEBF5CF),
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(2.0)),
+          child: Icon(
+            Icons.filter_list,
+            size: screenSize.getSize(20.0),
+            color: const Color(0xFF14142B),
+          ),
+        ));
   }
 
   Widget _exchangeableOnlyCheckButton() {
@@ -436,6 +454,100 @@ class SearchProductsView extends StatelessWidget {
               ));
         })
       ],
+    );
+  }
+
+  Widget _showCostRangeModal(
+      BuildContext context, SearchProductsProvider provider) {
+    return Consumer<SearchProductsViewModel>(
+        builder: (context, viewModel, child) {
+      return GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: screenSize.getSize(400.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Expanded(child: SizedBox()),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _costTextField(viewModel.lowerCostController),
+                    const B16Text(text: ' 원'),
+                    const B16Text(text: ' ~ '),
+                    _costTextField(viewModel.upperCostController),
+                    const B16Text(text: ' 원'),
+                  ],
+                ),
+                const Expanded(child: SizedBox()),
+                Container(
+                  height: 60.0,
+                  width: double.infinity,
+                  margin: EdgeInsets.only(bottom: screenSize.getSize(10.0)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        width: screenSize.getSize(160.0),
+                        height: screenSize.getSize(50.0),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  side: const BorderSide(color: green),
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              backgroundColor: Colors.white),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const R20Text(text: '취소', textColor: green),
+                        ),
+                      ),
+                      SizedBox(
+                        width: screenSize.getSize(160.0),
+                        height: screenSize.getSize(50.0),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              backgroundColor: green),
+                          onPressed: () {
+                            viewModel.applyCostBound();
+                            provider.getSearchedProducts(viewModel);
+                            Navigator.of(context).pop();
+                          },
+                          child: const R20Text(
+                              text: '적용하기', textColor: Colors.white),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget _costTextField(TextEditingController controller) {
+    return SizedBox(
+      width: screenSize.getSize(90.0),
+      height: screenSize.getSize(40.0),
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        cursorColor: green,
+        decoration: const InputDecoration(
+          contentPadding: EdgeInsets.zero,
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: green),
+          ),
+        ),
+      ),
     );
   }
 }
