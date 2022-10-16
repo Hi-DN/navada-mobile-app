@@ -125,4 +125,16 @@ class RequestService {
       return null;
     }
   }
+
+  //교환 신청 거절
+  Future<bool> rejectRequest(int requestId) async {
+    Map<String, dynamic> data = await _httpClient
+        .patchRequest('/exchange/request/$requestId/reject', {}, tokenYn: false);
+
+    if (data['success']) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

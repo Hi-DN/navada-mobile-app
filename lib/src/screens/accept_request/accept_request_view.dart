@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/request/request_model.dart';
+import 'package:navada_mobile_app/src/providers/accept_request_provider.dart';
 import 'package:navada_mobile_app/src/screens/accept_request/other_requests_modal.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
@@ -9,10 +10,23 @@ import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/short_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
-
+import 'package:provider/provider.dart';
 
 class AcceptRequestView extends StatelessWidget {
   AcceptRequestView({Key? key, required this.request}) : super(key: key);
+
+  RequestModel request;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) => AcceptRequestProvider()),
+    ], child: MaterialApp(home: AcceptRequestScreen(request: request)));
+  }
+}
+
+class AcceptRequestScreen extends StatelessWidget {
+  AcceptRequestScreen({Key? key, required this.request}) : super(key: key);
 
   RequestModel request;
   late BuildContext? _context;
@@ -24,7 +38,7 @@ class AcceptRequestView extends StatelessWidget {
       appBar: CustomAppBar(
           titleText: "교환 수락하기",
           leadingYn: true,
-          onTap: () => Navigator.of(context).pop(),
+          onTap: () => Navigator.of(context, rootNavigator: true).pop(context),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -53,14 +67,16 @@ class AcceptRequestView extends StatelessWidget {
               _warningSection(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   ShortCircledBtn(
                     text: "거절하기",
-                    backgroundColor: red,                      
+                    backgroundColor: red,
+                    onTap: () => _showRejectConfirmDialog(),
                   ),
-                  Space(width: 15),
+                  const Space(width: 15),
                   ShortCircledBtn(
-                    text: "수락하기"
+                    text: "수락하기",
+                    onTap: () => _showAcceptConfirmDialog(),
                   ),
                 ],
               ),
@@ -108,16 +124,61 @@ class AcceptRequestView extends StatelessWidget {
     ScreenSize size = ScreenSize();
     return Padding(
       padding: EdgeInsets.all(size.getSize(22)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          // Space(height: 20),
-          R12Text(
-            text: "  ※ 해당 물품을 교환 수락할 경우,\n다른 교환 요청 물품들은 자동으로 거절합니다.", 
-            textColor: grey153),
-          // Space(height: 20),
-        ],
-      ),
+      child: const R12Text(
+        text: "  ※ 해당 물품을 교환 수락할 경우,\n다른 교환 요청 물품들은 자동으로 거절합니다.", 
+        textColor: grey153),
+    );
+  }
+
+  
+
+  _showRejectConfirmDialog() {
+    return showDialog(
+      context: _context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const R14Text(text: "정말로 거절하시겠습니까?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const R14Text(text: "아니요", textColor: grey153),
+            ),
+            TextButton(
+              onPressed: () { 
+                Provider.of<AcceptRequestProvider>(_context!, listen: false).rejectRequest(request.requestId!);
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: const R14Text(text: "네, 거절할게요!", textColor: blue),
+            ),
+          ],
+        );
+      }
+    );
+  }
+  
+  _showAcceptConfirmDialog() {
+    return showDialog(
+      context: _context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const R14Text(text: "수락하시겠습니까?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const R14Text(text: "아니요", textColor: grey153),
+            ),
+            TextButton(
+              onPressed: () { 
+                Provider.of<AcceptRequestProvider>(_context!, listen: false).acceptRequest(request.requestId!);
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: const R14Text(text: "네, 수락할게요!", textColor: blue),
+            ),
+          ],
+        );
+      }
     );
   }
 }
