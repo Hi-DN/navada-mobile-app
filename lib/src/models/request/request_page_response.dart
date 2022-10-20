@@ -1,10 +1,10 @@
-import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'requtest_dto_model.dart';
 
 class RequestPageResponse {
   bool? success;
   int? code;
   String? message;
-  List<RequestModel>? content;
+  List<RequestDto>? content;
   Pageable? pageable;
   int? totalPages;
   int? totalElements;
@@ -33,9 +33,9 @@ class RequestPageResponse {
     code = json['code'];
     message = json['message'];
     if (json['content'] != null) {
-      content = <RequestModel>[];
+      content = <RequestDto>[];
       json['content'].forEach((v) {
-        content!.add(RequestModel.fromJson(v));
+        content!.add(RequestDto.fromJson(v));
       });
     }
     pageable = json['pageable'] != null
@@ -68,59 +68,6 @@ class RequestPageResponse {
     data['last'] = last;
     data['numberOfElements'] = numberOfElements;
     data['size'] = size;
-    return data;
-  }
-}
-
-class RequestModel {
-  int? requestId;
-  RequestStatusCd? requestStatusCd;
-  String? acceptorNickname;
-  String? requesterNickName;
-  String? acceptorProductName;
-  String? requesterProductName;
-  int? acceptorProductCost;
-  int? requesterProductCost;
-  int? acceptorProductCostRange;
-  int? requesterProductCostRange;
-
-  RequestModel(
-      {this.requestId,
-      this.requestStatusCd,
-      this.acceptorNickname,
-      this.requesterNickName,
-      this.acceptorProductName,
-      this.requesterProductName,
-      this.acceptorProductCost,
-      this.requesterProductCost,
-      this.acceptorProductCostRange,
-      this.requesterProductCostRange});
-
-  RequestModel.fromJson(Map<String, dynamic> json) {
-    requestId = json['requestId'];
-    requestStatusCd = RequestStatusCd.codeToEnum(json['requestStatusCd']);
-    acceptorNickname = json['acceptorNickname'];
-    requesterNickName = json['requesterNickName'];
-    acceptorProductName = json['acceptorProductName'];
-    requesterProductName = json['requesterProductName'];
-    acceptorProductCost = json['acceptorProductCost'];
-    requesterProductCost = json['requesterProductCost'];
-    acceptorProductCostRange = json['acceptorProductCostRange'];
-    requesterProductCostRange = json['requesterProductCostRange'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['requestId'] = requestId;
-    data['requestStatusCd'] = requestStatusCd!.code.toString();
-    data['acceptorNickname'] = acceptorNickname;
-    data['requesterNickName'] = requesterNickName;
-    data['acceptorProductName'] = acceptorProductName;
-    data['requesterProductName'] = requesterProductName;
-    data['acceptorProductCost'] = acceptorProductCost;
-    data['requesterProductCost'] = requesterProductCost;
-    data['acceptorProductCostRange'] = acceptorProductCostRange;
-    data['requesterProductCostRange'] = requesterProductCostRange;
     return data;
   }
 }

@@ -72,7 +72,7 @@ class ExchangeConfirmModal extends StatelessWidget {
   }
 
   Widget _completeExchangeBtn(ExchangeDtoModel? exchange) {
-    int userId = Provider.of<UserProvider>(_context!, listen: false).user.userId;
+    int userId = UserProvider.userId;
     bool isAcceptor = (userId == exchange!.acceptorId);
 
     return Consumer2<CompleteExchangeViewModel, CompleteExchangeProvider>(builder: 

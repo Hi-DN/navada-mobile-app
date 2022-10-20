@@ -22,7 +22,7 @@ class CreateProductView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int userId = Provider.of<UserProvider>(context, listen: false).user.userId;
+    int userId = UserProvider.userId;
     return MultiProvider(providers: [
       ChangeNotifierProvider(create: (context) => CreateProductViewModel()),
       ChangeNotifierProvider(

@@ -5,7 +5,7 @@ class Shortener {
     if (str!.length <= wantedLength) {
       return str;
     } else {
-      return '${str.substring(0, wantedLength)}..';
+      return '${str.substring(0, wantedLength)}...';
     }
   }
 

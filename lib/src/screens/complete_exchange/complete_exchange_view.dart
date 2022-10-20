@@ -20,7 +20,7 @@ class CompleteExchangeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int userId = Provider.of<UserProvider>(context, listen: false).user.userId;
+    int userId = UserProvider.userId;
     bool isAcceptor = (userId == exchange!.acceptorId);
     bool isCompleteFeatureActive = !(isAcceptor ? exchange!.acceptorConfirmYn! : exchange!.requesterConfirmYn!);
 

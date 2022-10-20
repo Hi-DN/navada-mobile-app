@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/request/request_model.dart';
+import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
+import 'package:navada_mobile_app/src/screens/accept_request/accept_request_view.dart';
 import 'package:navada_mobile_app/src/screens/home/home_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
 import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
@@ -38,12 +40,12 @@ class RequestsForMe extends StatelessWidget {
       return Padding(
         padding: EdgeInsets.symmetric(vertical: size.getSize(18)),
         child: 
-          Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _sectionTitle(),
-            _deniedVisibleCheckBox()
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              _deniedVisibleCheckBox()])
           ],
         )
       );
@@ -122,7 +124,7 @@ class _RequestsForMeGridView extends StatelessWidget {
       {Key? key, required this.requestsForMe, required this.isLoading})
       : super(key: key);
 
-  List<RequestModel> requestsForMe;
+  List<RequestDto> requestsForMe;
   bool isLoading;
 
   late DataState? _dataState;
@@ -202,19 +204,23 @@ class _RequestsForMeGridView extends StatelessWidget {
 class RequestItem extends StatelessWidget {
   RequestItem({Key? key, this.request}) : super(key: key);
 
-  final RequestModel? request;
+  final RequestDto? request;
   late BuildContext? _context;
 
   @override
   Widget build(BuildContext context) {
     _context = context;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _exampleImage(),
-        const Space(height: 8),
-        _requesterProjectInfo()
-      ],
+    return GestureDetector(
+      onTap: () => Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) => AcceptRequestView(request: request!))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _exampleImage(),
+          const Space(height: 8),
+          _requesterProjectInfo()
+        ],
+      ),
     );
   }
 
@@ -274,8 +280,9 @@ class RequestItem extends StatelessWidget {
   _productAndRequesterInfo() {
     return Row(
       children: [
-        B12Text(text: request!.requesterProductName),
-        Expanded(child: R12Text(text: ' | ${request!.requesterNickName!}', textColor: grey153))
+        B12Text(text: Shortener.shortenStrTo(request!.requesterProduct!.productName, 9)),
+        R12Text(text: ' | ${Shortener.shortenStrTo(request!.requesterProduct!.userNickname, 3)}', 
+          textColor: grey153)
       ],
     );
   }
@@ -284,13 +291,13 @@ class RequestItem extends StatelessWidget {
     return Row(
       children: [
         const B12Text(text: '원가 '),
-        R12Text(text: request!.requesterProductCost!.toString())
+        R12Text(text: request!.requesterProduct!.productCost.toString())
       ],
     );
   }
 
   _costRangeInfo() {
-    return CostRangeBadge(cost: request!.requesterProductCostRange);
+    return CostRangeBadge(cost: request!.requesterProduct!.exchangeCostRange);
   }
 
   _deleteDeniedRequestBtn() {
