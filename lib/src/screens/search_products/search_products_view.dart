@@ -22,45 +22,70 @@ class SearchProductsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: screenSize.getSize(330.0),
-        padding: EdgeInsets.only(top: screenSize.getSize(5.0)),
-        child: Column(
-          children: [
-            Flexible(flex: 2, child: _buildSearchField()),
-            Flexible(flex: 3, child: _buildOptionSection(context)),
-            Flexible(flex: 15, child: _buildListSection(context))
-          ],
+    return Scaffold(
+      body: Center(
+        child: Container(
+          width: screenSize.getSize(330.0),
+          padding: EdgeInsets.only(top: screenSize.getSize(5.0)),
+          child: Column(
+            children: [
+              Flexible(flex: 2, child: _buildSearchField(context)),
+              Flexible(flex: 3, child: _buildOptionSection(context)),
+              Flexible(flex: 15, child: _buildListSection(context))
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildSearchField() {
+  Widget _buildSearchField(BuildContext context) {
+    SearchProductsViewModel viewModel =
+        Provider.of<SearchProductsViewModel>(context, listen: false);
+    SearchProductsProvider provider =
+        Provider.of<SearchProductsProvider>(context, listen: false);
+
     return Center(
-        child: Container(
-            height: screenSize.getSize(40.0),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black12,
-                width: screenSize.getSize(2.0),
-              ),
-              borderRadius: BorderRadius.circular(32),
+        child: InkWell(
+      onTap: () async {
+        String? value = await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) {
+          return SearchProductsInputProductName(
+              initialValue: viewModel.searchValue);
+        }));
+        viewModel.setSearchValue(value);
+        provider.getSearchedProducts(viewModel);
+      },
+      child: Container(
+          height: screenSize.getSize(40.0),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.black12,
+              width: screenSize.getSize(2.0),
             ),
-            child: Row(
-              children: [
-                Space(width: screenSize.getSize(8.0)),
-                Icon(
-                  Icons.search,
-                  size: screenSize.getSize(25.0),
-                  color: Colors.black12,
-                ),
-                Expanded(
-                  child: Container(),
-                )
-              ],
-            )));
+            borderRadius: BorderRadius.circular(32),
+          ),
+          child: Row(
+            children: [
+              Space(width: screenSize.getSize(8.0)),
+              Icon(
+                Icons.search,
+                size: screenSize.getSize(25.0),
+                color: Colors.black12,
+              ),
+              Space(width: screenSize.getSize(8.0)),
+              Expanded(
+                child:
+                    Provider.of<SearchProductsViewModel>(context).searchValue ==
+                            null
+                        ? Container()
+                        : Container(
+                            child: Text(viewModel.searchValue!),
+                          ),
+              )
+            ],
+          )),
+    ));
   }
 
   Widget _buildOptionSection(BuildContext context) {
@@ -78,7 +103,7 @@ class SearchProductsView extends StatelessWidget {
               Space(width: screenSize.getSize(5.0)),
               _categorySelection(),
               Space(width: screenSize.getSize(5.0)),
-              _costRangeSection()
+              _costRangeSelection(context)
             ],
           ),
           _exchangeableOnlyCheckButton()
@@ -180,7 +205,11 @@ class SearchProductsView extends StatelessWidget {
                               style: const TextStyle(color: Colors.black))
                         ])),
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Provider.of<SearchProductsProvider>(context,
+                                      listen: false)
+                                  .onHeartButtonTapped(product);
+                            },
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             icon: Icon(
@@ -292,7 +321,7 @@ class SearchProductsView extends StatelessWidget {
               showModalBottomSheet(
                   context: context,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0)),
+                      borderRadius: BorderRadius.circular(20.0)),
                   builder: (context) {
                     return ChangeNotifierProvider.value(
                         value: viewModel,
@@ -313,26 +342,44 @@ class SearchProductsView extends StatelessWidget {
     });
   }
 
-  Widget _costRangeSection() {
-    return Consumer<SearchProductsViewModel>(
-        builder: (context, viewModel, child) {
-      return SizedBox(
-          width: screenSize.getSize(35.0),
-          height: screenSize.getSize(35.0),
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-                elevation: 0.0,
-                primary: const Color(0xFFEBF5CF),
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(2.0)),
-            child: Icon(
-              Icons.filter_list,
-              size: screenSize.getSize(20.0),
-              color: const Color(0xFF14142B),
-            ),
-          ));
-    });
+  Widget _costRangeSelection(BuildContext context) {
+    SearchProductsViewModel viewModel =
+        Provider.of<SearchProductsViewModel>(context, listen: false);
+    SearchProductsProvider provider =
+        Provider.of<SearchProductsProvider>(context, listen: false);
+    return SizedBox(
+        width: screenSize.getSize(35.0),
+        height: screenSize.getSize(35.0),
+        child: ElevatedButton(
+          onPressed: () {
+            showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        topLeft: Radius.circular(20.0))),
+                builder: (context2) {
+                  return ChangeNotifierProvider.value(
+                      value: viewModel,
+                      child: Container(
+                          color: Colors.transparent,
+                          padding:
+                              const EdgeInsets.only(left: 15.0, right: 15.0),
+                          child: Center(
+                              child: _showCostRangeModal(context, provider))));
+                });
+          },
+          style: ElevatedButton.styleFrom(
+              elevation: 0.0,
+              primary: const Color(0xFFEBF5CF),
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(2.0)),
+          child: Icon(
+            Icons.filter_list,
+            size: screenSize.getSize(20.0),
+            color: const Color(0xFF14142B),
+          ),
+        ));
   }
 
   Widget _exchangeableOnlyCheckButton() {
@@ -436,6 +483,185 @@ class SearchProductsView extends StatelessWidget {
               ));
         })
       ],
+    );
+  }
+
+  Widget _showCostRangeModal(
+      BuildContext context, SearchProductsProvider provider) {
+    return Consumer<SearchProductsViewModel>(
+        builder: (context, viewModel, child) {
+      return GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: screenSize.getSize(400.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Expanded(child: SizedBox()),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _costTextField(viewModel.lowerCostController),
+                    const B16Text(text: ' 원'),
+                    const B16Text(text: ' ~ '),
+                    _costTextField(viewModel.upperCostController),
+                    const B16Text(text: ' 원'),
+                  ],
+                ),
+                const Expanded(child: SizedBox()),
+                Container(
+                  height: 60.0,
+                  width: double.infinity,
+                  margin: EdgeInsets.only(bottom: screenSize.getSize(10.0)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        width: screenSize.getSize(160.0),
+                        height: screenSize.getSize(50.0),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  side: const BorderSide(color: green),
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              backgroundColor: Colors.white),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const R20Text(text: '취소', textColor: green),
+                        ),
+                      ),
+                      SizedBox(
+                        width: screenSize.getSize(160.0),
+                        height: screenSize.getSize(50.0),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              backgroundColor: green),
+                          onPressed: () {
+                            viewModel.applyCostBound();
+                            provider.getSearchedProducts(viewModel);
+                            Navigator.of(context).pop();
+                          },
+                          child: const R20Text(
+                              text: '적용하기', textColor: Colors.white),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget _costTextField(TextEditingController controller) {
+    return SizedBox(
+      width: screenSize.getSize(90.0),
+      height: screenSize.getSize(40.0),
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        cursorColor: green,
+        decoration: const InputDecoration(
+          contentPadding: EdgeInsets.zero,
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: green),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SearchProductsInputProductName extends StatelessWidget {
+  SearchProductsInputProductName({Key? key, required this.initialValue})
+      : super(key: key);
+
+  String? initialValue;
+  ScreenSize screenSize = ScreenSize();
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    if (initialValue != null) _controller.text = initialValue!;
+    return Scaffold(
+      body: SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: SingleChildScrollView(
+            child: Container(
+              padding:
+                  const EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
+              height: screenSize.getSize(600.0),
+              alignment: Alignment.topCenter,
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                  iconSize: screenSize.getSize(30.0),
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: screenSize.getSize(40.0),
+                    child: TextField(
+                      controller: _controller,
+                      onSubmitted: (value) => Navigator.of(context).pop(
+                          _controller.value.text.isNotEmpty
+                              ? _controller.value.text
+                              : null),
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.only(left: screenSize.getSize(15.0)),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            _controller.clear();
+                          },
+                          icon: const Icon(Icons.cancel, color: Colors.black38),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0),
+                          borderSide: const BorderSide(
+                              color: Colors.black12, width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0),
+                          borderSide: const BorderSide(
+                              color: Colors.black12, width: 2.0),
+                        ),
+                      ),
+                      cursorColor: Colors.black12,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(
+                      _controller.value.text.isNotEmpty
+                          ? _controller.value.text
+                          : null),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.search, color: Colors.black54),
+                  iconSize: screenSize.getSize(30.0),
+                )
+              ]),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

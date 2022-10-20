@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navada_mobile_app/src/models/heart/heart_service.dart';
 import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
 import 'package:navada_mobile_app/src/screens/search_products/search_products_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
@@ -18,6 +19,7 @@ class SearchProductsProvider extends ChangeNotifier {
   int get totalElements => _totalElements;
 
   final ProductService _productService = ProductService();
+  final HeartService _heartService = HeartService();
 
   getSearchedProducts(SearchProductsViewModel viewModel) async {
     _productSearchPageModel = null;
@@ -44,5 +46,24 @@ class SearchProductsProvider extends ChangeNotifier {
     _totalElements = _productSearchDtoList!.length;
 
     notifyListeners();
+  }
+
+  onHeartButtonTapped(ProductSearchDtoModel product) {
+    if (product.like!) {
+      product.like = false;
+      deleteHeart(product.productId!, UserProvider.userId);
+    } else {
+      product.like = true;
+      saveHeart(product.productId!, UserProvider.userId);
+    }
+    notifyListeners();
+  }
+
+  deleteHeart(int productId, int userId) async {
+    await _heartService.deleteHeartByProductAndUser(productId, userId);
+  }
+
+  saveHeart(int productId, userId) async {
+    await _heartService.saveHeart(productId, userId);
   }
 }

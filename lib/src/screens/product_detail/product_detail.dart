@@ -48,9 +48,10 @@ class ProductDetail extends StatelessWidget {
     return Consumer<ProductDetailProvider>(builder: (context, provider, child) {
       if (provider.productFetched &&
           provider.userFetched &&
-          provider.requestsFetched &&
-          !viewModel.likeNumFetched) {
-        viewModel.setLikeNum(provider.product!.heartNum!);
+          provider.requestsFetched) {
+        if (!viewModel.likeNumFetched) {
+          viewModel.setLikeNum(provider.product!.heartNum!);
+        }
         return Column(
           children: [
             Flexible(flex: 1, child: _productImagesSection(context)),
@@ -138,7 +139,7 @@ class ProductDetail extends StatelessWidget {
       IconButton(
         onPressed: () =>
             Navigator.of(context, rootNavigator: true).pop(context),
-        padding: const EdgeInsets.only(top: 20.0),
+        padding: const EdgeInsets.only(top: 40.0),
         icon: const Icon(
           Icons.arrow_back,
           color: Color(0xFF747474),
