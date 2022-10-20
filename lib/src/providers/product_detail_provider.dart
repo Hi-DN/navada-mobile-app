@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_service.dart';
 import 'package:navada_mobile_app/src/models/request/request_service.dart';
+import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_service.dart';
 
 import '../models/exchange/exchange_model.dart';
 import '../models/heart/heart_service.dart';
 import '../models/product/product_model.dart';
-import '../models/request/request_dto_model.dart';
+import '../models/request/request_list_response.dart';
 import '../models/user/user_model.dart';
 import '../models/user/user_provider.dart';
 
@@ -25,11 +26,11 @@ class ProductDetailProvider extends ChangeNotifier {
   User? get userOfProduct => _userOfProduct;
 
   // 해당 물품으로부터 내 물품에 온 요청 목록
-  RequestDtoModel? _requestDtoModel;
-  RequestDtoModel? get requestDtoModel => _requestDtoModel;
+  RequestListResponse? _requestListResponse;
+  RequestListResponse? get requestListResponse => _requestListResponse;
 
-  List<RequestDtoContentModel> _requestDtoList = [];
-  List<RequestDtoContentModel> get requestDtoList => _requestDtoList;
+  List<RequestDto> _requestDtoList = [];
+  List<RequestDto> get requestDtoList => _requestDtoList;
 
   bool _productFetched = false;
   bool get productFetched => _productFetched;
@@ -72,10 +73,10 @@ class ProductDetailProvider extends ChangeNotifier {
   void _fetchRequestDtoList(int productId) async {
     _requestsFetched = false;
 
-    RequestDtoModel model =
+    RequestListResponse response =
         await _requestService.getRequestsByCertainProduct(productId, _userId);
-    _requestDtoModel = model;
-    _requestDtoList = _requestDtoModel!.dataList;
+    _requestListResponse = response;
+    _requestDtoList = _requestListResponse!.dataList;
 
     _requestsFetched = true;
     notifyListeners();

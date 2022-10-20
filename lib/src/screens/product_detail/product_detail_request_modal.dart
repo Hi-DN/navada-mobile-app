@@ -4,7 +4,7 @@ import 'package:navada_mobile_app/src/screens/product_detail/product_detail_view
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/request/request_dto_model.dart';
+import '../../models/request/requtest_dto_model.dart';
 import '../../widgets/colors.dart';
 import '../../widgets/screen_size.dart';
 import '../../widgets/text_style.dart';
@@ -16,7 +16,7 @@ class RequestListModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<RequestDtoContentModel> requestList =
+    List<RequestDto> requestList =
         Provider.of<ProductDetailProvider>(context, listen: false)
             .requestDtoList;
 
@@ -48,7 +48,7 @@ class RequestListModal extends StatelessWidget {
     );
   }
 
-  Widget _requestListView(List<RequestDtoContentModel> requestList) {
+  Widget _requestListView(List<RequestDto> requestList) {
     ScrollController scrollController = ScrollController();
 
     return SizedBox(
@@ -72,7 +72,7 @@ class RequestListModal extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(context, RequestDtoContentModel request) {
+  Widget _buildItem(context, RequestDto request) {
     return SizedBox(
       height: screenSize.getSize(100.0),
       width: screenSize.getSize(320.0),
@@ -98,16 +98,16 @@ class RequestListModal extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 3.0),
-                      B14Text(text: request.acceptorProductName),
+                      B14Text(text: request.acceptorProduct!.productName),
                       Expanded(child: Container()),
                       R14Text(
-                        text: "원가 ${request.acceptorProductCost}원",
+                        text: "원가 ${request.acceptorProduct!.productCost}원",
                         textColor: Colors.black.withOpacity(0.5),
                       ),
                       const SizedBox(height: 2.0),
                       R14Text(
                         text:
-                            "희망가격 ${request.acceptorProductCost - request.acceptorProductCostRange}원 ~ ${request.acceptorProductCost + request.acceptorProductCostRange}원",
+                            "희망가격 ${request.acceptorProduct!.productCost! - request.acceptorProduct!.exchangeCostRange!}원 ~ ${request.acceptorProduct!.productCost! + request.acceptorProduct!.exchangeCostRange!}원",
                         textColor: Colors.black.withOpacity(0.5),
                       ),
                       const SizedBox(height: 3.0),
@@ -125,7 +125,7 @@ class RequestListModal extends StatelessWidget {
                     onPressed: () {
                       Provider.of<ProductDetailViewModel>(context,
                               listen: false)
-                          .setSelectedRequestId(request.requestId);
+                          .setSelectedRequestId(request.requestId!);
                     },
                   ),
                 ),

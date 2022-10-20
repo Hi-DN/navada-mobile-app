@@ -1,8 +1,9 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/request/request_model.dart';
+import 'package:navada_mobile_app/src/models/request/request_page_response.dart';
 import 'package:navada_mobile_app/src/models/request/request_service.dart';
+import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class MyExchangesRequestProvider extends ChangeNotifier {
@@ -14,13 +15,13 @@ class MyExchangesRequestProvider extends ChangeNotifier {
 
   int _currentPageNum = 0;
   DataState _dataState = DataState.UNINITIALIZED;
-  List<RequestModel> _requestDataList = [];
+  List<RequestDto> _requestDataList = [];
   late int _totalPages;
   late int _totalElements = 0;
 
   bool get hasData => _isRefreshing || _requestDataList.isNotEmpty;
   DataState get dataState => _dataState;
-  List<RequestModel> get requestDataList => _requestDataList;
+  List<RequestDto> get requestDataList => _requestDataList;
   int get totalElements => _totalElements;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
   bool get _isRefreshing => _dataState == DataState.REFRESHING;
@@ -72,7 +73,7 @@ class MyExchangesRequestProvider extends ChangeNotifier {
 
   _fetchData() async {
     RequestPageResponse? pageResponse = await _getPageResponse();
-    List<RequestModel>? newRequests = pageResponse!.content;
+    List<RequestDto>? newRequests = pageResponse!.content;
 
     _requestDataList += newRequests!;
     _currentPageNum += 1;

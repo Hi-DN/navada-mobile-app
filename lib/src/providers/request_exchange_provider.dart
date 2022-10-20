@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_list_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_service.dart';
 import 'package:navada_mobile_app/src/models/request/request_service.dart';
+import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 
 import '../models/product/product_model.dart';
-import '../models/request/request_model.dart';
 
 class RequestExchangeProvider extends ChangeNotifier {
   final RequestService _requestService = RequestService();
@@ -42,7 +42,7 @@ class RequestExchangeProvider extends ChangeNotifier {
     bool success = true;
 
     for (int productId in requestProductIdList) {
-      RequestModel? requestModel =
+      RequestDto? requestModel =
           await _requestService.createRequest(productId, acceptorProductId);
       if (requestModel == null) success = false;
     }

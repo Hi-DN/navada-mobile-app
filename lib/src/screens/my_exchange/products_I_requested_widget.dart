@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/request/request_model.dart';
+import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
@@ -53,7 +53,7 @@ class ProductsThatIRequested extends StatelessWidget {
 class _RequestListView extends StatelessWidget {
   _RequestListView({Key? key, required this.requestList, required this.isLoading}) : super(key: key);
 
-  List<RequestModel> requestList;
+  List<RequestDto> requestList;
   bool isLoading;
 
   late DataState? _dataState;
@@ -127,7 +127,7 @@ class _RequestListView extends StatelessWidget {
     );
   }
 
-  _dismissibleListItem(BuildContext? context, RequestModel request) {
+  _dismissibleListItem(BuildContext? context, RequestDto request) {
     ScreenSize size = ScreenSize();
     bool isWait = request.requestStatusCd == RequestStatusCd.WAIT;
     
@@ -196,7 +196,7 @@ class _RequestListView extends StatelessWidget {
 class RequestItem extends StatelessWidget {
   const RequestItem({Key? key, this.request}) : super(key: key);
 
-  final RequestModel? request;
+  final RequestDto? request;
 
   @override
   Widget build(BuildContext context) {
@@ -208,23 +208,23 @@ class RequestItem extends StatelessWidget {
         ? const MyExchangeStatusSign(color: yellow, icon: Icons.access_time, label: '신청됨')
         : const MyExchangeStatusSign(color: grey216, icon: Icons.not_interested, label: '거절됨'),
       params: MyExchangeCardParams(
-        requesterProductName: request?.requesterProductName,
+        requesterProductName: request?.requesterProduct!.productName,
         requesterNickname: Row(children: [
                   B10Text(text: "신청 ", textColor: isWait ? yellow : grey153),
                   SizedBox(
                     width: size.getSize(66),
-                    child: R10Text(text: request?.requesterNickName, textColor: grey183))]),
-        requesterProductCost: request?.requesterProductCost,
-        requesterProductCostRange: request?.requesterProductCostRange,
-        acceptorProductName: request?.acceptorProductName,
+                    child: R10Text(text: request?.requesterProduct!.userNickname, textColor: grey183))]),
+        requesterProductCost: request?.requesterProduct!.productCost,
+        requesterProductCostRange: request?.requesterProduct!.exchangeCostRange,
+        acceptorProductName: request?.acceptorProduct!.productName,
         acceptorNickname: Row(children: [
                   B10Text(text: isWait ? "대기 " : "거절 ", textColor: isWait ? yellow : grey153),
                   SizedBox(
                     width: size.getSize(66),
-                    child: R10Text(text: request?.acceptorNickname, textColor: grey183,))
+                    child: R10Text(text: request?.acceptorProduct!.userNickname, textColor: grey183,))
                   ]),
-        acceptorProductCost: request?.acceptorProductCost,
-        acceptorProductCostRange: request?.acceptorProductCostRange
+        acceptorProductCost: request?.acceptorProduct!.productCost,
+        acceptorProductCostRange: request?.acceptorProduct!.exchangeCostRange
       ),
     );
   }

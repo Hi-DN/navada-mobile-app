@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/request/request_model.dart';
+import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
@@ -124,7 +124,7 @@ class _RequestsForMeGridView extends StatelessWidget {
       {Key? key, required this.requestsForMe, required this.isLoading})
       : super(key: key);
 
-  List<RequestModel> requestsForMe;
+  List<RequestDto> requestsForMe;
   bool isLoading;
 
   late DataState? _dataState;
@@ -204,7 +204,7 @@ class _RequestsForMeGridView extends StatelessWidget {
 class RequestItem extends StatelessWidget {
   RequestItem({Key? key, this.request}) : super(key: key);
 
-  final RequestModel? request;
+  final RequestDto? request;
   late BuildContext? _context;
 
   @override
@@ -280,8 +280,8 @@ class RequestItem extends StatelessWidget {
   _productAndRequesterInfo() {
     return Row(
       children: [
-        B12Text(text: Shortener.shortenStrTo(request!.requesterProductName, 9)),
-        R12Text(text: ' | ${Shortener.shortenStrTo(request!.requesterNickName!, 3)}', 
+        B12Text(text: Shortener.shortenStrTo(request!.requesterProduct!.productName, 9)),
+        R12Text(text: ' | ${Shortener.shortenStrTo(request!.requesterProduct!.userNickname, 3)}', 
           textColor: grey153)
       ],
     );
@@ -291,13 +291,13 @@ class RequestItem extends StatelessWidget {
     return Row(
       children: [
         const B12Text(text: '원가 '),
-        R12Text(text: request!.requesterProductCost!.toString())
+        R12Text(text: request!.requesterProduct!.productCost.toString())
       ],
     );
   }
 
   _costRangeInfo() {
-    return CostRangeBadge(cost: request!.requesterProductCostRange);
+    return CostRangeBadge(cost: request!.requesterProduct!.exchangeCostRange);
   }
 
   _deleteDeniedRequestBtn() {
