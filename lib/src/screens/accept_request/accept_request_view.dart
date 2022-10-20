@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
-import 'package:navada_mobile_app/src/models/request/request_model.dart';
+import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/providers/accept_request_provider.dart';
 import 'package:navada_mobile_app/src/screens/accept_request/other_requests_modal.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
@@ -12,15 +13,18 @@ import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
+import 'accept_request_view_model.dart';
+
 class AcceptRequestView extends StatelessWidget {
   AcceptRequestView({Key? key, required this.request}) : super(key: key);
 
-  RequestModel request;
+  RequestDto request;
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
-      ChangeNotifierProvider(create: (context) => AcceptRequestProvider()),
+      ChangeNotifierProvider(create: (context) => AcceptRequestProvider(request)),
+      ChangeNotifierProvider(create: (context) => AcceptRequestViewModel(request.requestStatusCd == RequestStatusCd.DENIED)),
     ], child: MaterialApp(home: AcceptRequestScreen(request: request)));
   }
 }
@@ -28,12 +32,13 @@ class AcceptRequestView extends StatelessWidget {
 class AcceptRequestScreen extends StatelessWidget {
   AcceptRequestScreen({Key? key, required this.request}) : super(key: key);
 
-  RequestModel request;
+  RequestDto request;
   late BuildContext? _context;
 
   @override
   Widget build(BuildContext context) {
     _context = context;
+    bool isDenied = Provider.of<AcceptRequestViewModel>(context, listen: false).isDenied;
     return Scaffold(
       appBar: CustomAppBar(
           titleText: "교환 수락하기",
@@ -48,10 +53,10 @@ class AcceptRequestScreen extends StatelessWidget {
                 isAcceptor: true,
                 product: ProductModel(
                   userNickname: "내 물품",
-                  productName: request.acceptorProductName,
-                  productCost: request.acceptorProductCost,
-                  exchangeCostRange: request.acceptorProductCostRange,
-                  productExplanation: request.requesterProductExplanation)
+                  productName: request.acceptorProduct!.productName,
+                  productCost: request.acceptorProduct!.productCost,
+                  exchangeCostRange: request.acceptorProduct!.exchangeCostRange,
+                  productExplanation: request.requesterProduct!.productExplanation)
               ),
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   _seeOtherRequestsBtn()]),
@@ -59,24 +64,25 @@ class AcceptRequestScreen extends StatelessWidget {
               _ProductInfo(
                 isAcceptor: false,
                 product: ProductModel(
-                  userNickname: request.requesterNickName,
-                  productName: request.requesterProductName,
-                  productCost: request.requesterProductCost,
-                  exchangeCostRange: request.requesterProductCostRange,
-                  productExplanation: request.requesterProductExplanation)),
+                  userNickname: request.requesterProduct!.userNickname,
+                  productName: request.requesterProduct!.productName,
+                  productCost: request.requesterProduct!.productCost,
+                  exchangeCostRange: request.requesterProduct!.exchangeCostRange,
+                  productExplanation: request.requesterProduct!.productExplanation)),
               _warningSection(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ShortCircledBtn(
                     text: "거절하기",
-                    backgroundColor: red,
-                    onTap: () => _showRejectConfirmDialog(),
+                    backgroundColor: isDenied ? grey153 : red,
+                    onTap: () => isDenied ? null : _showRejectConfirmDialog(),
                   ),
                   const Space(width: 15),
                   ShortCircledBtn(
                     text: "수락하기",
-                    onTap: () => _showAcceptConfirmDialog(),
+                    backgroundColor: isDenied ? grey153 : green,
+                    onTap: () => isDenied ? null : _showAcceptConfirmDialog(),
                   ),
                 ],
               ),
@@ -105,6 +111,7 @@ class AcceptRequestScreen extends StatelessWidget {
 
   _showOtherRequests() {
     ScreenSize size = ScreenSize();
+    final viewModel = Provider.of<AcceptRequestViewModel>(_context!, listen: false);
     
     showModalBottomSheet(
       context: _context!,
@@ -115,8 +122,8 @@ class AcceptRequestScreen extends StatelessWidget {
           topRight: Radius.circular(size.getSize(30))),
       ),
       builder: (context) {
-        return const OtherRequestsModal();
-      },
+        return ChangeNotifierProvider.value(value: viewModel, child: OtherRequestsModal());
+      }
     );
   }
 
@@ -184,13 +191,15 @@ class AcceptRequestScreen extends StatelessWidget {
 }
 
 class _ProductInfo extends StatelessWidget {
-  const _ProductInfo({Key? key, required this.product, required this.isAcceptor}) : super(key: key);
+  _ProductInfo({Key? key, required this.product, required this.isAcceptor}) : super(key: key);
 
   final ProductModel product;
   final bool isAcceptor;
+  late BuildContext? _context;
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     ScreenSize size = ScreenSize();
     return Padding(
       padding: EdgeInsets.all(size.getSize(22)),
@@ -220,14 +229,15 @@ class _ProductInfo extends StatelessWidget {
 
   Widget _roleBadge() {
     ScreenSize size = ScreenSize();
+    bool isDenied = Provider.of<AcceptRequestViewModel>(_context!, listen: false).isDenied;
     return Container(
       height: size.getSize(24),
       padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: yellow, width: 1.0),
+        border: Border.all(color: isDenied ? grey153 : yellow, width: 1.0),
       ),
-      child: const B14Text(text: '신청', textColor: yellow)
+      child: B14Text(text: isDenied ? '거절' : '신청', textColor: isDenied ? grey153 : yellow)
     );
   }
 

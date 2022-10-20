@@ -49,6 +49,20 @@ class RequestService {
     }
   }
 
+  // 특정 상품에게 온 교환신청 목록 조회
+  Future<RequestPageResponse> getRequestsforCertainProduct(
+      int productId, int pageNum) async {
+    Map<String, dynamic> data = await _httpClient.getRequest(
+        '/exchange/request/product/$productId?page=$pageNum',
+        tokenYn: false);
+
+    if (data['success']) {
+      return RequestPageResponse.fromJson(data);
+    } else {
+      throw Exception('getRequestsforCertainProduct() fail!');
+    }
+  }
+
   // 내가 신청한 교환 목록 조회
   Future<RequestPageResponse?> getRequestsThatIApplied(
       int userId, int pageNum) async {
