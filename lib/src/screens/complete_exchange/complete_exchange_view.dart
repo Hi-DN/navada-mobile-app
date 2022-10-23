@@ -8,6 +8,7 @@ import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
 import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
+import 'package:navada_mobile_app/src/widgets/star_rating.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
@@ -35,20 +36,29 @@ class CompleteExchangeView extends StatelessWidget {
         
         return Scaffold(
           appBar: CustomAppBar(
-            titleText: "교환 완료하기",
+            titleText: exchange!.exchangeCompleteYn! ? "교환완료" : "교환중",
             leadingYn: true,
             onTap: () => Navigator.of(context).pop(),
           ),
           body: SingleChildScrollView(
-            child: Column(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _ProductInfo(product: exchange!.requesterProduct, isAcceptor: false),
+                _ratingSection(exchange!.requesterProduct!.userNickname!, exchange!.acceptorRating!, exchange!.requesterConfirmYn!),
+                const Space(height: 20),
                 const CustomDivider(),
                 _ProductInfo(product: exchange!.acceptorProduct, isAcceptor: true),
-                LongCircledBtn(
-                  text: "교환 완료하기",
-                  onTap: () => isCompleteBtnActive ? _showExchangeConfirmModal(context) : null,
-                  backgroundColor: isCompleteBtnActive ? green : grey183,                  
+                _ratingSection(exchange!.acceptorProduct!.userNickname!, exchange!.requesterRating!, exchange!.acceptorConfirmYn!),
+                const Space(height: 20),
+                _warningSection(),
+                Row(mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    LongCircledBtn(
+                      text: "교환 완료하기",
+                      onTap: () => isCompleteBtnActive ? _showExchangeConfirmModal(context) : null,
+                      backgroundColor: isCompleteBtnActive ? green : grey183,                  
+                    ),
+                  ],
                 ),
                 const Space(height: 20)
               ],
@@ -74,6 +84,34 @@ class CompleteExchangeView extends StatelessWidget {
       builder: (context) {
         return ChangeNotifierProvider.value(value: viewModel, child: ExchangeConfirmModal(exchange: exchange));
       },
+    );
+  }
+
+  Widget _ratingSection(String userNickname, double rating, bool isComplete) {
+    ScreenSize size = ScreenSize();
+    return Padding(
+      padding: EdgeInsets.all(size.getSize(22)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [B16Text(text: userNickname), const R16Text(text: "님이 준 별점")]),
+          const Space(height: 15),
+          (rating < 0)
+          ? R16Text(
+            text: isComplete ? "😀교환 완료시 별점을 주지 않으셨습니다!" : "아직 별점을 입력하지 않으셨습니다.", textColor: grey153)
+          : StarRating(rating: rating),
+        ],
+      ),
+    );
+  }
+
+  Widget _warningSection() {
+    ScreenSize size = ScreenSize();
+    return Padding(
+      padding: EdgeInsets.all(size.getSize(22)),
+      child: const R12Text(
+        text: "※ 한쪽이라도 교환완료하지 않을 시, 교환중으로 표시되며\n일주일 후 자동으로 교환이 완료됩니다.", 
+        textColor: grey153),
     );
   }
 }
@@ -174,10 +212,10 @@ class _ProductInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("물품 설명", style: styleB.copyWith(fontSize: size.getSize(14), height: 1.6)),
+        Text("물품 설명", style: styleB.copyWith(fontSize: size.getSize(16), height: 1.6)),
         Text(
           product!.productExplanation!,
-          style: styleR.copyWith(fontSize: size.getSize(14), height: 1.6),
+          style: styleR.copyWith(fontSize: size.getSize(16), height: 1.6),
         )
       ],
     );

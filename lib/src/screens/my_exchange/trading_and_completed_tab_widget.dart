@@ -181,7 +181,7 @@ class _ExchangeListView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: const [Icon(Icons.delete, color: white)])
       ),
-      child: ExchangeItem(exchange: exchange),
+      child: _tappableTradingExchangeItem(context, exchange),
     );
   }
 
