@@ -26,8 +26,6 @@ class MyExchangesView extends StatelessWidget {
       appBar: CustomAppBar(titleText: '내 물물교환'),
       body: MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => MyExchangesExchangeProvider(user.userId)),
-          ChangeNotifierProvider(create: (context) => MyExchangesRequestProvider(user.userId)),
           ChangeNotifierProvider(create: (context) => MyExchangesViewModel()),
         ],
             child: Container(
@@ -37,6 +35,13 @@ class MyExchangesView extends StatelessWidget {
           child: Column(
             children: [
               TabBar(
+                onTap: (index) {
+                  if(index == 0) {
+                    Provider.of<MyExchangesExchangeProvider>(context, listen: false).fetchData(isRefresh: true);
+                  } else {
+                    Provider.of<MyExchangesRequestProvider>(context, listen: false).fetchData(isRefresh: true);
+                  }
+                },
                 tabs: [
                   Tab(text: "교환중/교환완료", height: size.getSize(58)),
                   Tab(text: "내가 신청한 물품", height: size.getSize(58)),
