@@ -1,4 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/providers/accept_request_provider.dart';
@@ -43,7 +46,7 @@ class AcceptRequestScreen extends StatelessWidget {
       appBar: CustomAppBar(
           titleText: "교환 수락하기",
           leadingYn: true,
-          onTap: () => Navigator.of(context, rootNavigator: true).pop(context),
+          onTap: () => Navigator.of(context, rootNavigator: true).pop(false),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -151,10 +154,12 @@ class AcceptRequestScreen extends StatelessWidget {
               child: const R14Text(text: "아니요", textColor: grey153),
             ),
             TextButton(
-              onPressed: () { 
-                Provider.of<AcceptRequestProvider>(_context!, listen: false).rejectRequest(request.requestId!);
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
+              onPressed: () async { 
+                bool result = await Provider.of<AcceptRequestProvider>(_context!, listen: false).rejectRequest(request.requestId!);
+                if(result) {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
+                }
               },
               child: const R14Text(text: "네, 거절할게요!", textColor: blue),
             ),
@@ -176,10 +181,12 @@ class AcceptRequestScreen extends StatelessWidget {
               child: const R14Text(text: "아니요", textColor: grey153),
             ),
             TextButton(
-              onPressed: () { 
-                Provider.of<AcceptRequestProvider>(_context!, listen: false).acceptRequest(request.requestId!);
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
+              onPressed: () async { 
+                ExchangeModel? result = await Provider.of<AcceptRequestProvider>(_context!, listen: false).acceptRequest(request.requestId!);
+                if(result != null) {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
+                }
               },
               child: const R14Text(text: "네, 수락할게요!", textColor: blue),
             ),
