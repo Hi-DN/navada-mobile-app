@@ -2,6 +2,8 @@ import 'package:navada_mobile_app/src/models/product/category/category_model.dar
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class ProductModel {
+  String? createdDate;
+  String? modifiedDate;
   int? productId;
   String? productName;
   String? productExplanation;
@@ -13,7 +15,9 @@ class ProductModel {
   int? exchangeCostRange;
 
   ProductModel(
-      {this.productId,
+      {this.createdDate,
+      this.modifiedDate,
+      this.productId,
       this.productName,
       this.productExplanation,
       this.userNickname,
@@ -24,12 +28,15 @@ class ProductModel {
       this.exchangeCostRange});
 
   ProductModel.fromJson(Map<String, dynamic> json) {
+    createdDate = json['createdDate'];
+    modifiedDate = json['modifiedDate'];
     productId = json['productId'];
     productName = json['productName'];
     productExplanation = json['productExplanation'];
     userNickname = json['userNickname'];
     category = Category.objToEnum(CategoryModel.fromJson(json['category']));
-    productExchangeStatusCd = ProductExchangeStatusCd.codeToEnum(json['productExchangeStatusCd']);
+    productExchangeStatusCd =
+        ProductExchangeStatusCd.codeToEnum(json['productExchangeStatusCd']);
     heartNum = json['heartNum'];
     productCost = json['productCost'];
     exchangeCostRange = json['exchangeCostRange'];
@@ -37,6 +44,8 @@ class ProductModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['createdDate'] = createdDate;
+    data['modifiedDate'] = modifiedDate;
     data['productId'] = productId;
     data['productName'] = productName;
     data['productExplanation'] = productExplanation;

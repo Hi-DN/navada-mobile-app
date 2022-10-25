@@ -69,7 +69,9 @@ class ProductDetail extends StatelessWidget {
                         child: _userInfoSection(provider.userOfProduct)),
                     Flexible(
                         flex: 5, child: _productInfoSection(provider.product!)),
-                    Flexible(flex: 1, child: _reportSection()),
+                    Flexible(
+                        flex: 1,
+                        child: _reportAndCreateDtSection(provider.product!)),
                     Flexible(
                         flex: 2, child: productDetailBottomButton(context)),
                   ],
@@ -229,18 +231,27 @@ class ProductDetail extends StatelessWidget {
     );
   }
 
-  Widget _reportSection() {
+  Widget _reportAndCreateDtSection(ProductModel product) {
     return Container(
       padding: const EdgeInsets.only(top: 10.0),
-      child: InkWell(
-          onTap: () {},
-          child: const Text(
-            "게시글 신고하기",
-            style: TextStyle(
-              color: Color(0xFFC4C4C4),
-              decoration: TextDecoration.underline,
-            ),
-          )),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          InkWell(
+              onTap: () {},
+              child: const Text(
+                "게시글 신고하기",
+                style: TextStyle(
+                  color: Color(0xFFC4C4C4),
+                  decoration: TextDecoration.underline,
+                ),
+              )),
+          R12Text(
+            text: product.createdDate?.replaceAll('T', ' '),
+            textColor: const Color(0xFFC4C4C4),
+          )
+        ],
+      ),
     );
   }
 
