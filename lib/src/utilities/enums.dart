@@ -18,8 +18,13 @@ enum UserLevel {
 
 enum ProductExchangeStatusCd {
   REGISTERED('0', '교환대기'),
+<<<<<<< HEAD
   TRADING('1', '거래중'),
   COMPLETED('2', '거래완료');
+=======
+  TRADING('1', '교환중'),
+  TRADE_COMPLETED('2', '교환완료');
+>>>>>>> a229a51 (거래중->교환중, 거래완료->교환완료)
 
   const ProductExchangeStatusCd(this.code, this.label);
 
