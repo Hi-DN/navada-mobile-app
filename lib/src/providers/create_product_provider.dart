@@ -3,11 +3,11 @@ import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_service.dart';
 import 'package:navada_mobile_app/src/models/request/request_service.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class CreateProductProvider extends ChangeNotifier {
-  CreateProductProvider(this._userId);
-  final int _userId;
+  final int _userId = UserProvider.userId;
   
   final ProductService _productService = ProductService();
   final RequestService _requestService = RequestService();

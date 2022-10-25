@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
-import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/create_product_provider.dart';
 import 'package:navada_mobile_app/src/screens/create_product/search_other_products_modal.dart';
 import 'package:navada_mobile_app/src/screens/create_product/create_product_view_model.dart';
@@ -22,11 +21,9 @@ class CreateProductView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int userId = UserProvider.userId;
     return MultiProvider(providers: [
       ChangeNotifierProvider(create: (context) => CreateProductViewModel()),
-      ChangeNotifierProvider(
-          create: (context) => CreateProductProvider(userId)),
+      ChangeNotifierProvider(create: (context) => CreateProductProvider()),
     ], child: const MaterialApp(home: CreateProductScreen()));
   }
 }
@@ -333,7 +330,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
     return Consumer<CreateProductProvider>(builder:
         (BuildContext context, CreateProductProvider provider, Widget? _) {
       return LongCircledBtn(
-          text: "글 등록하기",
+          text: "등록하기",
           onTap: () async {
             if (!provider.checkValidProductName()) {
               _checkField(_productNameFNode!, "물품명을 확인해주세요!");

@@ -211,8 +211,14 @@ class RequestItem extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     return GestureDetector(
-      onTap: () => Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => AcceptRequestView(request: request!))),
+      onTap: () async {
+        bool needRefresh = await Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) => AcceptRequestView(request: request!)));
+        
+        if(needRefresh) {
+          Provider.of<RequestsForMeProvider>(_context!, listen: false).fetchData(isRefresh: true);
+        }
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

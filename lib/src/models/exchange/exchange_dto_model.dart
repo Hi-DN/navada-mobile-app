@@ -78,6 +78,8 @@ class ExchangeDtoModel {
   int? acceptorId;
   bool? requesterConfirmYn;
   bool? acceptorConfirmYn;
+  double? requesterRating;
+  double? acceptorRating;
   ProductModel? acceptorProduct;
   ProductModel? requesterProduct;
   bool? exchangeCompleteYn;
@@ -98,6 +100,8 @@ class ExchangeDtoModel {
     acceptorId = json['acceptorId'];
     requesterConfirmYn = json['requesterConfirmYn'];
     acceptorConfirmYn = json['acceptorConfirmYn'];
+    requesterRating = json['requesterRating'];
+    acceptorRating = json['acceptorRating'];
     acceptorProduct = json['acceptorProduct'] != null
         ? ProductModel.fromJson(json['acceptorProduct'])
         : null;
@@ -114,6 +118,8 @@ class ExchangeDtoModel {
     data['acceptorId'] = acceptorId;
     data['requesterConfirmYn'] = requesterConfirmYn;
     data['acceptorConfirmYn'] = acceptorConfirmYn;
+    data['requesterRating'] = requesterConfirmYn;
+    data['acceptorRating'] = acceptorRating;
     if (acceptorProduct != null) {
       data['acceptorProduct'] = acceptorProduct!.toJson();
     }

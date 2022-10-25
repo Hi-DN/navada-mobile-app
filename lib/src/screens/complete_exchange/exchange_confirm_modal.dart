@@ -3,8 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_page_model.dart';
+
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/complete_exchange_provider.dart';
+import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/screens/complete_exchange/complete_exchange_view_model.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
@@ -86,11 +89,14 @@ class ExchangeConfirmModal extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           LongCircledBtn(
-            onTap: () {
+            onTap: () async {
               if(!isInitial) {
-                provider.completeExchange(exchange.exchangeId, isAcceptor, hasConfirmedRating, rating);
-                viewModel.setCompleteFeatureActive(false);
-                Navigator.of(context).pop();
+                Exchange? result = await provider.completeExchange(exchange.exchangeId, isAcceptor, hasConfirmedRating, rating);
+                if(result != null) {
+                  Provider.of<MyExchangesExchangeProvider>(_context!, listen: false).fetchData(isRefresh: true);
+                  viewModel.setCompleteFeatureActive(false);
+                  Navigator.of(context).pop();
+                }
               }
             },
             text: "교환 완료하기",
