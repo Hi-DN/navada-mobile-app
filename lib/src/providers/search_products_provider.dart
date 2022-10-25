@@ -29,7 +29,7 @@ class SearchProductsProvider extends ChangeNotifier {
         viewModel.categoryIds,
         viewModel.lowerCostBound,
         viewModel.upperCostBound,
-        false,
+        true,
         viewModel.onlyExchangeable ? [0] : [],
         viewModel.sortMap,
         0);

@@ -1,6 +1,7 @@
 // ignore_for_file: sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/product_detail_provider.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_request_modal.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_view_model.dart';
@@ -246,12 +247,95 @@ class ProductDetail extends StatelessWidget {
   Widget productDetailBottomButton(BuildContext context) {
     ProductDetailProvider provider =
         Provider.of<ProductDetailProvider>(context, listen: false);
-    return (provider.product!.productExchangeStatusCd ==
-            ProductExchangeStatusCd.REGISTERED)
-        ? (provider.requestDtoList.isEmpty)
-            ? _oneBottomButton(context)
-            : _twoBottomButtons(context)
-        : _canNotTradeButton(context);
+
+    return (provider.userOfProduct!.userId == UserProvider.userId)
+        ? _myProductDetailBottomButton(context, provider.product!)
+        : (provider.product!.productExchangeStatusCd ==
+                ProductExchangeStatusCd.REGISTERED)
+            ? (provider.requestDtoList.isEmpty)
+                ? _oneBottomButton(context)
+                : _twoBottomButtons(context)
+            : _canNotTradeButton(context);
+  }
+
+  Widget _myProductDetailBottomButton(
+      BuildContext context, ProductModel product) {
+    switch (product.productExchangeStatusCd) {
+      case ProductExchangeStatusCd.REGISTERED:
+        return _deleteAndModifyButtons(context, product);
+      case ProductExchangeStatusCd.TRADING:
+        return _onlyModifyButton(context, product);
+      case ProductExchangeStatusCd.TRADE_COMPLETED:
+        return _deleteAndModifyButtons(context, product);
+      default:
+        return Container();
+    }
+  }
+
+  Widget _onlyModifyButton(BuildContext context, ProductModel product) {
+    return Column(children: [
+      Expanded(child: Container()),
+      SizedBox(
+        width: 327.0,
+        height: screenSize.getSize(45.0),
+        child: ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+              elevation: 0.0,
+              primary: green,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0))),
+          child: const R18Text(
+            text: '수정하기',
+            textColor: Colors.white,
+          ),
+        ),
+      ),
+      const SizedBox(height: 20.0),
+    ]);
+  }
+
+  Widget _deleteAndModifyButtons(BuildContext context, ProductModel product) {
+    return Column(children: [
+      Expanded(child: Container()),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: screenSize.getSize(160.0),
+            height: screenSize.getSize(45.0),
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                  elevation: 0.0,
+                  primary: red,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0))),
+              child: const R18Text(
+                text: '삭제하기',
+                textColor: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+              width: screenSize.getSize(160.0),
+              height: screenSize.getSize(45.0),
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                    elevation: 0.0,
+                    primary: green,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0))),
+                child: const R18Text(
+                  text: '수정하기',
+                  textColor: Colors.white,
+                ),
+              ))
+        ],
+      ),
+      const SizedBox(height: 20.0),
+    ]);
   }
 
   Widget _oneBottomButton(BuildContext context) {
