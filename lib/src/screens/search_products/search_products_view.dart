@@ -101,7 +101,7 @@ class SearchProductsView extends StatelessWidget {
               const Expanded(child: SizedBox()),
               _sortSelection(),
               Space(width: screenSize.getSize(5.0)),
-              _categorySelection(),
+              _categorySelection(context),
               Space(width: screenSize.getSize(5.0)),
               _costRangeSelection(context)
             ],
@@ -115,6 +115,7 @@ class SearchProductsView extends StatelessWidget {
   Widget _buildListSection(context) {
     SearchProductsViewModel viewModel =
         Provider.of<SearchProductsViewModel>(context, listen: false);
+
     Provider.of<SearchProductsProvider>(context, listen: false)
         .getSearchedProducts(viewModel);
 
@@ -310,36 +311,38 @@ class SearchProductsView extends StatelessWidget {
         ));
   }
 
-  Widget _categorySelection() {
-    return Consumer2<SearchProductsProvider, SearchProductsViewModel>(
-        builder: (context, provider, viewModel, child) {
-      return SizedBox(
-          width: screenSize.getSize(35.0),
-          height: screenSize.getSize(35.0),
-          child: ElevatedButton(
-            onPressed: () {
-              showModalBottomSheet(
-                  context: context,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
-                  builder: (context) {
-                    return ChangeNotifierProvider.value(
-                        value: viewModel,
-                        child: _showCategoryModal(context, provider));
-                  });
-            },
-            style: ElevatedButton.styleFrom(
-                elevation: 0.0,
-                primary: const Color(0xFFEBF5CF),
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(2.0)),
-            child: Icon(
-              Icons.grid_view,
-              size: screenSize.getSize(20.0),
-              color: const Color(0xFF14142B),
-            ),
-          ));
-    });
+  Widget _categorySelection(BuildContext context) {
+    SearchProductsViewModel viewModel =
+        Provider.of<SearchProductsViewModel>(context, listen: false);
+    SearchProductsProvider provider =
+        Provider.of<SearchProductsProvider>(context, listen: false);
+
+    return SizedBox(
+        width: screenSize.getSize(35.0),
+        height: screenSize.getSize(35.0),
+        child: ElevatedButton(
+          onPressed: () {
+            showModalBottomSheet(
+                context: context,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+                builder: (context) {
+                  return ChangeNotifierProvider.value(
+                      value: viewModel,
+                      child: _showCategoryModal(context, provider));
+                });
+          },
+          style: ElevatedButton.styleFrom(
+              elevation: 0.0,
+              primary: const Color(0xFFEBF5CF),
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(2.0)),
+          child: Icon(
+            Icons.grid_view,
+            size: screenSize.getSize(20.0),
+            color: const Color(0xFF14142B),
+          ),
+        ));
   }
 
   Widget _costRangeSelection(BuildContext context) {
@@ -444,10 +447,11 @@ class SearchProductsView extends StatelessWidget {
                                 ? const Icon(Icons.radio_button_checked)
                                 : const Icon(Icons.radio_button_unchecked),
                             color: green,
-                            onPressed: () =>
-                                Provider.of<SearchProductsViewModel>(context,
-                                        listen: false)
-                                    .setCategoryIds(categoryId),
+                            onPressed: () {
+                              Provider.of<SearchProductsViewModel>(context,
+                                      listen: false)
+                                  .setCategoryIds(categoryId);
+                            },
                           )
                         ],
                       ),

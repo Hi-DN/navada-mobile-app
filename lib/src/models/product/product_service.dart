@@ -67,6 +67,8 @@ class ProductService {
       List<int> categoryIds,
       int? lowerCostBound,
       int? upperCostBound,
+      bool? isMyProductIncluded,
+      List<int> productExchangeStatusCds,
       String? sort,
       int? pageNum) async {
     String productNameStr =
@@ -78,13 +80,20 @@ class ProductService {
         lowerCostBound != null ? '&lowerCostBound=$lowerCostBound' : '';
     String upperCostStr =
         upperCostBound != null ? '&upperCostBound=$upperCostBound' : '';
-    String sortStr =
-      sort != null ? '&sort=$sort' : '';
+    String myProductIncludedStr = isMyProductIncluded != null
+        ? '&isMyProductIncluded=$isMyProductIncluded'
+        : '&isMyProductIncluded=true';
+    String exchangeStatusCdStr = productExchangeStatusCds.isNotEmpty
+        ? '&productExchangeStatusCds=${productExchangeStatusCds.toString().substring(1, productExchangeStatusCds.toString().length - 1).replaceAll(' ', '')}'
+        : '';
+    String sortStr = sort != null ? '&sort=$sort' : '';
     pageNum ??= 0;
 
-    Map<String, dynamic> data = await _httpClient.getRequest(
-        '/user/$userId/products/search?$productNameStr$categoryStr$lowerCostStr$upperCostStr$sortStr&page=$pageNum',
-        tokenYn: false);
+    String paramsStr =
+        '$productNameStr$categoryStr$lowerCostStr$upperCostStr$myProductIncludedStr$exchangeStatusCdStr$sortStr&page=$pageNum';
+
+    Map<String, dynamic> data = await _httpClient
+        .getRequest('/user/$userId/products/search?$paramsStr', tokenYn: false);
 
     if (data['success']) {
       return ProductSearchPageModel.fromJson(data);
@@ -93,4 +102,3 @@ class ProductService {
     }
   }
 }
-
