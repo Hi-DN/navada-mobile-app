@@ -5,7 +5,10 @@ import 'package:http/http.dart' as http;
 
 class HttpClient {
   static final HttpClient _instance = HttpClient._internal();
-  final String baseUrl = 'http://localhost:8080/v1';
+
+  // final String baseUrl = 'http://localhost:8080/v1';
+
+  final String baseUrl = 'http://172.30.1.94:8080/v1';
 
   String accessToken = '';
 
@@ -30,8 +33,8 @@ class HttpClient {
   }
 
   Future<Map<String, dynamic>> postRequest(
-      String url, Map<String, dynamic> body, {bool tokenYn = false}) async {
-
+      String url, Map<String, dynamic> body,
+      {bool tokenYn = false}) async {
     http.Response response;
     Map<String, String> headers;
 
@@ -43,7 +46,8 @@ class HttpClient {
     } else {
       headers = {'Content-Type': 'application/json'};
     }
-    response = await http.post(Uri.parse(baseUrl + url), body: jsonEncode(body), headers: headers);
+    response = await http.post(Uri.parse(baseUrl + url),
+        body: jsonEncode(body), headers: headers);
 
     _printResponseToApiRequest(response, url);
 
@@ -62,7 +66,8 @@ class HttpClient {
     } else {
       headers = {'Content-Type': 'application/json'};
     }
-    response = await http.put(Uri.parse(baseUrl + url), headers: headers, body: jsonEncode(body));
+    response = await http.put(Uri.parse(baseUrl + url),
+        headers: headers, body: jsonEncode(body));
 
     _printResponseToApiRequest(response, url);
 
@@ -101,7 +106,8 @@ class HttpClient {
     } else {
       headers = {'Content-Type': 'application/json'};
     }
-    response = await http.patch(Uri.parse(baseUrl + url), headers: headers, body: jsonEncode(body));
+    response = await http.patch(Uri.parse(baseUrl + url),
+        headers: headers, body: jsonEncode(body));
 
     _printResponseToApiRequest(response, url);
 
@@ -111,6 +117,13 @@ class HttpClient {
   void _printResponseToApiRequest(http.Response response, String url) {
     debugPrint('url : ${baseUrl + url}');
     debugPrint('statusCode : ${response.statusCode}');
-    debugPrint('response body : ${utf8.decode(response.bodyBytes)}');
+    // debugPrint('response body : ${utf8.decode(response.bodyBytes)}');
+    printJson(utf8.decode(response.bodyBytes));
+  }
+
+  static void printJson(String input) {
+    var decoded = const JsonDecoder().convert(input);
+    var reformatted = const JsonEncoder.withIndent(' ').convert(decoded);
+    debugPrint('response body : $reformatted');
   }
 }
