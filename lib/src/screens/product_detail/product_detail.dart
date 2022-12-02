@@ -274,10 +274,13 @@ class ProductDetail extends StatelessWidget {
     switch (product.productExchangeStatusCd) {
       case ProductExchangeStatusCd.REGISTERED:
         return _deleteAndModifyButtons(context, product);
+
       case ProductExchangeStatusCd.TRADING:
         return _onlyModifyButton(context, product);
+
       case ProductExchangeStatusCd.TRADE_COMPLETED:
         return _deleteAndModifyButtons(context, product);
+
       default:
         return Container();
     }
