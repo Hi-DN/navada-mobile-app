@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/heart/heart_service.dart';
 import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
 import 'package:navada_mobile_app/src/screens/search_products/search_products_view_model.dart';
-import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 import '../models/product/product_service.dart';
 import '../models/user/user_provider.dart';
@@ -30,19 +29,13 @@ class SearchProductsProvider extends ChangeNotifier {
         viewModel.categoryIds,
         viewModel.lowerCostBound,
         viewModel.upperCostBound,
+        true,
+        viewModel.onlyExchangeable ? [0] : [],
         viewModel.sortMap,
         0);
 
     _productSearchPageModel = model;
     _productSearchDtoList = _productSearchPageModel!.content!;
-
-    if (viewModel.onlyExchangeable) {
-      _productSearchDtoList = _productSearchDtoList
-          ?.where((p) =>
-              p.productExchangeStatusCd == ProductExchangeStatusCd.REGISTERED)
-          .toList();
-    }
-
     _totalElements = _productSearchDtoList!.length;
 
     notifyListeners();
