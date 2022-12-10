@@ -121,7 +121,7 @@ class _ExchangeListView extends StatelessWidget {
         itemCount: exchangeList.length,
         itemBuilder: (context, index) {
           ExchangeDtoModel exchange = exchangeList[index];
-          bool isTrading = (exchange.exchangeCompleteYn == false);
+          bool isTrading = (exchange.exchangeStatusCd == ExchangeStatusCd.TRADING);
 
           return (isTrading)
             ? _tappableTradingExchangeItem(context, exchange)
@@ -213,7 +213,7 @@ class ExchangeItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
-    bool isTrading = exchange?.acceptorProduct!.productExchangeStatusCd == ProductExchangeStatusCd.TRADING;
+    bool isTrading = (exchange?.exchangeStatusCd == ExchangeStatusCd.TRADING);
     ProductModel? requesterProduct = exchange?.requesterProduct;
     ProductModel? acceptorProduct = exchange?.acceptorProduct;
 

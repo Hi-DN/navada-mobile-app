@@ -69,7 +69,7 @@ enum ExchangeStatusCd {
   }
 
   static ExchangeStatusCd codeToEnum(String code) {
-    return ExchangeStatusCd.values[int.parse(code)];
+    return ExchangeStatusCd.values[int.parse(code)-1];
   }
 }
 

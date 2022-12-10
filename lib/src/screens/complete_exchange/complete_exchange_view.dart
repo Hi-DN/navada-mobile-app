@@ -4,6 +4,7 @@ import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/screens/complete_exchange/complete_exchange_view_model.dart';
 import 'package:navada_mobile_app/src/screens/complete_exchange/exchange_confirm_modal.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
@@ -36,7 +37,7 @@ class CompleteExchangeView extends StatelessWidget {
         
         return Scaffold(
           appBar: CustomAppBar(
-            titleText: exchange!.exchangeCompleteYn! ? "교환완료" : "교환중",
+            titleText: exchange!.exchangeStatusCd! == ExchangeStatusCd.COMPLETED ? "교환완료" : "교환중",
             leadingYn: true,
             onTap: () => Navigator.of(context).pop(),
           ),

@@ -1,4 +1,5 @@
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class ExchangeDtoModel {
   int? exchangeId;
@@ -10,7 +11,7 @@ class ExchangeDtoModel {
   double? acceptorRating;
   ProductModel? acceptorProduct;
   ProductModel? requesterProduct;
-  bool? exchangeCompleteYn;
+  ExchangeStatusCd? exchangeStatusCd;
 
   ExchangeDtoModel(
       {this.exchangeId,
@@ -20,7 +21,7 @@ class ExchangeDtoModel {
       this.acceptorConfirmYn,
       this.acceptorProduct,
       this.requesterProduct,
-      this.exchangeCompleteYn});
+      this.exchangeStatusCd});
 
   ExchangeDtoModel.fromJson(Map<String, dynamic> json) {
     exchangeId = json['exchangeId'];
@@ -36,7 +37,7 @@ class ExchangeDtoModel {
     requesterProduct = json['requesterProduct'] != null
         ? ProductModel.fromJson(json['requesterProduct'])
         : null;
-    exchangeCompleteYn = json['exchangeCompleteYn'];
+    exchangeStatusCd = ExchangeStatusCd.codeToEnum(json['exchangeStatusCd']);
   }
 
   Map<String, dynamic> toJson() {
@@ -54,7 +55,7 @@ class ExchangeDtoModel {
     if (requesterProduct != null) {
       data['requesterProduct'] = requesterProduct!.toJson();
     }
-    data['exchangeCompleteYn'] = exchangeCompleteYn;
+    data['exchangeStatusCd'] = exchangeStatusCd!.code.toString();
     return data;
   }
 }
