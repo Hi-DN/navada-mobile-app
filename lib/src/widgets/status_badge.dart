@@ -6,11 +6,19 @@ import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import '../utilities/enums.dart';
 
 class StatusBadge extends StatelessWidget {
-  const StatusBadge({Key? key, this.label, this.backgroundColor})
+  const StatusBadge({Key? key, 
+      this.label, 
+      this.labelColor = white,
+      this.backgroundColor,
+      this.borderYn = false,
+      this.borderColor = white})
       : super(key: key);
 
   final String? label;
+  final Color? labelColor;
   final Color? backgroundColor;
+  final bool? borderYn;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +29,11 @@ class StatusBadge extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(11),
+          border: borderYn!
+          ? Border.all(color: borderColor!, width: 1.0)
+          : null
         ),
-        child: R12Text(text: label, textColor: white));
+        child: R12Text(text: label, textColor: labelColor!));
   }
 }
 
