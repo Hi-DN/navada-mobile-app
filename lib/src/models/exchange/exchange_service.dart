@@ -1,6 +1,8 @@
 import 'package:navada_mobile_app/src/models/api/http_client.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_page_model.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_dto_page_response.dart';
+
+import 'exchange_model.dart';
+
 
 HttpClient _httpClient = HttpClient();
 

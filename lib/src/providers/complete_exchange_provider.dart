@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_page_model.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_service.dart';
 
 class CompleteExchangeProvider extends ChangeNotifier {

@@ -278,7 +278,7 @@ class ProductDetail extends StatelessWidget {
       case ProductExchangeStatusCd.TRADING:
         return _onlyModifyButton(context, product);
 
-      case ProductExchangeStatusCd.TRADE_COMPLETED:
+      case ProductExchangeStatusCd.COMPLETED:
         return _deleteAndModifyButtons(context, product);
 
       default:
@@ -363,8 +363,7 @@ class ProductDetail extends StatelessWidget {
             _pushRequestExchangeView(context);
           },
           style: ElevatedButton.styleFrom(
-              elevation: 0.0,
-              primary: green,
+              elevation: 0.0, backgroundColor: green,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0))),
           child: const R18Text(
@@ -391,8 +390,7 @@ class ProductDetail extends StatelessWidget {
                 _pushRequestExchangeView(context);
               },
               style: ElevatedButton.styleFrom(
-                  elevation: 0.0,
-                  primary: green,
+                  elevation: 0.0, backgroundColor: green,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0))),
               child: const R18Text(
@@ -409,8 +407,7 @@ class ProductDetail extends StatelessWidget {
                   _showRequestListModal(context);
                 },
                 style: ElevatedButton.styleFrom(
-                    elevation: 0.0,
-                    primary: navy,
+                    elevation: 0.0, backgroundColor: navy,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.0))),
                 child: const R18Text(

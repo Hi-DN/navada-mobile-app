@@ -4,7 +4,7 @@ import 'package:navada_mobile_app/src/models/request/request_service.dart';
 import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_service.dart';
 
-import '../models/exchange/exchange_model.dart';
+import '../models/exchange/exchange_single_response.dart';
 import '../models/heart/heart_service.dart';
 import '../models/product/product_model.dart';
 import '../models/request/request_list_response.dart';
@@ -41,8 +41,8 @@ class ProductDetailProvider extends ChangeNotifier {
   bool _requestsFetched = false;
   bool get requestsFetched => _requestsFetched;
 
-  ExchangeModel? _exchangeModel;
-  ExchangeModel? get exchangeModel => _exchangeModel;
+  ExchangeSingleResponse? _exchangeModel;
+  ExchangeSingleResponse? get exchangeModel => _exchangeModel;
 
   void fetchProductDetailInfo(int productId) {
     _fetchProduct(productId);
@@ -94,7 +94,7 @@ class ProductDetailProvider extends ChangeNotifier {
   Future<bool> acceptOneRequest(int requestId) async {
     bool result;
 
-    ExchangeModel? model = await _requestService.acceptRequest(requestId);
+    ExchangeSingleResponse? model = await _requestService.acceptRequest(requestId);
     _exchangeModel = model;
 
     if (_exchangeModel!.success!) {

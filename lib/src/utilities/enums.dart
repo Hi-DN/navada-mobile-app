@@ -19,7 +19,7 @@ enum UserLevel {
 enum ProductExchangeStatusCd {
   REGISTERED('0', '교환대기'),
   TRADING('1', '교환중'),
-  TRADE_COMPLETED('2', '교환완료');
+  COMPLETED('2', '교환완료');
 
   const ProductExchangeStatusCd(this.code, this.label);
 
@@ -51,6 +51,25 @@ enum RequestStatusCd {
 
   static RequestStatusCd codeToEnum(String code) {
     return RequestStatusCd.values[int.parse(code)];
+  }
+}
+
+enum ExchangeStatusCd {
+  TRADING('1', '교환중'),
+  COMPLETED('2', '교환완료'),
+  CANCELED('3', '교환취소');
+
+  const ExchangeStatusCd(this.code, this.label);
+
+  final String code;
+  final String label;
+
+  static ExchangeStatusCd strToEnum(String str) {
+    return ExchangeStatusCd.values.byName(str);
+  }
+
+  static ExchangeStatusCd codeToEnum(String code) {
+    return ExchangeStatusCd.values[int.parse(code)-1];
   }
 }
 

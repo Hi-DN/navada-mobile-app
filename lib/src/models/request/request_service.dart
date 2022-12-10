@@ -2,7 +2,7 @@ import 'package:navada_mobile_app/src/models/api/http_client.dart';
 import 'package:navada_mobile_app/src/models/request/request_page_response.dart';
 import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 
-import '../exchange/exchange_model.dart';
+import '../exchange/exchange_single_response.dart';
 import 'request_list_response.dart';
 
 HttpClient _httpClient = HttpClient();
@@ -130,12 +130,12 @@ class RequestService {
   }
 
   //교환 신청 수락
-  Future<ExchangeModel?> acceptRequest(int requestId) async {
+  Future<ExchangeSingleResponse?> acceptRequest(int requestId) async {
     Map<String, dynamic> data = await _httpClient
         .postRequest('/exchange/request/$requestId', {}, tokenYn: false);
 
     if (data['success']) {
-      return ExchangeModel.fromJson(data);
+      return ExchangeSingleResponse.fromJson(data);
     } else {
       return null;
     }
