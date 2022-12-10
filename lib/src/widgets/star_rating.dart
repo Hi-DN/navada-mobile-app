@@ -4,7 +4,7 @@ import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'colors.dart';
 
 class StarRating extends StatelessWidget {
-  const StarRating({Key? key, required this.rating}): super(key: key);
+  const StarRating({Key? key, required this.rating}) : super(key: key);
 
   final double rating;
 
@@ -27,9 +27,10 @@ class StarRating extends StatelessWidget {
 
   Widget _star(double score) {
     ScreenSize size = ScreenSize();
-    if(score == 0.0) {
-      return Icon(Icons.star_border_outlined, color: green, size: size.getSize(22));
-    } else if(score < 1.0) {
+    if (score <= 0.0) {
+      return Icon(Icons.star_border_outlined,
+          color: green, size: size.getSize(22));
+    } else if (score == 0.5) {
       return Icon(Icons.star_half, color: green, size: size.getSize(22));
     } else {
       return Icon(Icons.star, color: green, size: size.getSize(22));
