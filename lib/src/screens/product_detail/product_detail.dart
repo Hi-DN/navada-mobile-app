@@ -295,7 +295,8 @@ class ProductDetail extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () {},
           style: ElevatedButton.styleFrom(
-              elevation: 0.0, backgroundColor: green,
+              elevation: 0.0,
+              primary: green,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0))),
           child: const R18Text(
@@ -320,7 +321,8 @@ class ProductDetail extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                  elevation: 0.0, backgroundColor: red,
+                  elevation: 0.0,
+                  primary: red,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0))),
               child: const R18Text(
@@ -335,7 +337,8 @@ class ProductDetail extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                    elevation: 0.0, backgroundColor: green,
+                    elevation: 0.0,
+                    primary: green,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.0))),
                 child: const R18Text(
