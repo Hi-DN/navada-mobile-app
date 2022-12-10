@@ -50,7 +50,7 @@ class ExchangeStatusBadge extends StatelessWidget {
         return const Color(0xFFFFF279);
       case ProductExchangeStatusCd.TRADING:
         return green;
-      case ProductExchangeStatusCd.TRADE_COMPLETED:
+      case ProductExchangeStatusCd.COMPLETED:
         return navy;
     }
   }

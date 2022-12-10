@@ -3,8 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_page_model.dart';
-
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/complete_exchange_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
@@ -91,12 +89,14 @@ class ExchangeConfirmModal extends StatelessWidget {
           LongCircledBtn(
             onTap: () async {
               if(!isInitial) {
-                Exchange? result = await provider.completeExchange(exchange.exchangeId, isAcceptor, hasConfirmedRating, rating);
-                if(result != null) {
+                await provider.completeExchange(exchange.exchangeId, isAcceptor, hasConfirmedRating, rating)
+                .then((value) {
                   Provider.of<MyExchangesExchangeProvider>(_context!, listen: false).fetchData(isRefresh: true);
                   viewModel.setCompleteFeatureActive(false);
                   Navigator.of(context).pop();
-                }
+                  Navigator.of(context).pop();
+                  return null;
+                });
               }
             },
             text: "교환 완료하기",

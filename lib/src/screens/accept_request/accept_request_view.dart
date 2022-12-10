@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_single_response.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/providers/accept_request_provider.dart';
@@ -182,7 +182,7 @@ class AcceptRequestScreen extends StatelessWidget {
             ),
             TextButton(
               onPressed: () async { 
-                ExchangeModel? result = await Provider.of<AcceptRequestProvider>(_context!, listen: false).acceptRequest(request.requestId!);
+                ExchangeSingleResponse? result = await Provider.of<AcceptRequestProvider>(_context!, listen: false).acceptRequest(request.requestId!);
                 if(result != null) {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop(true);

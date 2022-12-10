@@ -27,7 +27,7 @@ class RequestDto {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['requestId'] = requestId;
-    data['requestStatusCd'] = requestStatusCd;
+    data['requestStatusCd'] = requestStatusCd!.code.toString();
     if (requesterProduct != null) {
       data['requesterProduct'] = requesterProduct!.toJson();
     }

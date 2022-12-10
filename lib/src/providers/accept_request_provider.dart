@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/exchange/exchange_model.dart';
+import 'package:navada_mobile_app/src/models/exchange/exchange_single_response.dart';
 import 'package:navada_mobile_app/src/models/request/request_page_response.dart';
 import 'package:navada_mobile_app/src/models/request/request_service.dart';
 import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
@@ -37,7 +37,7 @@ class AcceptRequestProvider extends ChangeNotifier {
     }
   }
 
-  Future<ExchangeModel?> acceptRequest(int requestId) {
+  Future<ExchangeSingleResponse?> acceptRequest(int requestId) {
     return _requestService.acceptRequest(requestId);
   }
 
