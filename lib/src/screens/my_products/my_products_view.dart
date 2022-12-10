@@ -21,6 +21,7 @@ class MyProductsView extends StatelessWidget {
   Widget build(BuildContext context) {
     Provider.of<MyProductsProvider>(context, listen: false).loadMore(false);
     return Scaffold(
+      backgroundColor: white,
       appBar: CustomAppBar(
         titleText: "내 물품 목록", 
         leadingYn: true,
@@ -169,9 +170,9 @@ class _AllStatusBadge extends StatelessWidget {
 
     return StatusBadge(
       label: "전체",
-      labelColor: isSelected ? white : grey153,
-      backgroundColor: isSelected ? grey153 : white,
-      borderColor: grey153,
+      labelColor: isSelected ? white : grey183,
+      backgroundColor: isSelected ? grey183 : white,
+      borderColor: grey183,
       onTap: (() => Provider.of<MyProductsProvider>(context, listen: false).setCurFilter(MyProductsFilter.showAll))
     );
   }
