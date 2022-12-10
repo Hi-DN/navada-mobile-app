@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/screens/heart/heart_view.dart';
+import 'package:navada_mobile_app/src/screens/my_products/my_products_view.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
@@ -94,15 +95,14 @@ class _UserActivities extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _iconTile(Icons.shopping_bag_outlined, "내 물품 목록", () {}),
-            _iconTile(
-              Icons.favorite_border_outlined,
-              "좋아요 목록",
-              () {
+            _iconTile(Icons.shopping_bag_outlined, "내 물품 목록", () {
+              Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const MyProductsView()));
+            }),
+            _iconTile(Icons.favorite_border_outlined, "좋아요 목록", () {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => const HeartView()));
-              },
-            ),
+            }),
             _iconTile(Icons.list_alt_rounded, "교환 내역", () {})
           ],
         ),

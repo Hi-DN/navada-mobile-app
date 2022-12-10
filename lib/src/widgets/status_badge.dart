@@ -9,31 +9,33 @@ class StatusBadge extends StatelessWidget {
   const StatusBadge({Key? key, 
       this.label, 
       this.labelColor = white,
-      this.backgroundColor,
-      this.borderYn = false,
-      this.borderColor = white})
+      this.backgroundColor = white,
+      this.borderColor,
+      this.onTap})
       : super(key: key);
 
   final String? label;
   final Color? labelColor;
   final Color? backgroundColor;
-  final bool? borderYn;
   final Color? borderColor;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
-    return Container(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 9),
-        height: size.getSize(21),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(11),
-          border: borderYn!
-          ? Border.all(color: borderColor!, width: 1.0)
-          : null
-        ),
-        child: R12Text(text: label, textColor: labelColor!));
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 9),
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(15),
+            border: borderColor != null
+            ? Border.all(color: borderColor!, width: 1.0)
+            : null
+          ),
+          child: R12Text(text: label, textColor: labelColor!)),
+    );
   }
 }
 
