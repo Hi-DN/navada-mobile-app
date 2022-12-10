@@ -3,15 +3,15 @@ import 'package:navada_mobile_app/src/models/exchange/exchange_dto_page_response
 
 import 'exchange_model.dart';
 
-
 HttpClient _httpClient = HttpClient();
 
 class ExchangeService {
-  // 교환중/교환완료인 교환 조회
+  // 교환목록조회
   Future<ExchangeDtoPageResponse?> getExchangeList(
-      int userId, int pageNum) async {
-    Map<String, dynamic> data = await _httpClient
-        .getRequest('/user/$userId/exchanges?page=$pageNum', tokenYn: false);
+      int userId, String exchangeStatusCds, int pageNum) async {
+    Map<String, dynamic> data = await _httpClient.getRequest(
+        '/user/$userId/exchanges?exchangeStatusCds=$exchangeStatusCds&page=$pageNum',
+        tokenYn: false);
 
     if (data['success']) {
       return ExchangeDtoPageResponse.fromJson(data);

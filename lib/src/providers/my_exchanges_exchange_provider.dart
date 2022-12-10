@@ -1,6 +1,5 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
-
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_dto_page_response.dart';
@@ -21,14 +20,15 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   List<ExchangeDtoModel> _exchangeDataList = [];
   late int _totalPages;
   late int _totalElements = 0;
-  
+
   bool get hasData => _isRefreshing || _exchangeDataList.isNotEmpty;
   DataState get dataState => _dataState;
   int get totalElements => _totalElements;
   List<ExchangeDtoModel> get exchangeDataList => _exchangeDataList;
   bool get _isInitialFetching => _dataState == DataState.INITIAL_FETCHING;
   bool get _isRefreshing => _dataState == DataState.REFRESHING;
-  bool get _shouldResetTotalPagesAndTotalElements => _isInitialFetching || _dataState == DataState.REFRESHING;
+  bool get _shouldResetTotalPagesAndTotalElements =>
+      _isInitialFetching || _dataState == DataState.REFRESHING;
 
   setFilter(MyExchangesFilterItem newFilter) {
     _curFilter = newFilter;
@@ -37,9 +37,9 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   }
 
   fetchData({bool isRefresh = false}) async {
-    if(isRefresh)
+    if (isRefresh)
       _refresh();
-    else 
+    else
       _setDataStateIfUninitialized();
 
     notifyListeners();
@@ -64,7 +64,7 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   }
 
   _fetchIfNotLastLoad() async {
-    if(_didLastLoad) {
+    if (_didLastLoad) {
       _dataState = DataState.NO_MORE_DATA;
     } else {
       await _fetchData();
@@ -73,7 +73,7 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   }
 
   bool get _didLastLoad {
-    if(_isInitialFetching || _isRefreshing) {
+    if (_isInitialFetching || _isRefreshing) {
       return false;
     } else {
       return (_currentPageNum >= _totalPages);
@@ -90,23 +90,27 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   }
 
   _getPageResponse() async {
+    String exchangeStatus = "1";
     ExchangeDtoPageResponse? pageResponse;
-    if(_curFilter == MyExchangesFilterItem.viewAll) {
-      pageResponse = await _exchangeService.getExchangeList(_userId, _currentPageNum);
-    } else if(_curFilter == MyExchangesFilterItem.viewOnlyISent) {
-      pageResponse = await _exchangeService.getExchangeListViewOnlySent(_userId, _currentPageNum);
+    if (_curFilter == MyExchangesFilterItem.viewAll) {
+      pageResponse = await _exchangeService.getExchangeList(
+          _userId, exchangeStatus, _currentPageNum);
+    } else if (_curFilter == MyExchangesFilterItem.viewOnlyISent) {
+      pageResponse = await _exchangeService.getExchangeListViewOnlySent(
+          _userId, _currentPageNum);
     } else {
-      pageResponse = await _exchangeService.getExchangeListViewOnlyGot(_userId, _currentPageNum);
+      pageResponse = await _exchangeService.getExchangeListViewOnlyGot(
+          _userId, _currentPageNum);
     }
-    await _resetTotalPagesAndTotalElements(pageResponse!.totalPages!, pageResponse.totalElements!);
+    await _resetTotalPagesAndTotalElements(
+        pageResponse!.totalPages!, pageResponse.totalElements!);
 
     return pageResponse;
   }
 
   _resetTotalPagesAndTotalElements(int totalPages, int totalElements) {
-    if(_shouldResetTotalPagesAndTotalElements) 
-      _totalPages = totalPages;
-      _totalElements = totalElements;
+    if (_shouldResetTotalPagesAndTotalElements) _totalPages = totalPages;
+    _totalElements = totalElements;
   }
 
   _handleError() {
@@ -117,6 +121,7 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   deleteCompletedExchange(int? exchangeId, int? acceptorId) async {
     bool isAcceptor = (_userId == acceptorId);
     await _exchangeService.deleteCompletedExchange(exchangeId!, isAcceptor);
-    _exchangeDataList.removeWhere((exchange) => exchange.exchangeId == exchangeId);
+    _exchangeDataList
+        .removeWhere((exchange) => exchange.exchangeId == exchangeId);
   }
 }

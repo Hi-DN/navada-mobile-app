@@ -10,6 +10,8 @@ import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
+import 'exchange_history/exchange_history_view.dart';
+
 class MyPage extends StatelessWidget {
   const MyPage({Key? key}) : super(key: key);
 
@@ -57,7 +59,8 @@ class _UserProfile extends StatelessWidget {
                     const Space(height: 2),
                     Row(
                       children: [
-                        Icon(Icons.location_on, size: size.getSize(15), color: grey183),
+                        Icon(Icons.location_on,
+                            size: size.getSize(15), color: grey183),
                         const Space(width: 2),
                         R14Text(text: user.userAddress, textColor: grey183),
                       ],
@@ -103,7 +106,14 @@ class _UserActivities extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => const HeartView()));
               },
             ),
-            _iconTile(Icons.list_alt_rounded, "교환 내역", () {})
+            _iconTile(
+              Icons.list_alt_rounded,
+              "교환 내역",
+              () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ExchangeHistoryView()));
+              },
+            )
           ],
         ),
         const Space(height: 24),
