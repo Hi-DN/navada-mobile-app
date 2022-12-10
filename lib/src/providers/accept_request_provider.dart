@@ -22,6 +22,7 @@ class AcceptRequestProvider extends ChangeNotifier {
     if(isRefresh) {
       _otherRequests = [];
       _isLastLoaded = false;
+      _pageNum=0;
     }
     if(!_isLastLoaded) {
       RequestPageResponse? pageResponse = await _requestService.getRequestsforCertainProduct(_request.acceptorProduct!.productId!, _pageNum);

@@ -6,23 +6,36 @@ import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import '../utilities/enums.dart';
 
 class StatusBadge extends StatelessWidget {
-  const StatusBadge({Key? key, this.label, this.backgroundColor})
+  const StatusBadge({Key? key, 
+      this.label, 
+      this.labelColor = white,
+      this.backgroundColor = white,
+      this.borderColor,
+      this.onTap})
       : super(key: key);
 
   final String? label;
+  final Color? labelColor;
   final Color? backgroundColor;
+  final Color? borderColor;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
-    return Container(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 9),
-        height: size.getSize(21),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: R12Text(text: label, textColor: white));
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 9),
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(15),
+            border: borderColor != null
+            ? Border.all(color: borderColor!, width: 1.0)
+            : null
+          ),
+          child: R12Text(text: label, textColor: labelColor!)),
+    );
   }
 }
 

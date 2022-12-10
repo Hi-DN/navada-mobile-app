@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/screens/heart/heart_view.dart';
+import 'package:navada_mobile_app/src/screens/my_products/my_products_view.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
@@ -59,8 +60,7 @@ class _UserProfile extends StatelessWidget {
                     const Space(height: 2),
                     Row(
                       children: [
-                        Icon(Icons.location_on,
-                            size: size.getSize(15), color: grey183),
+                        Icon(Icons.location_on, size: size.getSize(15), color: grey183),
                         const Space(width: 2),
                         R14Text(text: user.userAddress, textColor: grey183),
                       ],
@@ -97,11 +97,11 @@ class _UserActivities extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _iconTile(Icons.shopping_bag_outlined, "내 물품 목록", () {}),
-            _iconTile(
-              Icons.favorite_border_outlined,
-              "좋아요 목록",
-              () {
+            _iconTile(Icons.shopping_bag_outlined, "내 물품 목록", () {
+              Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const MyProductsView()));
+            }),
+            _iconTile(Icons.favorite_border_outlined, "좋아요 목록", () {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => const HeartView()));
               },
