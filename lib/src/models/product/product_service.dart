@@ -46,6 +46,35 @@ class ProductService {
     }
   }
 
+  // 사용자별 상품목록조회
+  Future<ProductPageModel> getProductsByUser(
+      int userId, int pageNum) async {
+
+    Map<String, dynamic> data = await _httpClient.getRequest(
+        '/user/$userId/products?page=$pageNum',
+        tokenYn: false);
+
+    if (data['success']) {
+      return ProductPageModel.fromJson(data);
+    } else {
+      throw Exception('getProductsForRequest() fail!');
+    }
+  }
+
+  // 사용자별 상품목록조회
+  Future<ProductPageModel> getProductsByUserWithStatusCd(
+      int userId, int statusCd, int pageNum) async {
+    Map<String, dynamic> data = await _httpClient.getRequest(
+        '/user/$userId/products?page=$pageNum&productExchangeStatusCds=$statusCd',
+        tokenYn: false);
+
+    if (data['success']) {
+      return ProductPageModel.fromJson(data);
+    } else {
+      throw Exception('getProductsForRequest() fail!');
+    }
+  }
+
   // 특정 상품에 교환신청 가능한 내 상품 목록
   Future<ProductPageModel> getProductsForRequest(
       int userId, int acceptorProductId) async {
