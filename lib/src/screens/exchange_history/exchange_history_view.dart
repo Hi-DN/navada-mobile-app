@@ -13,7 +13,7 @@ import '../../models/product/product_model.dart';
 import '../../providers/exchange_history_provider.dart';
 import '../../widgets/custom_appbar.dart';
 import '../../widgets/space.dart';
-import '../complete_exchange/complete_exchange_view.dart';
+import '../my_exchange/exchange_tab/exchange_detail/exchange_detail_view.dart';
 
 class ExchangeHistoryView extends StatelessWidget {
   const ExchangeHistoryView({Key? key}) : super(key: key);
@@ -109,7 +109,7 @@ class ExchangeHistoryView extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) =>
-                    CompleteExchangeView(exchange: exchange)));
+                    ExchangeDetailView(exchange: exchange)));
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 5.0),

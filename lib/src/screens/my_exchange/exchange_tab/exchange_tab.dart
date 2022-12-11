@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
-import 'package:navada_mobile_app/src/screens/complete_exchange/complete_exchange_view.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/exchange_tab/exchange_detail/exchange_detail_view.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
@@ -13,12 +13,12 @@ import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/my_exchange_card.dart';
-import 'widgets/my_exchange_status_sign.dart';
+import '../widgets/my_exchange_card.dart';
+import '../widgets/my_exchange_status_sign.dart';
 
 // ignore: must_be_immutable
-class TradingAndCompletedTab extends StatelessWidget {
-  const TradingAndCompletedTab({Key? key}) : super(key: key);
+class ExchangeTab extends StatelessWidget {
+  const ExchangeTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +137,7 @@ class _ExchangeListView extends StatelessWidget {
     return GestureDetector(
         onTap: () {
           Navigator.push(context!,
-              MaterialPageRoute(builder: (BuildContext context) => CompleteExchangeView(exchange: exchange)));
+              MaterialPageRoute(builder: (BuildContext context) => ExchangeDetailView(exchange: exchange)));
         },
         child: ExchangeItem(exchange: exchange),
     );

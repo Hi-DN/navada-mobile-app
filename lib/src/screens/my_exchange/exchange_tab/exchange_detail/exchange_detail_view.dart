@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
-import 'package:navada_mobile_app/src/screens/complete_exchange/complete_exchange_view_model.dart';
-import 'package:navada_mobile_app/src/screens/complete_exchange/exchange_confirm_modal.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/exchange_tab/exchange_detail/exchange_detail_view_model.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/exchange_tab/exchange_detail/exchange_confirm_modal.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
@@ -12,11 +12,12 @@ import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/star_rating.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
+import 'package:navada_mobile_app/src/widgets/status_badge.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
-class CompleteExchangeView extends StatelessWidget {
-  const CompleteExchangeView({Key? key, this.exchange}) : super(key: key);
+class ExchangeDetailView extends StatelessWidget {
+  const ExchangeDetailView({Key? key, this.exchange}) : super(key: key);
 
   final ExchangeDtoModel? exchange;
 
@@ -28,10 +29,10 @@ class CompleteExchangeView extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => CompleteExchangeViewModel(isCompleteFeatureActive)),
+        ChangeNotifierProvider(create: (context) => ExchangeDetailViewModel(isCompleteFeatureActive)),
       ],
-      child: Consumer<CompleteExchangeViewModel>(builder: 
-        (BuildContext context, CompleteExchangeViewModel viewModel, Widget? _) {
+      child: Consumer<ExchangeDetailViewModel>(builder: 
+        (BuildContext context, ExchangeDetailViewModel viewModel, Widget? _) {
 
         bool isCompleteBtnActive = viewModel.isCompleteFeatureActive;
         
@@ -72,7 +73,7 @@ class CompleteExchangeView extends StatelessWidget {
 
   _showExchangeConfirmModal(BuildContext? context) {
     ScreenSize size = ScreenSize();
-    final viewModel = Provider.of<CompleteExchangeViewModel>(context!, listen: false);
+    final viewModel = Provider.of<ExchangeDetailViewModel>(context!, listen: false);
     
     showModalBottomSheet(
       context: context,
@@ -153,15 +154,10 @@ class _ProductInfo extends StatelessWidget {
   }
 
   Widget _roleBadge() {
-    ScreenSize size = ScreenSize();
-    return Container(
-      height: size.getSize(24),
-      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: isAcceptor! ? navy : green, width: 1.0),
-      ),
-      child: B14Text(text: isAcceptor! ? '수락' : '신청', textColor: isAcceptor! ? navy : green)
+    return StatusBadge(
+      label: isAcceptor! ? '수락' : '신청',
+      labelColor: isAcceptor! ? navy : green,
+      borderColor: isAcceptor! ? navy : green,
     );
   }
 
@@ -222,4 +218,3 @@ class _ProductInfo extends StatelessWidget {
     );
   }
 }
-

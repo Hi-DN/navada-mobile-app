@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/request_tab/request_detail/request_detail_view.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
@@ -9,12 +10,12 @@ import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/my_exchange_card.dart';
-import 'widgets/my_exchange_status_sign.dart';
+import '../widgets/my_exchange_card.dart';
+import '../widgets/my_exchange_status_sign.dart';
 
 // ignore: must_be_immutable
-class ProductsThatIRequested extends StatelessWidget {
-  const ProductsThatIRequested({Key? key}) : super(key: key);
+class ProductsIRequestedTab extends StatelessWidget {
+  const ProductsIRequestedTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +120,7 @@ class _RequestListView extends StatelessWidget {
         itemCount: requestList.length,
         itemBuilder: (context, index) {
           final request = requestList[index];
-          return _dismissibleListItem(context, request);
+          return _requestItem(context, request);
         },
         separatorBuilder: (context, index) {
           return const Space(height: 10);
@@ -127,50 +128,56 @@ class _RequestListView extends StatelessWidget {
     );
   }
 
-  _dismissibleListItem(BuildContext? context, RequestDto request) {
+  _requestItem(BuildContext? context, RequestDto request) {
     ScreenSize size = ScreenSize();
     bool isWait = request.requestStatusCd == RequestStatusCd.WAIT;
     
-    return Dismissible(
-      key: UniqueKey(),
-      onDismissed: (direction) {
-        if(isWait) {
-          Provider.of<MyExchangesRequestProvider>(_context!, listen: false).cancelRequest(request.requestId!);
-        } else {
-          Provider.of<MyExchangesRequestProvider>(_context!, listen: false).deleteDeniedRequest(request.requestId!);
-        }
-      },
-      confirmDismiss: (direction) async {
-          return await showDialog(
-            context: context!,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                content: R14Text(text: isWait ? "교환신청을 정말로 취소하시겠습니까?" : "거절내역을 삭제하시겠습니까?"),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const R14Text(text: "아니요", textColor: grey153),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: R14Text(text: isWait ? "네, 취소할게요!" : "네, 삭제할게요!", textColor: blue),
-                  ),
-                ],
-              );
-            }
-          );
-      },
-      direction: DismissDirection.endToStart,
-      background: Container(
-          decoration: BoxDecoration(
-              color: isWait ? yellow : grey183,
-              borderRadius: BorderRadius.circular(size.getSize(10))),
-          padding: EdgeInsets.only(right: size.getSize(20)),
-          child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: const [Icon(Icons.delete, color: white)])
+    return GestureDetector(
+      onTap: () {
+          Navigator.push(context!,
+              MaterialPageRoute(builder: (BuildContext context) => RequestDetailView(request: request)));
+        },
+      child: Dismissible(
+        key: UniqueKey(),
+        onDismissed: (direction) {
+          if(isWait) {
+            Provider.of<MyExchangesRequestProvider>(_context!, listen: false).cancelRequest(request.requestId!);
+          } else {
+            Provider.of<MyExchangesRequestProvider>(_context!, listen: false).deleteDeniedRequest(request.requestId!);
+          }
+        },
+        confirmDismiss: (direction) async {
+            return await showDialog(
+              context: context!,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: R14Text(text: isWait ? "교환신청을 정말로 취소하시겠습니까?" : "거절내역을 삭제하시겠습니까?"),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const R14Text(text: "아니요", textColor: grey153),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: R14Text(text: isWait ? "네, 취소할게요!" : "네, 삭제할게요!", textColor: blue),
+                    ),
+                  ],
+                );
+              }
+            );
+        },
+        direction: DismissDirection.endToStart,
+        background: Container(
+            decoration: BoxDecoration(
+                color: isWait ? yellow : grey183,
+                borderRadius: BorderRadius.circular(size.getSize(10))),
+            padding: EdgeInsets.only(right: size.getSize(20)),
+            child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: const [Icon(Icons.delete, color: white)])
+        ),
+        child: RequestItem(request: request),
       ),
-      child: RequestItem(request: request),
     );
   }
 

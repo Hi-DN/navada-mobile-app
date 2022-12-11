@@ -6,7 +6,7 @@ import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/complete_exchange_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
-import 'package:navada_mobile_app/src/screens/complete_exchange/complete_exchange_view_model.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/exchange_tab/exchange_detail/exchange_detail_view_model.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
@@ -76,8 +76,8 @@ class ExchangeConfirmModal extends StatelessWidget {
     int userId = UserProvider.userId;
     bool isAcceptor = (userId == exchange!.acceptorId);
 
-    return Consumer2<CompleteExchangeViewModel, CompleteExchangeProvider>(builder: 
-    (BuildContext context, CompleteExchangeViewModel viewModel, CompleteExchangeProvider provider, Widget? _) {
+    return Consumer2<ExchangeDetailViewModel, CompleteExchangeProvider>(builder: 
+    (BuildContext context, ExchangeDetailViewModel viewModel, CompleteExchangeProvider provider, Widget? _) {
       
       bool isInitial= viewModel.isInitial;
       bool hasConfirmedRating = viewModel.hasConfirmedRating;
@@ -146,8 +146,8 @@ class _RatingSection extends StatelessWidget {
 
   Widget _starSection() {
     ScreenSize size = ScreenSize();
-    return Consumer<CompleteExchangeViewModel>(builder: 
-    (BuildContext context, CompleteExchangeViewModel viewModel, Widget? _) {
+    return Consumer<ExchangeDetailViewModel>(builder: 
+    (BuildContext context, ExchangeDetailViewModel viewModel, Widget? _) {
       
       bool isStarGrey = viewModel.isStarGrey;
       
@@ -174,8 +174,8 @@ class _RatingSection extends StatelessWidget {
   }
 
   Widget _confirmBtnSection() {
-    return Consumer<CompleteExchangeViewModel>(builder: 
-    (BuildContext context, CompleteExchangeViewModel viewModel, Widget? _) {
+    return Consumer<ExchangeDetailViewModel>(builder: 
+    (BuildContext context, ExchangeDetailViewModel viewModel, Widget? _) {
       
       bool hasConfirmedNoRating = viewModel.hasConfirmedNoRating;
       bool hasConfirmedRating = viewModel.hasConfirmedRating;
