@@ -12,6 +12,7 @@ class ExchangeDtoModel {
   ProductModel? acceptorProduct;
   ProductModel? requesterProduct;
   ExchangeStatusCd? exchangeStatusCd;
+  DateTime? exchangeCompleteDt;
 
   ExchangeDtoModel(
       {this.exchangeId,
@@ -21,7 +22,8 @@ class ExchangeDtoModel {
       this.acceptorConfirmYn,
       this.acceptorProduct,
       this.requesterProduct,
-      this.exchangeStatusCd});
+      this.exchangeStatusCd,
+      this.exchangeCompleteDt});
 
   ExchangeDtoModel.fromJson(Map<String, dynamic> json) {
     exchangeId = json['exchangeId'];
@@ -38,6 +40,9 @@ class ExchangeDtoModel {
         ? ProductModel.fromJson(json['requesterProduct'])
         : null;
     exchangeStatusCd = ExchangeStatusCd.codeToEnum(json['exchangeStatusCd']);
+    exchangeCompleteDt = json['exchangeCompleteDt'] != null
+        ? DateTime.parse(json['exchangeCompleteDt'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -56,6 +61,7 @@ class ExchangeDtoModel {
       data['requesterProduct'] = requesterProduct!.toJson();
     }
     data['exchangeStatusCd'] = exchangeStatusCd!.code.toString();
+    data['exchangeCompleteDt'] = exchangeCompleteDt;
     return data;
   }
 }

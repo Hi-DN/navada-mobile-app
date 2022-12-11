@@ -363,7 +363,8 @@ class ProductDetail extends StatelessWidget {
             _pushRequestExchangeView(context);
           },
           style: ElevatedButton.styleFrom(
-              elevation: 0.0, backgroundColor: green,
+              elevation: 0.0,
+              primary: green,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0))),
           child: const R18Text(
@@ -390,7 +391,8 @@ class ProductDetail extends StatelessWidget {
                 _pushRequestExchangeView(context);
               },
               style: ElevatedButton.styleFrom(
-                  elevation: 0.0, backgroundColor: green,
+                  elevation: 0.0,
+                  primary: green,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0))),
               child: const R18Text(
@@ -407,7 +409,8 @@ class ProductDetail extends StatelessWidget {
                   _showRequestListModal(context);
                 },
                 style: ElevatedButton.styleFrom(
-                    elevation: 0.0, backgroundColor: navy,
+                    elevation: 0.0,
+                    primary: navy,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.0))),
                 child: const R18Text(
