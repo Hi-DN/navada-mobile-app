@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CompleteExchangeViewModel extends ChangeNotifier {
-  CompleteExchangeViewModel(this._isCompleteFeatureActive);
+class ExchangeDetailViewModel extends ChangeNotifier {
+  ExchangeDetailViewModel(this._isCompleteFeatureActive);
   bool _isCompleteFeatureActive;
 
   bool _isInitial = true;

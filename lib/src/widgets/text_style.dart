@@ -121,7 +121,7 @@ class B12Text extends StatelessWidget {
     ScreenSize size = ScreenSize();
     return CustomText(
       text: text!,
-      style: styleR.copyWith(fontSize: size.getSize(12), color: textColor),
+      style: styleB.copyWith(fontSize: size.getSize(12), color: textColor),
       params: params,
     );
   }

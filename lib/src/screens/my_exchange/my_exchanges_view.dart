@@ -4,8 +4,8 @@ import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
 import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
-import 'package:navada_mobile_app/src/screens/my_exchange/products_I_requested_widget.dart';
-import 'package:navada_mobile_app/src/screens/my_exchange/trading_and_completed_tab_widget.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/request_tab/products_I_requested_tab.dart';
+import 'package:navada_mobile_app/src/screens/my_exchange/exchange_tab/exchange_tab.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
@@ -56,8 +56,8 @@ class MyExchangesView extends StatelessWidget {
                 child: TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    TradingAndCompletedTab(),
-                    ProductsThatIRequested()
+                    ExchangeTab(),
+                    ProductsIRequestedTab()
                   ],
                 ),
               )])
