@@ -5,6 +5,7 @@ import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
+import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/status_badge.dart';
@@ -23,19 +24,45 @@ class RequestDetailView extends StatelessWidget {
         leadingYn: true,
         onTap: () => Navigator.of(context).pop(),
       ),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          _ProductInfo(product: request!.requesterProduct!, isAcceptor: false, requestStatusCd: request!.requestStatusCd),
-          const CustomDivider(),
-          _ProductInfo(product: request!.acceptorProduct!, isAcceptor: true, requestStatusCd: request!.requestStatusCd),
-        ]),
-      ),
+      body: Stack(children: [
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              _ProductInfo(
+                  product: request!.requesterProduct!,
+                  isAcceptor: false,
+                  requestStatusCd: request!.requestStatusCd),
+              const CustomDivider(),
+              _ProductInfo(
+                  product: request!.acceptorProduct!,
+                  isAcceptor: true,
+                  requestStatusCd: request!.requestStatusCd),
+              const Space(height: 50.0),
+            ],
+          ),
+        ),
+        _bottomButton(request!.requestStatusCd!)
+      ]),
     );
   }
 }
 
+Widget _bottomButton(RequestStatusCd requestStatusCd) {
+  bool isDeniedRequest = requestStatusCd == RequestStatusCd.DENIED;
+  return Container(
+    alignment: Alignment.bottomCenter,
+    padding: const EdgeInsets.only(bottom: 30.0),
+    child: LongCircledBtn(
+        onTap: () {},
+        text: isDeniedRequest ? '삭제하기' : '신청 취소하기',
+        backgroundColor: isDeniedRequest ? red : green),
+  );
+}
+
 class _ProductInfo extends StatelessWidget {
-  const _ProductInfo({Key? key, this.product, required this.isAcceptor, this.requestStatusCd}) : super(key: key);
+  const _ProductInfo(
+      {Key? key, this.product, required this.isAcceptor, this.requestStatusCd})
+      : super(key: key);
 
   final ProductModel? product;
   final bool isAcceptor;
@@ -63,11 +90,14 @@ class _ProductInfo extends StatelessWidget {
   Widget _nickNameSection() {
     return Row(
       children: [
-        Row(children: [B16Text(text: product!.userNickname), const R16Text(text: "님의 물품")]),
+        Row(children: [
+          B16Text(text: product!.userNickname),
+          const R16Text(text: "님의 물품")
+        ]),
         const Space(width: 10),
         (requestStatusCd == RequestStatusCd.DENIED)
-        ? (isAcceptor ? _deniedBadge() : Container())
-        : (isAcceptor ? Container() : _waitBadge())
+            ? (isAcceptor ? _deniedBadge() : Container())
+            : (isAcceptor ? Container() : _waitBadge())
       ],
     );
   }
@@ -90,38 +120,38 @@ class _ProductInfo extends StatelessWidget {
 
   Widget _imageAndDetailSection() {
     return Row(
-      children: [
-        _exampleImage(),
-        const Space(width: 10),
-        _productDetails()
-      ],
+      children: [_exampleImage(), const Space(width: 10), _productDetails()],
     );
   }
 
   Widget _exampleImage() {
     ScreenSize size = ScreenSize();
     return ClipRRect(
-      borderRadius: BorderRadius.circular(size.getSize(5)),
-      child: Image.asset(
-        'assets/images/test.jpeg',
-        width: size.getSize(99.0),
-        height: size.getSize(99.0),
-      )
-    );
+        borderRadius: BorderRadius.circular(size.getSize(5)),
+        child: Image.asset(
+          'assets/images/test.jpeg',
+          width: size.getSize(99.0),
+          height: size.getSize(99.0),
+        ));
   }
 
   Widget _productDetails() {
     ScreenSize size = ScreenSize();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(children: [
-            Text(product!.productName!.length > 12 ? "물품명\n\n원가\n희망가격" : "물품명\n원가\n희망가격", style: styleB.copyWith(fontSize: size.getSize(14), height: 1.6)),
-            const Space(width: 8),
-            Text("${_lineBreak(product!.productName!)}\n${product!.productCost!}원\n", style: styleR.copyWith(fontSize: size.getSize(14), height: 1.6)),
-        ]),
-        Text("${product!.getLowerBound()}원 ~ ${product!.getUpperBound()}원", style: styleR.copyWith(fontSize: size.getSize(14), height: 1.6)),
-      ]);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Text(
+            product!.productName!.length > 12
+                ? "물품명\n\n원가\n희망가격"
+                : "물품명\n원가\n희망가격",
+            style: styleB.copyWith(fontSize: size.getSize(14), height: 1.6)),
+        const Space(width: 8),
+        Text(
+            "${_lineBreak(product!.productName!)}\n${product!.productCost!}원\n",
+            style: styleR.copyWith(fontSize: size.getSize(14), height: 1.6)),
+      ]),
+      Text("${product!.getLowerBound()}원 ~ ${product!.getUpperBound()}원",
+          style: styleR.copyWith(fontSize: size.getSize(14), height: 1.6)),
+    ]);
   }
 
   String _lineBreak(String? str) {
@@ -136,7 +166,8 @@ class _ProductInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("물품 설명", style: styleB.copyWith(fontSize: size.getSize(16), height: 1.6)),
+        Text("물품 설명",
+            style: styleB.copyWith(fontSize: size.getSize(16), height: 1.6)),
         Text(
           product!.productExplanation!,
           style: styleR.copyWith(fontSize: size.getSize(16), height: 1.6),
