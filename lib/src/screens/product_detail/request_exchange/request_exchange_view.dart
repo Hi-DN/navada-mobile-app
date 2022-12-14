@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
-import 'package:navada_mobile_app/src/screens/request_exchange/request_exchange_view_model.dart';
+import 'package:navada_mobile_app/src/screens/product_detail/request_exchange/request_exchange_view_model.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/request_exchange_provider.dart';
-import '../../widgets/colors.dart';
-import '../../widgets/screen_size.dart';
-import '../../widgets/text_style.dart';
+import '../../../providers/request_exchange_provider.dart';
+import '../../../widgets/colors.dart';
+import '../../../widgets/screen_size.dart';
+import '../../../widgets/text_style.dart';
 
 // 교환 신청하기 화면
 class RequestExchangeView extends StatelessWidget {

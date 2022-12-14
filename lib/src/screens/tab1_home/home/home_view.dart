@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
-import 'package:navada_mobile_app/src/screens/home/home_requests_widget.dart';
-import 'package:navada_mobile_app/src/screens/home/home_view_model.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
+
+import 'home_requests_widget.dart';
+import 'home_view_model.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -26,9 +27,10 @@ class HomeView extends StatelessWidget {
     return Scaffold(
         body: MultiProvider(
             providers: [
-              ChangeNotifierProvider(create: (context) => RequestsForMeProvider(user.userId)),
-              ChangeNotifierProvider(create: (context) => HomeViewModel()),
-            ],
+          ChangeNotifierProvider(
+              create: (context) => RequestsForMeProvider(user.userId)),
+          ChangeNotifierProvider(create: (context) => HomeViewModel()),
+        ],
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: size.getSize(22)),
               child: Column(children: [
@@ -51,9 +53,7 @@ class _HomeTopBar extends StatelessWidget {
       padding: EdgeInsets.only(top: size.getSize(10)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          _logo()
-        ],
+        children: [_logo()],
       ),
     );
   }
@@ -102,14 +102,13 @@ class _CategorySection extends StatelessWidget {
   Widget _categoryFirstSlide(CarouselController carouselController) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Expanded(
-          child: Column(
-            children: [
-              const Space(height: 10),
-              _CategoryIconsRow(children: _rowContent1),
-              _CategoryIconsRow(children: _rowContent2),
-              const Space(height: 18),
-            ])),
-            _nextPageArrowBtn(carouselController)
+          child: Column(children: [
+        const Space(height: 10),
+        _CategoryIconsRow(children: _rowContent1),
+        _CategoryIconsRow(children: _rowContent2),
+        const Space(height: 18),
+      ])),
+      _nextPageArrowBtn(carouselController)
     ]);
   }
 
@@ -128,12 +127,11 @@ class _CategorySection extends StatelessWidget {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       _prevPageArrowBtn(carouselController),
       Expanded(
-          child: Column(
-            children: [
-              const Space(height: 10),
-              _CategoryIconsRow(children: _rowContent3),
-              const Space(height: 78)
-            ])),
+          child: Column(children: [
+        const Space(height: 10),
+        _CategoryIconsRow(children: _rowContent3),
+        const Space(height: 78)
+      ])),
     ]);
   }
 

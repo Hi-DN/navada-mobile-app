@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
-import 'package:navada_mobile_app/src/screens/heart/heart_view.dart';
-import 'package:navada_mobile_app/src/screens/my_products/my_products_view.dart';
+import 'package:navada_mobile_app/src/screens/tab5_mypage/exchange_history/exchange_history_view.dart';
+import 'package:navada_mobile_app/src/screens/tab5_mypage/heart/heart_view.dart';
+import 'package:navada_mobile_app/src/screens/tab5_mypage/my_products/my_products_view.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
@@ -10,8 +11,6 @@ import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
-
-import 'exchange_history/exchange_history_view.dart';
 
 class MyPage extends StatelessWidget {
   const MyPage({Key? key}) : super(key: key);

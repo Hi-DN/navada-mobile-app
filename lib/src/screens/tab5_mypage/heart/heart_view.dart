@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/providers/heart_provider.dart';
-import 'package:navada_mobile_app/src/screens/heart/heart_view_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
+import 'package:navada_mobile_app/src/screens/tab5_mypage/heart/heart_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
+import 'package:navada_mobile_app/src/widgets/colors.dart';
+import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
+import 'package:navada_mobile_app/src/widgets/divider.dart';
+import 'package:navada_mobile_app/src/widgets/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/heart/heart_list_model.dart';
-import '../../models/product/product_model.dart';
-import '../../widgets/colors.dart';
-import '../../widgets/custom_appbar.dart';
-import '../../widgets/divider.dart';
-import '../../widgets/screen_size.dart';
-import '../../widgets/space.dart';
-import '../../widgets/status_badge.dart';
+import '../../../models/heart/heart_list_model.dart';
+import '../../../models/product/product_model.dart';
+import '../../../widgets/status_badge.dart';
 
 class HeartView extends StatelessWidget {
   const HeartView({Key? key}) : super(key: key);

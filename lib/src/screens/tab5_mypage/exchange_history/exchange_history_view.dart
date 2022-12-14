@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
+import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/star_rating.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/exchange/exchange_dto_model.dart';
-import '../../models/product/product_model.dart';
-import '../../providers/exchange_history_provider.dart';
-import '../../widgets/custom_appbar.dart';
-import '../../widgets/space.dart';
-import '../my_exchange/exchange_tab/exchange_detail/exchange_detail_view.dart';
+import '../../../models/exchange/exchange_dto_model.dart';
+import '../../../models/product/product_model.dart';
+import '../../../providers/exchange_history_provider.dart';
+import '../../tab4_exchange/my_exchange/exchange_tab/exchange_detail/exchange_detail_view.dart';
 
 class ExchangeHistoryView extends StatelessWidget {
   const ExchangeHistoryView({Key? key}) : super(key: key);

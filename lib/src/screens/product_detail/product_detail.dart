@@ -5,6 +5,7 @@ import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/product_detail_provider.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_request_modal.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_view_model.dart';
+import 'package:navada_mobile_app/src/screens/product_detail/request_exchange/request_exchange_view.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
@@ -14,7 +15,6 @@ import '../../models/product/product_model.dart';
 import '../../models/user/user_model.dart';
 import '../../utilities/enums.dart';
 import '../../widgets/colors.dart';
-import '../request_exchange/request_exchange_view.dart';
 
 // ignore: must_be_immutable
 class ProductDetail extends StatelessWidget {

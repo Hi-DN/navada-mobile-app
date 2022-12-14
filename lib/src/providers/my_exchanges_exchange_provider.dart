@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_dto_page_response.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_service.dart';
-import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+
+import '../screens/tab4_exchange/my_exchange/my_exchanges_view_model.dart';
 
 class MyExchangesExchangeProvider extends ChangeNotifier {
   MyExchangesExchangeProvider(this._userId);

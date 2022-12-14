@@ -3,8 +3,6 @@ import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
-import 'package:navada_mobile_app/src/screens/accept_request/accept_request_view.dart';
-import 'package:navada_mobile_app/src/screens/home/home_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
@@ -16,6 +14,9 @@ import 'package:navada_mobile_app/src/widgets/status_badge.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
+import '../accept_request/accept_request_view.dart';
+import 'home_view_model.dart';
+
 // ignore: must_be_immutable
 class RequestsForMe extends StatelessWidget {
   RequestsForMe({Key? key}) : super(key: key);
@@ -26,10 +27,12 @@ class RequestsForMe extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     return Scaffold(
-      body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          _titleSection(),
-          Expanded(child: _buildScreenDependingOnDataState()),
-        ],
+        body: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _titleSection(),
+        Expanded(child: _buildScreenDependingOnDataState()),
+      ],
     ));
   }
 
@@ -38,17 +41,16 @@ class RequestsForMe extends StatelessWidget {
     return Consumer<RequestsForMeProvider>(builder:
         (BuildContext context, RequestsForMeProvider provider, Widget? _) {
       return Padding(
-        padding: EdgeInsets.symmetric(vertical: size.getSize(18)),
-        child: 
-          Column(
+          padding: EdgeInsets.symmetric(vertical: size.getSize(18)),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _sectionTitle(),
-            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              _deniedVisibleCheckBox()])
-          ],
-        )
-      );
+            children: [
+              _sectionTitle(),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [_deniedVisibleCheckBox()])
+            ],
+          ));
     });
   }
 
@@ -56,8 +58,8 @@ class RequestsForMe extends StatelessWidget {
     ScreenSize size = ScreenSize();
     User user = Provider.of<UserProvider>(_context!, listen: false).user;
     return RichText(
-      text: TextSpan(children: [
-          TextSpan(
+        text: TextSpan(children: [
+      TextSpan(
           text: user.userNickname,
           style: styleB.copyWith(fontSize: size.getSize(16))),
       TextSpan(
@@ -179,9 +181,9 @@ class _RequestsForMeGridView extends StatelessWidget {
   Widget _requestsForMeGridView() {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, 
-        childAspectRatio: 10 / 14.5, 
-        mainAxisSpacing: 0, 
+        crossAxisCount: 2,
+        childAspectRatio: 10 / 14.5,
+        mainAxisSpacing: 0,
         crossAxisSpacing: 10,
       ),
       itemCount: requestsForMe.length,
@@ -212,11 +214,15 @@ class RequestItem extends StatelessWidget {
     _context = context;
     return GestureDetector(
       onTap: () async {
-        bool needRefresh = await Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => AcceptRequestView(request: request!)));
-        
-        if(needRefresh) {
-          Provider.of<RequestsForMeProvider>(_context!, listen: false).fetchData(isRefresh: true);
+        bool needRefresh = await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    AcceptRequestView(request: request!)));
+
+        if (needRefresh) {
+          Provider.of<RequestsForMeProvider>(_context!, listen: false)
+              .fetchData(isRefresh: true);
         }
       },
       child: Column(
@@ -274,10 +280,11 @@ class RequestItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-            _costRangeInfo(),
-            if (request!.requestStatusCd == RequestStatusCd.DENIED)
-              _deleteDeniedRequestBtn(),
-          ],)
+              _costRangeInfo(),
+              if (request!.requestStatusCd == RequestStatusCd.DENIED)
+                _deleteDeniedRequestBtn(),
+            ],
+          )
         ],
       ),
     );
@@ -286,9 +293,13 @@ class RequestItem extends StatelessWidget {
   _productAndRequesterInfo() {
     return Row(
       children: [
-        B12Text(text: Shortener.shortenStrTo(request!.requesterProduct!.productName, 9)),
-        R12Text(text: ' | ${Shortener.shortenStrTo(request!.requesterProduct!.userNickname, 3)}', 
-          textColor: grey153)
+        B12Text(
+            text: Shortener.shortenStrTo(
+                request!.requesterProduct!.productName, 9)),
+        R12Text(
+            text:
+                ' | ${Shortener.shortenStrTo(request!.requesterProduct!.userNickname, 3)}',
+            textColor: grey153)
       ],
     );
   }
@@ -309,25 +320,30 @@ class RequestItem extends StatelessWidget {
   _deleteDeniedRequestBtn() {
     ScreenSize size = ScreenSize();
     return PopupMenuButton(
-      constraints: BoxConstraints(maxWidth: size.getSize(60)),
-      padding: const EdgeInsets.all(0),
-      offset: const Offset(0, -25),
-      elevation: 10.0,
-      position: PopupMenuPosition.over,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(size.getSize(5))),
-      ),
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          onTap: () {
-            Provider.of<RequestsForMeProvider>(_context!, listen: false).deleteDeniedRequest(request?.requestId);
-          },
-          height: size.getSize(24),
-          value: '삭제',
-          child: SizedBox(width: size.getSize(30), child: const R14Text(text: '삭제')),
-        )
-      ],
-      child: Icon(Icons.more_vert, size: size.getSize(18), color: Colors.grey,)
-    );
+        constraints: BoxConstraints(maxWidth: size.getSize(60)),
+        padding: const EdgeInsets.all(0),
+        offset: const Offset(0, -25),
+        elevation: 10.0,
+        position: PopupMenuPosition.over,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(size.getSize(5))),
+        ),
+        itemBuilder: (context) => [
+              PopupMenuItem(
+                onTap: () {
+                  Provider.of<RequestsForMeProvider>(_context!, listen: false)
+                      .deleteDeniedRequest(request?.requestId);
+                },
+                height: size.getSize(24),
+                value: '삭제',
+                child: SizedBox(
+                    width: size.getSize(30), child: const R14Text(text: '삭제')),
+              )
+            ],
+        child: Icon(
+          Icons.more_vert,
+          size: size.getSize(18),
+          color: Colors.grey,
+        ));
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/providers/search_products_provider.dart';
-import 'package:navada_mobile_app/src/screens/search_products/search_products_view_model.dart';
+import 'package:navada_mobile_app/src/screens/tab2_products/search_products/search_products_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
@@ -11,10 +11,10 @@ import 'package:navada_mobile_app/src/widgets/status_badge.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/product/product_search_page_model.dart';
-import '../../widgets/colors.dart';
-import '../../widgets/divider.dart';
-import '../product_detail/product_detail.dart';
+import '../../../models/product/product_search_page_model.dart';
+import '../../../widgets/colors.dart';
+import '../../../widgets/divider.dart';
+import '../../product_detail/product_detail.dart';
 
 class SearchProductsView extends StatelessWidget {
   SearchProductsView({Key? key}) : super(key: key);
@@ -122,7 +122,6 @@ class SearchProductsView extends StatelessWidget {
     return Consumer<SearchProductsProvider>(
         builder: (context, provider, widget) {
       if (provider.productSearchPageModel != null) {
-        print('list rebuild!');
         return ListView.builder(
             itemBuilder: (context, index) {
               ProductSearchDtoModel product =

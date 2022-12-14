@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/modify_product_provider.dart';
-import 'package:navada_mobile_app/src/screens/modify_product/modify_product_view_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
@@ -13,6 +12,8 @@ import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
+import 'modify_product_view_model.dart';
+
 class ModifyProductView extends StatelessWidget {
   const ModifyProductView({Key? key, required this.product}) : super(key: key);
 
@@ -22,7 +23,13 @@ class ModifyProductView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
       ChangeNotifierProvider(create: (context) => ModifyProductProvider()),
-      ChangeNotifierProvider(create: (context) => ModifyProductViewModel(product.productName, product.category, product.productCost, product.exchangeCostRange, product.productExplanation)),
+      ChangeNotifierProvider(
+          create: (context) => ModifyProductViewModel(
+              product.productName,
+              product.category,
+              product.productCost,
+              product.exchangeCostRange,
+              product.productExplanation)),
     ], child: MaterialApp(home: ModifyProductScreen()));
   }
 }
@@ -43,7 +50,8 @@ class ModifyProductScreen extends StatelessWidget {
         appBar: CustomAppBar(
             titleText: "교환 물품 수정하기",
             leadingYn: true,
-            onTap: () => Navigator.of(context, rootNavigator: true).pop(context)),
+            onTap: () =>
+                Navigator.of(context, rootNavigator: true).pop(context)),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -65,10 +73,12 @@ class ModifyProductScreen extends StatelessWidget {
       child: Column(
         children: [
           const Space(height: 20),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [_productNameField(), _categoryMenu()]),
           const Space(height: 30),
-          Row(children: [
+          Row(
+            children: [
               _productImageField(),
               const Space(width: 15),
               _productPriceSection()
@@ -87,17 +97,22 @@ class ModifyProductScreen extends StatelessWidget {
     return SizedBox(
       width: size.getSize(200),
       child: TextFormField(
-        controller: Provider.of<ModifyProductViewModel>(_context!, listen: false).productNameController,
+        controller:
+            Provider.of<ModifyProductViewModel>(_context!, listen: false)
+                .productNameController,
         // initialValue: Provider.of<ModifyProductViewModel>(_context!, listen: false).productName,
         maxLength: 20,
-        focusNode: Provider.of<ModifyProductViewModel>(_context!, listen: false).productNameFNode,
+        focusNode: Provider.of<ModifyProductViewModel>(_context!, listen: false)
+            .productNameFNode,
         style: styleR.copyWith(fontSize: size.getSize(16)),
         onChanged: (value) {
-          Provider.of<ModifyProductViewModel>(_context!, listen: false).setProductName(value);
+          Provider.of<ModifyProductViewModel>(_context!, listen: false)
+              .setProductName(value);
         },
         decoration: InputDecoration(
           hintText: '물품 이름을 입력해주세요',
-          hintStyle:styleR.copyWith(fontSize: size.getSize(16), color: grey183),
+          hintStyle:
+              styleR.copyWith(fontSize: size.getSize(16), color: grey183),
           counterText: "",
           contentPadding: EdgeInsets.symmetric(
             horizontal: size.getSize(10.0),
@@ -115,31 +130,37 @@ class ModifyProductScreen extends StatelessWidget {
   Widget _categoryMenu() {
     ScreenSize size = ScreenSize();
     return Container(
-      width: size.getSize(120),
-      height: size.getSize(48),
-      padding: EdgeInsets.all(size.getSize(5)),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(color: grey183, width: 1.0),
-      ),
-      alignment: Alignment.centerRight,
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton(
-            focusNode: Provider.of<ModifyProductViewModel>(_context!, listen: false).productCategoryFNode,
-            isDense: true,
-            items: Category.values
-                .map((category) => DropdownMenuItem(
-                      value: category.id,
-                      child: Text(category.label),
-                    ))
-                .toList(),
-            hint: const Text("카테고리"),
-            value: Provider.of<ModifyProductViewModel>(_context!, listen: false).productCategory!.id,
-            onChanged: (value) {
-              Provider.of<ModifyProductViewModel>(_context!, listen: false).setProductCategory(Category.idToEnum(int.parse(value.toString())));
-            }
-      ),
-    ));
+        width: size.getSize(120),
+        height: size.getSize(48),
+        padding: EdgeInsets.all(size.getSize(5)),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(color: grey183, width: 1.0),
+        ),
+        alignment: Alignment.centerRight,
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton(
+              focusNode:
+                  Provider.of<ModifyProductViewModel>(_context!, listen: false)
+                      .productCategoryFNode,
+              isDense: true,
+              items: Category.values
+                  .map((category) => DropdownMenuItem(
+                        value: category.id,
+                        child: Text(category.label),
+                      ))
+                  .toList(),
+              hint: const Text("카테고리"),
+              value:
+                  Provider.of<ModifyProductViewModel>(_context!, listen: false)
+                      .productCategory!
+                      .id,
+              onChanged: (value) {
+                Provider.of<ModifyProductViewModel>(_context!, listen: false)
+                    .setProductCategory(
+                        Category.idToEnum(int.parse(value.toString())));
+              }),
+        ));
   }
 
   Widget _productImageField() {
@@ -181,13 +202,18 @@ class ModifyProductScreen extends StatelessWidget {
               bottom: size.getSize(5)),
           width: size.getSize(100),
           child: TextFormField(
-            controller: Provider.of<ModifyProductViewModel>(_context!, listen: false).productPriceController,
+            controller:
+                Provider.of<ModifyProductViewModel>(_context!, listen: false)
+                    .productPriceController,
             // initialValue: Provider.of<ModifyProductViewModel>(_context!, listen: false).productPrice.toString(),
-            focusNode: Provider.of<ModifyProductViewModel>(_context!, listen: false).productPriceFNode,
+            focusNode:
+                Provider.of<ModifyProductViewModel>(_context!, listen: false)
+                    .productPriceFNode,
             textAlign: TextAlign.right,
             style: styleR.copyWith(fontSize: size.getSize(16)),
             onChanged: (value) {
-              Provider.of<ModifyProductViewModel>(_context!, listen: false).setProductPrice(int.parse(value));
+              Provider.of<ModifyProductViewModel>(_context!, listen: false)
+                  .setProductPrice(int.parse(value));
             },
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
@@ -229,16 +255,22 @@ class ModifyProductScreen extends StatelessWidget {
                     bottom: size.getSize(5)),
                 width: size.getSize(130),
                 child: TextFormField(
-                  controller: Provider.of<ModifyProductViewModel>(_context!, listen: false).productExchangeCostController,
+                  controller: Provider.of<ModifyProductViewModel>(_context!,
+                          listen: false)
+                      .productExchangeCostController,
                   // initialValue: Provider.of<ModifyProductViewModel>(_context!, listen: false).productExchangeCost.toString(),
-                  focusNode: Provider.of<ModifyProductViewModel>(_context!, listen: false).productExchangeCostFNode,
+                  focusNode: Provider.of<ModifyProductViewModel>(_context!,
+                          listen: false)
+                      .productExchangeCostFNode,
                   textAlign: TextAlign.right,
                   style: styleR.copyWith(fontSize: size.getSize(16)),
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                   ],
                   onChanged: (value) {
-                    Provider.of<ModifyProductViewModel>(_context!, listen: false).setProductExchangeCost(int.parse(value));
+                    Provider.of<ModifyProductViewModel>(_context!,
+                            listen: false)
+                        .setProductExchangeCost(int.parse(value));
                   },
                   decoration: InputDecoration(
                     isDense: true,
@@ -264,12 +296,15 @@ class ModifyProductScreen extends StatelessWidget {
   Widget _productExplanationField() {
     ScreenSize size = ScreenSize();
     return TextFormField(
-      controller: Provider.of<ModifyProductViewModel>(_context!, listen: false).productExplanationController,
+      controller: Provider.of<ModifyProductViewModel>(_context!, listen: false)
+          .productExplanationController,
       // initialValue: Provider.of<ModifyProductViewModel>(_context!, listen: false).productExplanation,
-      focusNode: Provider.of<ModifyProductViewModel>(_context!, listen: false).productExplanationFNode,
+      focusNode: Provider.of<ModifyProductViewModel>(_context!, listen: false)
+          .productExplanationFNode,
       style: styleR.copyWith(fontSize: size.getSize(16)),
       onChanged: (value) {
-        Provider.of<ModifyProductViewModel>(_context!, listen: false).setProductExplanation(value);
+        Provider.of<ModifyProductViewModel>(_context!, listen: false)
+            .setProductExplanation(value);
       },
       maxLength: 200,
       maxLines: 7,
@@ -303,21 +338,20 @@ class ModifyProductScreen extends StatelessWidget {
             } else if (!viewModel.checkValidProductPrice()) {
               _checkField(viewModel.productPriceFNode, "가격을 확인해주세요!");
             } else if (!viewModel.checkValidProductExchangeCost()) {
-              _checkField(
-                  viewModel.productExchangeCostFNode, "희망가격범위를 확인해주세요! (원가 이하)");
+              _checkField(viewModel.productExchangeCostFNode,
+                  "희망가격범위를 확인해주세요! (원가 이하)");
             } else if (!viewModel.checkValidProductExplanation()) {
               _checkField(viewModel.productExplanationFNode, "물품 설명을 확인해주세요!");
             } else {
-              ProductModel? product = await Provider.of<ModifyProductProvider>(context,listen: false)
-                  .modifyProduct(
-                    ProductParams(
+              ProductModel? product = await Provider.of<ModifyProductProvider>(
+                      context,
+                      listen: false)
+                  .modifyProduct(ProductParams(
                       productName: viewModel.productName,
                       categoryId: viewModel.productCategory?.id,
                       productCost: viewModel.productPrice,
                       exchangeCostRange: viewModel.productExchangeCost,
-                      productExplanation: viewModel.productExplanation
-                    )
-                  );
+                      productExplanation: viewModel.productExplanation));
               if (product != null) {
                 _showSnackBarDurationForSec("글이 수정되었습니다🥰");
                 // ignore: use_build_context_synchronously

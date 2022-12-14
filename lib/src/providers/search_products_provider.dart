@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/heart/heart_service.dart';
 import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
-import 'package:navada_mobile_app/src/screens/search_products/search_products_view_model.dart';
 
 import '../models/product/product_service.dart';
 import '../models/user/user_provider.dart';
+import '../screens/tab2_products/search_products/search_products_view_model.dart';
 
 class SearchProductsProvider extends ChangeNotifier {
   ProductSearchPageModel? _productSearchPageModel;
