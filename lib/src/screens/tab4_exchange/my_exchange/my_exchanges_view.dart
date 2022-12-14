@@ -48,7 +48,7 @@ class MyExchangesView extends StatelessWidget {
                         }
                       },
                       tabs: [
-                        Tab(text: "교환중/교환완료", height: size.getSize(58)),
+                        Tab(text: "교환중", height: size.getSize(58)),
                         Tab(text: "내가 신청한 물품", height: size.getSize(58)),
                       ],
                       labelColor: green,
