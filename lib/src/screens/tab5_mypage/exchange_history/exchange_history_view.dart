@@ -112,10 +112,10 @@ class ExchangeHistoryView extends StatelessWidget {
                     ExchangeDetailView(exchange: exchange)));
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+        padding: const EdgeInsets.only(left: 10.0),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(screenSize.getSize(5.0)),
+          borderRadius: BorderRadius.circular(screenSize.getSize(15.0)),
           border: Border.all(color: Colors.white, width: 3.0),
           boxShadow: const [
             BoxShadow(
