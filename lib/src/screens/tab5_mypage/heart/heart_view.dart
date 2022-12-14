@@ -197,7 +197,7 @@ class HeartListSection extends StatelessWidget {
                               ? Icons.favorite
                               : Icons.favorite_border_outlined,
                           size: size.getSize(25.0),
-                          color: green,
+                          color: Colors.red,
                         ))
                   ],
                 ),
