@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/screens/tab5_mypage/account_management/setting_user_info/setting_user_info_view.dart';
 import 'package:navada_mobile_app/src/screens/tab5_mypage/exchange_history/exchange_history_view.dart';
 import 'package:navada_mobile_app/src/screens/tab5_mypage/heart/heart_view.dart';
 import 'package:navada_mobile_app/src/screens/tab5_mypage/my_products/my_products_view.dart';
@@ -154,25 +155,33 @@ class _AccountManagement extends StatelessWidget {
         const Space(height: 16),
         const _TitleText(text: "계정관리"),
         const Space(height: 12),
-        _listTile("계정 정보 설정"),
-        _listTile("앱 정보"),
-        _listTile("로그아웃"),
-        _listTile("회원 탈퇴"),
+        _listTile("계정 정보 설정", () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const SettingUserInfoView()));
+        }),
+        _listTile("앱 정보", () {}),
+        _listTile("로그아웃", () {}),
+        _listTile("회원 탈퇴", () {}),
         const Space(height: 24),
       ],
     );
   }
 
-  Widget _listTile(String text) {
+  Widget _listTile(String text, Function() onTapAction) {
     ScreenSize size = ScreenSize();
-    return Padding(
-        padding: EdgeInsets.symmetric(vertical: size.getSize(6)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            R16Text(text: text),
-          ],
-        ));
+    return InkWell(
+      onTap: onTapAction,
+      child: Padding(
+          padding: EdgeInsets.symmetric(vertical: size.getSize(6)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              R16Text(text: text),
+            ],
+          )),
+    );
   }
 }
 
