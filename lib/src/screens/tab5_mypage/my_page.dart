@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/screens/tab5_mypage/account_management/app_info/app_info_view.dart';
 import 'package:navada_mobile_app/src/screens/tab5_mypage/account_management/setting_user_info/setting_user_info_view.dart';
 import 'package:navada_mobile_app/src/screens/tab5_mypage/exchange_history/exchange_history_view.dart';
 import 'package:navada_mobile_app/src/screens/tab5_mypage/heart/heart_view.dart';
@@ -161,7 +162,10 @@ class _AccountManagement extends StatelessWidget {
               MaterialPageRoute(
                   builder: (context) => const SettingUserInfoView()));
         }),
-        _listTile("앱 정보", () {}),
+        _listTile("앱 정보", () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AppInfoView()));
+        }),
         _listTile("로그아웃", () {}),
         _listTile("회원 탈퇴", () {}),
         const Space(height: 24),
