@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/providers/search_products_provider.dart';
-import 'package:navada_mobile_app/src/screens/create_product/create_product_view.dart';
-import 'package:navada_mobile_app/src/screens/home/home_view.dart';
-import 'package:navada_mobile_app/src/screens/my_exchange/my_exchanges_view.dart';
-import 'package:navada_mobile_app/src/screens/my_page.dart';
-import 'package:navada_mobile_app/src/screens/search_products/search_products_view_model.dart';
+import 'package:navada_mobile_app/src/screens/tab5_mypage/my_page.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/search_products/search_products_view.dart';
+import '../screens/tab1_home/home/home_view.dart';
+import '../screens/tab2_products/search_products/search_products_view.dart';
+import '../screens/tab2_products/search_products/search_products_view_model.dart';
+import '../screens/tab3_create/create_product/create_product_view.dart';
+import '../screens/tab4_exchange/my_exchange/my_exchanges_view.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({Key? key}) : super(key: key);
@@ -35,7 +35,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   ];
 
   void _onMenuTapped(int index) {
-    if(index == 2) Provider.of<MyExchangesExchangeProvider>(context, listen: false).fetchData(isRefresh: true);
+    if (index == 2)
+      Provider.of<MyExchangesExchangeProvider>(context, listen: false)
+          .fetchData(isRefresh: true);
     setState(() {
       _currIndex = index;
     });

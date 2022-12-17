@@ -6,8 +6,9 @@ import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import '../utilities/enums.dart';
 
 class StatusBadge extends StatelessWidget {
-  const StatusBadge({Key? key, 
-      this.label, 
+  const StatusBadge(
+      {Key? key,
+      this.label,
       this.labelColor = white,
       this.backgroundColor = white,
       this.borderColor,
@@ -28,12 +29,11 @@ class StatusBadge extends StatelessWidget {
       child: Container(
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 9),
           decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(15),
-            border: borderColor != null
-            ? Border.all(color: borderColor!, width: 1.0)
-            : null
-          ),
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(15),
+              border: borderColor != null
+                  ? Border.all(color: borderColor!, width: 1.0)
+                  : null),
           child: R12Text(text: label, textColor: labelColor!)),
     );
   }
@@ -47,14 +47,16 @@ class ExchangeStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
-    return Container(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 9),
-        height: size.getSize(21),
-        decoration: BoxDecoration(
-          color: _getBackgroundColor(statusCd!),
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: R12Text(text: statusCd?.label, textColor: white));
+    return statusCd == ProductExchangeStatusCd.REGISTERED
+        ? Container()
+        : Container(
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 9),
+            height: size.getSize(21),
+            decoration: BoxDecoration(
+              color: _getBackgroundColor(statusCd!),
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: R12Text(text: statusCd?.label, textColor: white));
   }
 
   Color _getBackgroundColor(ProductExchangeStatusCd statusCd) {
