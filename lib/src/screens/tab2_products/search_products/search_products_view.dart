@@ -25,7 +25,7 @@ class SearchProductsView extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Container(
-          width: screenSize.getSize(330.0),
+          width: screenSize.getSize(327.0),
           padding: EdgeInsets.only(top: screenSize.getSize(5.0)),
           child: Column(
             children: [
@@ -115,7 +115,6 @@ class SearchProductsView extends StatelessWidget {
   Widget _buildListSection(context) {
     SearchProductsViewModel viewModel =
         Provider.of<SearchProductsViewModel>(context, listen: false);
-
     Provider.of<SearchProductsProvider>(context, listen: false)
         .getSearchedProducts(viewModel);
 
@@ -246,7 +245,7 @@ class SearchProductsView extends StatelessWidget {
         builder: (context, provider, child) {
       return SizedBox(
         child: R16Text(
-          text: '${provider.totalElements}개의 검색결과',
+          text: '${provider.totalElements}개의 물품',
         ),
       );
     });

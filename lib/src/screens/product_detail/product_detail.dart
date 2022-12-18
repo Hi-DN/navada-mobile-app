@@ -3,11 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/product_detail_provider.dart';
+import 'package:navada_mobile_app/src/screens/product_detail/modify_product/modify_product_view.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_request_modal.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_view_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/request_exchange/request_exchange_view.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
+import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/short_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +62,7 @@ class ProductDetail extends StatelessWidget {
             Flexible(
               flex: 1,
               child: Container(
-                width: screenSize.getSize(335.0),
+                width: screenSize.getSize(327.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,23 +292,14 @@ class ProductDetail extends StatelessWidget {
   Widget _onlyModifyButton(BuildContext context, ProductModel product) {
     return Column(children: [
       Expanded(child: Container()),
-      SizedBox(
-        width: 327.0,
-        height: screenSize.getSize(45.0),
-        child: ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-              elevation: 0.0,
-              primary: green,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0))),
-          child: const R18Text(
-            text: '수정하기',
-            textColor: Colors.white,
-          ),
-        ),
+      LongCircledBtn(
+        text: '수정하기',
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ModifyProductView(product: product)));
+        },
       ),
-      const SizedBox(height: 20.0),
+      const SizedBox(height: 10.0),
     ]);
   }
 
@@ -315,63 +309,27 @@ class ProductDetail extends StatelessWidget {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(
-            width: screenSize.getSize(160.0),
-            height: screenSize.getSize(45.0),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                  elevation: 0.0,
-                  primary: red,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0))),
-              child: const R18Text(
-                text: '삭제하기',
-                textColor: Colors.white,
-              ),
-            ),
+          ShortCircledBtn(
+            text: '삭제하기',
+            backgroundColor: Colors.redAccent,
+            onTap: () => _pushRequestExchangeView(context),
           ),
-          SizedBox(
-              width: screenSize.getSize(160.0),
-              height: screenSize.getSize(45.0),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    elevation: 0.0,
-                    primary: green,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0))),
-                child: const R18Text(
-                  text: '수정하기',
-                  textColor: Colors.white,
-                ),
-              ))
+          ShortCircledBtn(
+              text: '수정하기',
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ModifyProductView(product: product)))),
         ],
       ),
-      const SizedBox(height: 20.0),
+      const SizedBox(height: 10.0),
     ]);
   }
 
   Widget _oneBottomButton(BuildContext context) {
     return Column(children: [
       Expanded(child: Container()),
-      SizedBox(
-        width: 327.0,
-        height: screenSize.getSize(45.0),
-        child: ElevatedButton(
-          onPressed: () {
-            _pushRequestExchangeView(context);
-          },
-          style: ElevatedButton.styleFrom(
-              elevation: 0.0,
-              primary: green,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0))),
-          child: const R18Text(
-            text: '교환 신청하기',
-            textColor: Colors.white,
-          ),
-        ),
+      LongCircledBtn(
+        text: '교환 신청하기',
+        onTap: () => _pushRequestExchangeView(context),
       ),
       const SizedBox(height: 20.0),
     ]);
@@ -383,44 +341,18 @@ class ProductDetail extends StatelessWidget {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(
-            width: screenSize.getSize(160.0),
-            height: screenSize.getSize(45.0),
-            child: ElevatedButton(
-              onPressed: () {
-                _pushRequestExchangeView(context);
-              },
-              style: ElevatedButton.styleFrom(
-                  elevation: 0.0,
-                  primary: green,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0))),
-              child: const R18Text(
-                text: '새로 신청하기',
-                textColor: Colors.white,
-              ),
-            ),
+          ShortCircledBtn(
+            text: '새로 신청하기',
+            onTap: () => _pushRequestExchangeView(context),
           ),
-          SizedBox(
-              width: screenSize.getSize(160.0),
-              height: screenSize.getSize(45.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  _showRequestListModal(context);
-                },
-                style: ElevatedButton.styleFrom(
-                    elevation: 0.0,
-                    primary: navy,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0))),
-                child: const R18Text(
-                  text: '교환 수락하기',
-                  textColor: Colors.white,
-                ),
-              ))
+          ShortCircledBtn(
+            text: '교환 수락하기',
+            onTap: () => _showRequestListModal(context),
+            backgroundColor: navy,
+          ),
         ],
       ),
-      const SizedBox(height: 20.0),
+      const SizedBox(height: 10.0),
     ]);
   }
 
@@ -454,21 +386,13 @@ class ProductDetail extends StatelessWidget {
 
     return Column(children: [
       Expanded(child: Container()),
-      SizedBox(
-        width: screenSize.getSize(327.0),
-        height: screenSize.getSize(45.0),
-        child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.0), color: grey153),
-            child: Center(
-                child: R18Text(
-              text: productExchangeStatusCd == ProductExchangeStatusCd.TRADING
-                  ? '교환중인 물품입니다.'
-                  : '교환 완료된 물품입니다.',
-              textColor: Colors.white,
-            ))),
+      LongCircledBtn(
+        text: productExchangeStatusCd == ProductExchangeStatusCd.TRADING
+            ? '교환중인 물품입니다.'
+            : '교환 완료된 물품입니다.',
+        backgroundColor: grey153,
       ),
-      const SizedBox(height: 20.0),
+      const SizedBox(height: 10.0),
     ]);
   }
 }

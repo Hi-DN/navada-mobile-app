@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/request_exchange/request_exchange_view_model.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
+import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
+import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/request_exchange_provider.dart';
@@ -34,7 +36,7 @@ class RequestExchangeView extends StatelessWidget {
           ],
           child: Center(
             child: SizedBox(
-              width: screenSize.getSize(342.0),
+              width: screenSize.getSize(327.0),
               child: Column(
                 children: [
                   _acceptorProductInfo(acceptorProduct),
@@ -256,26 +258,20 @@ class MyProductList extends StatelessWidget {
   Widget _exchangeRequestButton() {
     return Consumer2<RequestExchangeViewModel, RequestExchangeProvider>(
         builder: (context, viewModel, provider, child) {
-      return SizedBox(
-        width: screenSize.getSize(327.0),
-        height: screenSize.getSize(50.0),
-        child: ElevatedButton(
-          onPressed: () {
-            if (!viewModel.isListEmpty) {
-              _showConfirmPopUp(
-                  context, provider, viewModel.requestProductIdList);
-            }
-          },
-          style: ElevatedButton.styleFrom(
-              elevation: 0.0,
-              primary: viewModel.isListEmpty ? grey153 : green,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(27.0))),
-          child: const R18Text(
+      return Column(
+        children: [
+          LongCircledBtn(
             text: '교환 신청하기',
-            textColor: Colors.white,
+            backgroundColor: viewModel.isListEmpty ? grey153 : green,
+            onTap: () {
+              if (!viewModel.isListEmpty) {
+                _showConfirmPopUp(
+                    context, provider, viewModel.requestProductIdList);
+              }
+            },
           ),
-        ),
+          const Space(height: 10.0)
+        ],
       );
     });
   }
