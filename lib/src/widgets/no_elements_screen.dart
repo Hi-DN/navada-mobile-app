@@ -12,37 +12,34 @@ class NoElements extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: ((context, constraint) => 
-          SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraint.maxHeight, minWidth: double.infinity),
-              child: IntrinsicHeight(
-                child: _noElementsNotice()
+        builder: ((context, constraint) => SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    minHeight: constraint.maxHeight, minWidth: double.infinity),
+                child: IntrinsicHeight(child: _noElementsNotice()),
               ),
-            ),
-          )
-      )
-    );
+            )));
   }
 
   Widget _noElementsNotice() {
     ScreenSize size = ScreenSize();
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-      Icon(
-        Icons.tag_faces_sharp,
-        size: size.getSize(96),
-        color: grey216,
-      ),
-      const Space(height: 10),
-      R14Text(
-        text: text!,
-        textColor: grey153,
-      ),
-      const Space(height: kBottomNavigationBarHeight)
-    ]);
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.tag_faces_sharp,
+            size: size.getSize(96),
+            color: grey216,
+          ),
+          const Space(height: 10),
+          R14Text(
+            text: text!,
+            textColor: grey153,
+            params: const TextParams(textAlign: TextAlign.center),
+          ),
+          const Space(height: kBottomNavigationBarHeight)
+        ]);
   }
 }
