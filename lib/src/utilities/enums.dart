@@ -69,7 +69,7 @@ enum ExchangeStatusCd {
   }
 
   static ExchangeStatusCd codeToEnum(String code) {
-    return ExchangeStatusCd.values[int.parse(code)-1];
+    return ExchangeStatusCd.values[int.parse(code) - 1];
   }
 }
 
@@ -84,11 +84,11 @@ enum Category {
   BEAUTY(8, '미용'),
   FEMALE_CLOTHES(9, '여성의류'),
   MALE_CLOTHES(10, '남성의류'),
-  PET_STUFF(11, '반려동물용품'),
+  PET_STUFF(11, '반려동물'),
   BOOKS(12, '도서'),
   TOYS(13, '장난감'),
   PLANT(14, '식물'),
-  ETC(15, '기타용품');
+  ETC(15, '기타');
 
   const Category(this.id, this.label);
 
