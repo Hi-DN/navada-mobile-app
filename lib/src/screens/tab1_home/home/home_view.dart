@@ -28,7 +28,7 @@ class HomeView extends StatelessWidget {
         body: MultiProvider(
             providers: [
           ChangeNotifierProvider(
-              create: (context) => RequestsForMeProvider(user.userId)),
+              create: (context) => RequestsForMeProvider(user.userId!)),
           ChangeNotifierProvider(create: (context) => HomeViewModel()),
         ],
             child: Padding(
@@ -172,10 +172,10 @@ class _CategorySection extends StatelessWidget {
 }
 
 class _CategoryIconsRow extends StatelessWidget {
-  const _CategoryIconsRow({Key? key, this.rowNum, this.children})
+  _CategoryIconsRow({Key? key, this.children})
       : super(key: key);
 
-  final int? rowNum;
+  late int? rowNum;
   final List<Widget>? children;
 
   @override

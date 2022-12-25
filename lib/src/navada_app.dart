@@ -3,7 +3,7 @@ import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_products_provider.dart';
-import 'package:navada_mobile_app/src/screens/login.dart';
+import 'package:navada_mobile_app/src/screens/%08signin/signin.dart';
 import 'package:navada_mobile_app/src/screens/tab1_home/home/home_view.dart';
 import 'package:navada_mobile_app/src/screens/tab4_exchange/my_exchange/my_exchanges_view.dart';
 import 'package:navada_mobile_app/src/widgets/custom_navigation_bar.dart';
@@ -30,7 +30,7 @@ class NavadaApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.green,
             ),
-            home: const Login(),
+            home: const Signin(),
             routes: {
               HomeView.routeName: (context) => const HomeView(),
               CustomNavigationBar.routeName: (context) =>

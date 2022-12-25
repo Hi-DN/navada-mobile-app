@@ -57,7 +57,7 @@ class _UserProfile extends StatelessWidget {
                   children: [
                     B16Text(text: user.userNickname),
                     const Space(height: 2),
-                    R14Text(text: user.userLevel.label),
+                    R14Text(text: user.userLevel!.label),
                     const Space(height: 2),
                     Row(
                       children: [

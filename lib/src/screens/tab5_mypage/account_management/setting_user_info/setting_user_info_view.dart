@@ -31,11 +31,11 @@ class SettingUserInfoView extends StatelessWidget {
     User user = UserProvider().user;
     return Column(
       children: [
-        _setInfo('이름', user.userName),
-        _setInfo('닉네임', user.userNickname),
-        _setInfo('이메일', user.userEmail),
-        _setInfo('휴대폰번호', user.userPhoneNum),
-        _setInfo('주소', user.userAddress),
+        _setInfo('이름', user.userName!),
+        _setInfo('닉네임', user.userNickname!),
+        _setInfo('이메일', user.userEmail!),
+        _setInfo('휴대폰번호', user.userPhoneNum!),
+        _setInfo('주소', user.userAddress!),
         const Expanded(child: SizedBox()),
         _modifyButton(context)
       ],

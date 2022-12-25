@@ -125,3 +125,11 @@ enum DataState {
   NO_MORE_DATA,
   ERROR
 }
+
+enum SigninPlatform {
+  KAKAO, GOOGLE, NAVER;
+
+  static SigninPlatform strToEnum(String str) {
+    return SigninPlatform.values.byName(str);
+  }
+}
