@@ -1,5 +1,6 @@
-import 'package:navada_mobile_app/src/models/oauth/signin_model.dart';
+import 'package:navada_mobile_app/src/models/oauth/signIn_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 import '../api/http_client.dart';
 
@@ -7,18 +8,36 @@ HttpClient _httpClient = HttpClient();
 
 class UserService {
   // 회원 존재여부 (카카오토큰 로그인)
-  Future<SigninResponse> signinByKakaoToken(String kakaoAccessToken) async {
+  Future<SignInResponse> signInByKakaoToken(String kakaoAccessToken) async {
     Map<String, dynamic> response = await _httpClient.postRequest(
-        '/user/signin/kakao', 
+        '/signIn/kakao', 
         {
           "accessToken" : kakaoAccessToken
         },
         tokenYn: false);
 
     if (response['success']) {
-      return SigninResponse.fromJson(response['data']);
+      return SignInResponse.fromJson(response['data']);
     } else {
-      throw Exception('signinByKakaoToken() fail!');
+      throw Exception('signInByKakaoToken() fail!');
+    }
+  }
+
+  // 회원 존재여부 (구글, 네이버 로그인)
+  Future<SignInResponse> signInByOAuth(String userEmail, String userNickname, SignInPlatform platform) async {
+    Map<String, dynamic> response = await _httpClient.postRequest(
+        '/signin/oauth', 
+        {
+          "userEmail" : userEmail,
+          "userNickname": userNickname,
+          "signInPlatform": platform.name
+        },
+        tokenYn: false);
+
+    if (response['success']) {
+      return SignInResponse.fromJson(response['data']);
+    } else {
+      throw Exception('signInByOAuth() fail!');
     }
   }
 

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:navada_mobile_app/src/models/oauth/signin_model.dart';
+import 'package:navada_mobile_app/src/models/oauth/signIn_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/models/user/user_service.dart';
-import 'package:navada_mobile_app/src/screens/%08signin/signup.dart';
+import 'package:navada_mobile_app/src/screens/signin/signup.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/custom_navigation_bar.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
@@ -12,8 +15,8 @@ import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:provider/provider.dart';
 
 
-class Signin extends StatelessWidget {
-  const Signin({Key? key}) : super(key: key);
+class SignIn extends StatelessWidget {
+  const SignIn({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +73,7 @@ class Signin extends StatelessWidget {
                       }
                   }
                   if(token != null){
-                    SigninResponse? response = await userService.signinByKakaoToken(token.accessToken);
+                    SignInResponse? response = await userService.signInByKakaoToken(token.accessToken);
                     if (response.user == null) {
                       // 회원가입 진행
                       Provider.of<UserProvider>(context, listen: false).setOAuthInfo(response.oauth!);
@@ -83,6 +86,55 @@ class Signin extends StatelessWidget {
                     }
                   }
                   
+                },
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 255, 255, 255)),
+                child: const Text(
+                  '구글 로그인하기',
+                ),
+                onPressed: () async {
+                  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+                  UserService userService = UserService();
+                  
+                  if(googleUser != null){
+                    SignInResponse? response = await userService.signInByOAuth(googleUser.email, googleUser.displayName ?? "", SignInPlatform.GOOGLE);
+                    if (response.user == null) {
+                      // 회원가입 진행
+                      Provider.of<UserProvider>(context, listen: false).setOAuthInfo(response.oauth!);
+                      Navigator.push(context,MaterialPageRoute(builder: (BuildContext context) => const SignUp()));
+
+                    } else {
+                      // 로그인 진행
+                      Provider.of<UserProvider>(context, listen: false).setUser(response.oauth!, response.user!);
+                      Navigator.of(context).pushNamed(CustomNavigationBar.routeName);
+                    }
+                  }
+
+                  
+                },
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 96, 206, 57)),
+                child: const Text(
+                  '네이버 로그인하기',
+                ),
+                onPressed: () async {
+                  final NaverLoginResult result = await FlutterNaverLogin.logIn();
+                  UserService userService = UserService();
+                  
+                  SignInResponse? response = await userService.signInByOAuth(result.account.email, result.account.nickname, SignInPlatform.NAVER);
+                  if (response.user == null) {
+                    // 회원가입 진행
+                    Provider.of<UserProvider>(context, listen: false).setOAuthInfo(response.oauth!);
+                    Navigator.push(context,MaterialPageRoute(builder: (BuildContext context) => const SignUp()));
+
+                  } else {
+                    // 로그인 진행
+                    Provider.of<UserProvider>(context, listen: false).setUser(response.oauth!, response.user!);
+                    Navigator.of(context).pushNamed(CustomNavigationBar.routeName);
+                  }
+                  debugPrint(result.toString());
                 },
               ),
             ],

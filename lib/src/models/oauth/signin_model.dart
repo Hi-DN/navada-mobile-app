@@ -1,15 +1,15 @@
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
-class SigninResponse {
+class SignInResponse {
   String? accessToken;
   String? refreshToken;
   UserDto? user;
   OAuthDto? oauth;
 
-  SigninResponse({this.accessToken, this.refreshToken, this.user, this.oauth});
+  SignInResponse({this.accessToken, this.refreshToken, this.user, this.oauth});
 
-  SigninResponse.fromJson(Map<String, dynamic> json) {
+  SignInResponse.fromJson(Map<String, dynamic> json) {
     accessToken = json['accessToken'];
     refreshToken = json['refreshToken'];
     user = json['user'] != null ? UserDto.fromJson(json['user']) : null;
@@ -32,19 +32,19 @@ class SigninResponse {
 
 class OAuthDto {
   String? userEmail;
-  SigninPlatform? signinPlatform;
+  SignInPlatform? signInPlatform;
 
-  OAuthDto({this.userEmail, this.signinPlatform});
+  OAuthDto({this.userEmail, this.signInPlatform});
 
   OAuthDto.fromJson(Map<String, dynamic> json) {
     userEmail = json['userEmail'];
-    signinPlatform = SigninPlatform.strToEnum(json['signinPlatform']);
+    signInPlatform = SignInPlatform.strToEnum(json['signInPlatform']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['userEmail'] = userEmail;
-    data['platform'] = signinPlatform;
+    data['platform'] = signInPlatform;
     return data;
   }
 }

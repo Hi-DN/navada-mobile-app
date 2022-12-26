@@ -43,7 +43,7 @@ class User {
     this.userRating,
     this.userTradeCount,
     this.userRatingCount,
-    this.signinPlatform,
+    this.signInPlatform,
   });
   late String? createdDate;
   late String? modifiedDate;
@@ -57,7 +57,7 @@ class User {
   late double? userRating;
   late int? userTradeCount;
   late int? userRatingCount;
-  late SigninPlatform? signinPlatform;
+  late SignInPlatform? signInPlatform;
 
   User.fromJson(Map<String, dynamic> json) {
     createdDate = json['createdDate'];
@@ -146,14 +146,14 @@ class UserParams {
     required this.userPhoneNum,
     required this.userAddress,
     required this.userEmail,
-    required this.signinPlatform
+    required this.signInPlatform
   });
   late final String userName;
   late final String userNickname;
   late final String userEmail;
   late final String userPhoneNum;
   late final String userAddress;
-  late final SigninPlatform signinPlatform;
+  late final SignInPlatform signInPlatform;
 
   UserParams.fromJson(Map<String, dynamic> json) {
     userName = json['userName'];
@@ -161,7 +161,7 @@ class UserParams {
     userEmail = json['userEmail'];
     userPhoneNum = json['userPhoneNum'];
     userAddress = json['userAddress'];
-    signinPlatform = SigninPlatform.strToEnum(json['signinPlatform']);
+    signInPlatform = SignInPlatform.strToEnum(json['signInPlatform']);
   }
 
   Map<String, dynamic> toJson() {
@@ -171,7 +171,7 @@ class UserParams {
     data['userEmail'] = userEmail;
     data['userPhoneNum'] = userPhoneNum;
     data['userAddress'] = userAddress;
-    data['signinPlatform'] = signinPlatform.name;
+    data['signInPlatform'] = signInPlatform.name;
     return data;
   }
 }

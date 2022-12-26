@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:navada_mobile_app/src/models/oauth/signin_model.dart';
+import 'package:navada_mobile_app/src/models/oauth/signIn_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_service.dart';
 
@@ -29,7 +29,7 @@ class UserProvider extends ChangeNotifier {
 
   void setOAuthInfo(OAuthDto params) {
     user.userEmail = params.userEmail!;
-    user.signinPlatform = params.signinPlatform!;
+    user.signInPlatform = params.signInPlatform!;
     notifyListeners();
   }
 
@@ -52,7 +52,7 @@ class UserProvider extends ChangeNotifier {
   Future<bool> signup(String userName, String userNickname, String userPhoneNum, String userAddress) async {
     UserParams params = UserParams(
       userName: userName, userNickname: userNickname, userPhoneNum: userPhoneNum, userAddress: userAddress,
-      userEmail: user.userEmail!, signinPlatform: user.signinPlatform!);
+      userEmail: user.userEmail!, signInPlatform: user.signInPlatform!);
     UserDto newUser = await _userService.signup(params);
     setUserInfo(newUser);
     return true;

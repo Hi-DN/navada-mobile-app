@@ -126,10 +126,10 @@ enum DataState {
   ERROR
 }
 
-enum SigninPlatform {
+enum SignInPlatform {
   KAKAO, GOOGLE, NAVER;
 
-  static SigninPlatform strToEnum(String str) {
-    return SigninPlatform.values.byName(str);
+  static SignInPlatform strToEnum(String str) {
+    return SignInPlatform.values.byName(str);
   }
 }
