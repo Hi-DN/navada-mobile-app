@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:navada_mobile_app/src/models/oauth/signIn_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_service.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class UserProvider extends ChangeNotifier {
   /* 삭제? */
@@ -21,15 +21,15 @@ class UserProvider extends ChangeNotifier {
 
   final UserService _userService = UserService();
 
-  void setUser(OAuthDto oauthParams, UserDto userParams) {
-    setOAuthInfo(oauthParams);
+  void setUser(UserDto userParams, String email, SignInPlatform platform) {
+    setOAuthInfo(email, platform);
     setUserInfo(userParams);
     notifyListeners();
   }
 
-  void setOAuthInfo(OAuthDto params) {
-    user.userEmail = params.userEmail!;
-    user.signInPlatform = params.signInPlatform!;
+  void setOAuthInfo(String email, SignInPlatform platform) {
+    user.userEmail = email;
+    user.signInPlatform = platform;
     notifyListeners();
   }
 

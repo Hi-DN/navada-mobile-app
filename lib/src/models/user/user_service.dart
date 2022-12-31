@@ -10,7 +10,7 @@ class UserService {
   // 회원 존재여부 (카카오토큰 로그인)
   Future<SignInResponse> signInByKakaoToken(String kakaoAccessToken) async {
     Map<String, dynamic> response = await _httpClient.postRequest(
-        '/signIn/kakao', 
+        '/signin/kakao', 
         {
           "accessToken" : kakaoAccessToken
         },

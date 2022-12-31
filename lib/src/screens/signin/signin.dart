@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -72,20 +77,35 @@ class SignIn extends StatelessWidget {
                         debugPrint('카카오계정으로 로그인 실패 $error');
                       }
                   }
-                  if(token != null){
-                    SignInResponse? response = await userService.signInByKakaoToken(token.accessToken);
-                    if (response.user == null) {
+                  final url = Uri.https('kapi.kakao.com', '/v2/user/me');
+
+                  final response = await http.get(
+                    url,
+                    headers: {
+                      HttpHeaders.authorizationHeader: 'Bearer ${token!.accessToken}'
+                    },
+                  );
+
+                  final profileInfo = json.decode(response.body);
+                  print(profileInfo.toString());
+                  print(profileInfo["kakao_account"]["email"]);
+                  print(profileInfo["properties"]["nickname"]);
+                  String email = profileInfo["kakao_account"]["email"].toString();
+                  String nickname = profileInfo["properties"]["nickname"].toString();
+
+                  SignInResponse? signInResponse = await userService.signInByOAuth(email, nickname, SignInPlatform.KAKAO);
+
+                    Provider.of<UserProvider>(context, listen: false).setOAuthInfo(email, SignInPlatform.KAKAO);
+                    if (signInResponse.user == null) {
                       // 회원가입 진행
-                      Provider.of<UserProvider>(context, listen: false).setOAuthInfo(response.oauth!);
+                      // Provider.of<UserProvider>(context, listen: false).setOAuthInfo(signInResponse.oauth);
                       Navigator.push(context,MaterialPageRoute(builder: (BuildContext context) => const SignUp()));
 
                     } else {
                       // 로그인 진행
-                      Provider.of<UserProvider>(context, listen: false).setUser(response.oauth!, response.user!);
+                      Provider.of<UserProvider>(context, listen: false).setUser(signInResponse.user!, email, SignInPlatform.KAKAO);
                       Navigator.of(context).pushNamed(CustomNavigationBar.routeName);
                     }
-                  }
-                  
                 },
               ),
               ElevatedButton(
@@ -101,12 +121,12 @@ class SignIn extends StatelessWidget {
                     SignInResponse? response = await userService.signInByOAuth(googleUser.email, googleUser.displayName ?? "", SignInPlatform.GOOGLE);
                     if (response.user == null) {
                       // 회원가입 진행
-                      Provider.of<UserProvider>(context, listen: false).setOAuthInfo(response.oauth!);
+                      Provider.of<UserProvider>(context, listen: false).setOAuthInfo(googleUser.email, SignInPlatform.GOOGLE);
                       Navigator.push(context,MaterialPageRoute(builder: (BuildContext context) => const SignUp()));
 
                     } else {
                       // 로그인 진행
-                      Provider.of<UserProvider>(context, listen: false).setUser(response.oauth!, response.user!);
+                      Provider.of<UserProvider>(context, listen: false).setUser(response.user!, googleUser.email, SignInPlatform.GOOGLE);
                       Navigator.of(context).pushNamed(CustomNavigationBar.routeName);
                     }
                   }
@@ -126,12 +146,12 @@ class SignIn extends StatelessWidget {
                   SignInResponse? response = await userService.signInByOAuth(result.account.email, result.account.nickname, SignInPlatform.NAVER);
                   if (response.user == null) {
                     // 회원가입 진행
-                    Provider.of<UserProvider>(context, listen: false).setOAuthInfo(response.oauth!);
+                    Provider.of<UserProvider>(context, listen: false).setOAuthInfo(result.account.email, SignInPlatform.NAVER);
                     Navigator.push(context,MaterialPageRoute(builder: (BuildContext context) => const SignUp()));
 
                   } else {
                     // 로그인 진행
-                    Provider.of<UserProvider>(context, listen: false).setUser(response.oauth!, response.user!);
+                    Provider.of<UserProvider>(context, listen: false).setUser(response.user!, result.account.email, SignInPlatform.NAVER);
                     Navigator.of(context).pushNamed(CustomNavigationBar.routeName);
                   }
                   debugPrint(result.toString());

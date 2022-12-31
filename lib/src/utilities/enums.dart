@@ -127,7 +127,7 @@ enum DataState {
 }
 
 enum SignInPlatform {
-  KAKAO, GOOGLE, NAVER;
+  KAKAO, GOOGLE, NAVER, NONE;
 
   static SignInPlatform strToEnum(String str) {
     return SignInPlatform.values.byName(str);
