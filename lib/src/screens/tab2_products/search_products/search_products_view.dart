@@ -6,6 +6,7 @@ import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/short_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/status_badge.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
@@ -355,19 +356,18 @@ class SearchProductsView extends StatelessWidget {
           onPressed: () {
             showModalBottomSheet(
                 context: context,
+                isScrollControlled: true,
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(20.0),
                         topLeft: Radius.circular(20.0))),
-                builder: (context2) {
-                  return ChangeNotifierProvider.value(
-                      value: viewModel,
-                      child: Container(
-                          color: Colors.transparent,
-                          padding:
-                              const EdgeInsets.only(left: 15.0, right: 15.0),
-                          child: Center(
-                              child: _showCostRangeModal(context, provider))));
+                builder: (context) {
+                  return Padding(
+                    padding: MediaQuery.of(context).viewInsets,
+                    child: ChangeNotifierProvider.value(
+                        value: viewModel,
+                        child: _showCostRangeModal(context, provider)),
+                  );
                 });
           },
           style: ElevatedButton.styleFrom(
@@ -493,70 +493,46 @@ class SearchProductsView extends StatelessWidget {
     return Consumer<SearchProductsViewModel>(
         builder: (context, viewModel, child) {
       return GestureDetector(
-        onTap: () {
-          FocusManager.instance.primaryFocus?.unfocus();
-        },
+        onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
-          child: SizedBox(
-            height: screenSize.getSize(400.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Expanded(child: SizedBox()),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _costTextField(viewModel.lowerCostController),
-                    const B16Text(text: ' 원'),
-                    const B16Text(text: ' ~ '),
-                    _costTextField(viewModel.upperCostController),
-                    const B16Text(text: ' 원'),
-                  ],
-                ),
-                const Expanded(child: SizedBox()),
-                Container(
-                  height: 60.0,
-                  width: double.infinity,
-                  margin: EdgeInsets.only(bottom: screenSize.getSize(10.0)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+          child: Center(
+            child: Container(
+              height: screenSize.getSize(300.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 25.0, horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const B14Text(
+                    text: '물품의 가격 범위를 지정해보세요 :D',
+                    textColor: Colors.black38,
+                  ),
+                  const Space(height: 80.0),
+                  _costRangeTextField(viewModel),
+                  const Expanded(child: SizedBox()),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        width: screenSize.getSize(160.0),
-                        height: screenSize.getSize(50.0),
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  side: const BorderSide(color: green),
-                                  borderRadius: BorderRadius.circular(12.0)),
-                              backgroundColor: Colors.white),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const R20Text(text: '취소', textColor: green),
-                        ),
+                      ShortCircledBtn(
+                        text: '취소',
+                        backgroundColor: navy,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
-                      SizedBox(
-                        width: screenSize.getSize(160.0),
-                        height: screenSize.getSize(50.0),
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0)),
-                              backgroundColor: green),
-                          onPressed: () {
-                            viewModel.applyCostBound();
-                            provider.getSearchedProducts(viewModel);
-                            Navigator.of(context).pop();
-                          },
-                          child: const R20Text(
-                              text: '적용하기', textColor: Colors.white),
-                        ),
+                      ShortCircledBtn(
+                        text: '적용',
+                        onTap: () {
+                          viewModel.applyCostBound();
+                          provider.getSearchedProducts(viewModel);
+                          Navigator.of(context).pop();
+                        },
                       )
                     ],
-                  ),
-                ),
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -564,22 +540,49 @@ class SearchProductsView extends StatelessWidget {
     });
   }
 
-  Widget _costTextField(TextEditingController controller) {
-    return SizedBox(
-      width: screenSize.getSize(90.0),
-      height: screenSize.getSize(40.0),
-      child: TextField(
-        controller: controller,
-        keyboardType: TextInputType.number,
-        cursorColor: green,
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.zero,
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: green),
+  Widget _costRangeTextField(SearchProductsViewModel viewModel) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        SizedBox(
+          width: screenSize.getSize(80.0),
+          height: screenSize.getSize(30.0),
+          child: TextField(
+            controller: viewModel.lowerCostController,
+            cursorColor: green,
+            decoration: const InputDecoration(
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: green),
+              ),
+            ),
           ),
         ),
-      ),
+        const B14Text(text: '원'),
+        const B14Text(text: ' ~ '),
+        SizedBox(
+          width: screenSize.getSize(80.0),
+          height: screenSize.getSize(30.0),
+          child: TextField(
+            controller: viewModel.upperCostController,
+          ),
+        ),
+        const B14Text(text: '원'),
+        _refreshCostBtn(viewModel),
+      ],
     );
+  }
+
+  Widget _refreshCostBtn(SearchProductsViewModel viewModel) {
+    return IconButton(
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(),
+        onPressed: () {
+          viewModel.resetCostBound();
+        },
+        icon: const Icon(
+          Icons.refresh,
+          color: Colors.black38,
+        ));
   }
 }
 
