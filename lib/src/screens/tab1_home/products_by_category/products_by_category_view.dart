@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
 import 'package:navada_mobile_app/src/providers/products_by_category_provider.dart';
@@ -11,6 +12,7 @@ import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
 import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
+import 'package:navada_mobile_app/src/widgets/short_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/status_badge.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
@@ -22,6 +24,11 @@ class ProductsByCategoryView extends StatelessWidget {
 
   ProductsByCategoryView({Key? key, required this.categoryId})
       : super(key: key);
+
+  // final TextEditingController _lowerCostBoundController =
+  //     TextEditingController();
+  // final TextEditingController _upperCostBoundController =
+  //     TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +89,7 @@ class ProductsByCategoryView extends StatelessWidget {
           const Expanded(child: SizedBox()),
           _sortSelection(),
           const Space(width: 5.0),
-          _costRangeSelection()
+          _costRangeSelection(context)
         ],
       );
     });
@@ -94,7 +101,9 @@ class ProductsByCategoryView extends StatelessWidget {
       return SizedBox(
         height: screenSize.getSize(35.0),
         child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              _onSortButtonTapped(context, provider, viewModel);
+            },
             style: ElevatedButton.styleFrom(
                 elevation: 0.0,
                 primary: const Color(0xFFEBF5CF),
@@ -115,13 +124,48 @@ class ProductsByCategoryView extends StatelessWidget {
     });
   }
 
-  Widget _costRangeSelection() {
+  _onSortButtonTapped(BuildContext context, ProductsByCategoryProvider provider,
+      ProductsByCategoryViewModel viewModel) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('정렬 기준'),
+        actions: [
+          _buildSortActionItem('최신순', provider, viewModel, context),
+          _buildSortActionItem('좋아요순', provider, viewModel, context),
+        ],
+      ),
+    );
+  }
+
+  _buildSortActionItem(String sortValue, ProductsByCategoryProvider provider,
+      ProductsByCategoryViewModel viewModel, BuildContext context) {
+    return CupertinoActionSheetAction(
+        onPressed: () {
+          viewModel.setSortValue(sortValue);
+          provider.fetchProducts(categoryId, viewModel);
+          Navigator.of(context).pop();
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Space(width: 20.0),
+            Text(sortValue, style: const TextStyle(color: Colors.black)),
+            const Space(width: 20.0),
+            viewModel.sort == sortValue ? const Icon(Icons.check) : Container()
+          ],
+        ));
+  }
+
+  Widget _costRangeSelection(BuildContext context) {
     ScreenSize screenSize = ScreenSize();
     return SizedBox(
         width: screenSize.getSize(35.0),
         height: screenSize.getSize(35.0),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            _onCostRangeButtonTapped(context);
+          },
           style: ElevatedButton.styleFrom(
               elevation: 0.0,
               primary: const Color(0xFFEBF5CF),
@@ -132,6 +176,122 @@ class ProductsByCategoryView extends StatelessWidget {
             size: screenSize.getSize(20.0),
             color: const Color(0xFF14142B),
           ),
+        ));
+  }
+
+  _onCostRangeButtonTapped(BuildContext context) {
+    ProductsByCategoryProvider provider =
+        Provider.of<ProductsByCategoryProvider>(context, listen: false);
+    ProductsByCategoryViewModel viewModel =
+        Provider.of<ProductsByCategoryViewModel>(context, listen: false);
+
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20.0),
+                topLeft: Radius.circular(20.0))),
+        isScrollControlled: true,
+        builder: (context) {
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: ChangeNotifierProvider.value(
+                value: viewModel,
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: SingleChildScrollView(
+                    child: Center(child: _setCostRange(context, provider)),
+                  ),
+                )),
+          );
+        });
+  }
+
+  _setCostRange(BuildContext context, ProductsByCategoryProvider provider) {
+    return Consumer<ProductsByCategoryViewModel>(
+        builder: (context, viewModel, child) {
+      return Container(
+        height: screenSize.getSize(300.0),
+        padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const B14Text(
+              text: '물품의 가격 범위를 지정해보세요 :D',
+              textColor: Colors.black38,
+            ),
+            const Space(height: 80.0),
+            _costRangeTextField(viewModel),
+            const Expanded(child: SizedBox()),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ShortCircledBtn(
+                  text: '취소',
+                  backgroundColor: navy,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ShortCircledBtn(
+                  text: '적용',
+                  onTap: () {
+                    viewModel.setCostBound();
+                    provider.fetchProducts(categoryId, viewModel);
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            )
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _costRangeTextField(ProductsByCategoryViewModel viewModel) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        SizedBox(
+          width: screenSize.getSize(80.0),
+          height: screenSize.getSize(30.0),
+          child: TextField(
+            controller: viewModel.lowerCostBoundController,
+            cursorColor: green,
+            decoration: const InputDecoration(
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: green),
+              ),
+            ),
+          ),
+        ),
+        const B14Text(text: '원'),
+        const B14Text(text: ' ~ '),
+        SizedBox(
+          width: screenSize.getSize(80.0),
+          height: screenSize.getSize(30.0),
+          child: TextField(
+            controller: viewModel.upperCostBoundController,
+          ),
+        ),
+        const B14Text(text: '원'),
+        _refreshCostBtn(viewModel),
+      ],
+    );
+  }
+
+  Widget _refreshCostBtn(ProductsByCategoryViewModel viewModel) {
+    return IconButton(
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(),
+        onPressed: () {
+          viewModel.refreshCostBound();
+        },
+        icon: const Icon(
+          Icons.refresh,
+          color: Colors.black38,
         ));
   }
 
@@ -182,7 +342,7 @@ class ProductsByCategoryView extends StatelessWidget {
           itemBuilder: (context, index) {
             ProductSearchDtoModel product = provider.productsByCategory![index];
             return InkWell(
-              child: _buildItem(context, product),
+              child: _buildListItem(context, product),
               onTap: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
@@ -199,7 +359,7 @@ class ProductsByCategoryView extends StatelessWidget {
     });
   }
 
-  Widget _buildItem(BuildContext context, ProductSearchDtoModel product) {
+  Widget _buildListItem(BuildContext context, ProductSearchDtoModel product) {
     ScreenSize screenSize = ScreenSize();
 
     return Column(
