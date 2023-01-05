@@ -1,6 +1,7 @@
 // ignore_for_file: sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
+import 'package:navada_mobile_app/src/models/product/product_service.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/product_detail_provider.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/modify_product/modify_product_view.dart';
@@ -295,7 +296,7 @@ class ProductDetail extends StatelessWidget {
       LongCircledBtn(
         text: '수정하기',
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => ModifyProductView(product: product)));
         },
       ),
@@ -304,6 +305,10 @@ class ProductDetail extends StatelessWidget {
   }
 
   Widget _deleteAndModifyButtons(BuildContext context, ProductModel product) {
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    ProductService productService = ProductService();
+
     return Column(children: [
       Expanded(child: Container()),
       Row(
@@ -312,12 +317,56 @@ class ProductDetail extends StatelessWidget {
           ShortCircledBtn(
             text: '삭제하기',
             backgroundColor: Colors.redAccent,
-            onTap: () => _pushRequestExchangeView(context),
+            onTap: () async {
+              await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      content: const R16Text(
+                        text: "물품을 정말로 삭제하시겠습니까?",
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const R14Text(text: "아니요", textColor: grey153),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            bool success = await productService
+                                .deleteProduct(product.productId!);
+                            if (success) {
+                              messenger.showSnackBar(const SnackBar(
+                                duration: Duration(seconds: 1),
+                                content: R16Text(
+                                    text: '물품이 삭제되었습니다.', textColor: white),
+                              ));
+                              navigator.pop();
+                              navigator.pop();
+                            } else {
+                              messenger.showSnackBar(const SnackBar(
+                                duration: Duration(seconds: 1),
+                                content: R16Text(
+                                    text: '오류가 발생했습니다. 다시 시도해주세요.',
+                                    textColor: white),
+                              ));
+                              navigator.pop();
+                            }
+                          },
+                          child: const R14Text(
+                            text: "네, 삭제할게요!",
+                          ),
+                        ),
+                      ],
+                    );
+                  });
+            },
           ),
           ShortCircledBtn(
               text: '수정하기',
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ModifyProductView(product: product)))),
+              onTap: () {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => ModifyProductView(product: product)));
+              }),
         ],
       ),
       const SizedBox(height: 10.0),

@@ -90,11 +90,17 @@ class ProductDetailProvider extends ChangeNotifier {
     await _heartService.saveHeart(productId, _userId);
   }
 
+  Future<bool> deleteProduct(int productId) async {
+    bool success = await _productService.deleteProduct(productId);
+    return success;
+  }
+
   // 교환 수락
   Future<bool> acceptOneRequest(int requestId) async {
     bool result;
 
-    ExchangeSingleResponse? model = await _requestService.acceptRequest(requestId);
+    ExchangeSingleResponse? model =
+        await _requestService.acceptRequest(requestId);
     _exchangeModel = model;
 
     if (_exchangeModel!.success!) {
