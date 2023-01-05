@@ -155,7 +155,6 @@ class MyProductList extends StatelessWidget {
     ScrollController scrollController = ScrollController();
 
     return SizedBox(
-      // height: screenSize.getSize(403.0),
       child: Column(
         children: [
           Expanded(
@@ -263,10 +262,13 @@ class MyProductList extends StatelessWidget {
           LongCircledBtn(
             text: '교환 신청하기',
             backgroundColor: viewModel.isListEmpty ? grey153 : green,
-            onTap: () {
+            onTap: () async {
               if (!viewModel.isListEmpty) {
-                _showConfirmPopUp(
+                bool requested = await _showConfirmPopUp(
                     context, provider, viewModel.requestProductIdList);
+                if (requested) {
+                  viewModel.reset();
+                }
               }
             },
           ),
@@ -278,57 +280,46 @@ class MyProductList extends StatelessWidget {
 
   _showConfirmPopUp(BuildContext context, RequestExchangeProvider provider,
       List<int> requestProductIdList) {
-    return showDialog<String>(
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+
+    return showDialog<bool>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        content: Container(
-            height: screenSize.getSize(70.0),
-            alignment: Alignment.center,
-            child: B16Text(
-                text:
-                    '${requestProductIdList.length}개의 물품에 대해 \n교환신청 하시겠습니까?')),
+        content: R16Text(
+          text: '${requestProductIdList.length}개의 물품에 대해 \n교환신청 하시겠습니까?',
+        ),
         actions: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SizedBox(
-                width: screenSize.getSize(120.0),
-                child: TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: TextButton.styleFrom(
-                      backgroundColor: grey153,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0))),
-                  child: const R14Text(
-                    text: '아니오',
-                    textColor: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: screenSize.getSize(120.0),
-                child: TextButton(
-                  onPressed: () async {
-                    provider.setInitialFetched(false);
-                    bool success = await provider.createRequests(
-                        requestProductIdList, acceptorProductId);
-                    if (success) {
-                      provider.fetchProductsList(acceptorProductId);
-                      Navigator.pop(context);
-                    }
-                  },
-                  style: TextButton.styleFrom(
-                      backgroundColor: green,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0))),
-                  child: const R14Text(
-                    text: '네',
-                    textColor: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          )
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const R14Text(text: "아니요", textColor: grey153),
+          ),
+          TextButton(
+            onPressed: () async {
+              provider.setInitialFetched(false);
+              bool success = await provider.createRequests(
+                  requestProductIdList, acceptorProductId);
+              if (success) {
+                provider.fetchProductsList(acceptorProductId);
+                navigator.pop(true);
+
+                messenger.showSnackBar(const SnackBar(
+                  duration: Duration(seconds: 1),
+                  content: R16Text(text: '교환 신청이 완료되었습니다.', textColor: white),
+                ));
+              } else {
+                messenger.showSnackBar(const SnackBar(
+                  duration: Duration(seconds: 1),
+                  content:
+                      R16Text(text: '오류가 발생했습니다. 다시 시도해주세요.', textColor: white),
+                ));
+                navigator.pop(false);
+              }
+            },
+            child: const R14Text(
+              text: "네!",
+            ),
+          ),
         ],
       ),
     );
