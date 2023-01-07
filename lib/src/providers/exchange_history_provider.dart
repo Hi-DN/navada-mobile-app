@@ -47,4 +47,9 @@ class ExchangeHistoryProvider with ChangeNotifier, PageProvider {
       notifyListeners();
     }
   }
+
+  refresh(int userId) {
+    super.setCurrPage(0);
+    fetchExchangeHistory(userId);
+  }
 }

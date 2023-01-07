@@ -69,6 +69,11 @@ class SearchProductsProvider with ChangeNotifier, PageProvider {
     }
   }
 
+  refresh(SearchProductsViewModel viewModel) {
+    super.setCurrPage(0);
+    getSearchedProducts(viewModel);
+  }
+
   onHeartButtonTapped(ProductSearchDtoModel product) {
     if (product.like!) {
       product.like = false;

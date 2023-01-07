@@ -124,7 +124,6 @@ class SearchProductsView extends StatelessWidget {
       if (scrollController.offset >=
               scrollController.position.maxScrollExtent &&
           !scrollController.position.outOfRange) {
-        print('load more');
         Provider.of<SearchProductsProvider>(context, listen: false)
             .fetchMoreData(viewModel);
       }
@@ -133,27 +132,34 @@ class SearchProductsView extends StatelessWidget {
     return Consumer<SearchProductsProvider>(
         builder: (context, provider, widget) {
       if (provider.productSearchPageModel != null) {
-        return ListView.builder(
-            physics: const AlwaysScrollableScrollPhysics(),
-            controller: scrollController,
-            itemBuilder: (context, index) {
-              ProductSearchDtoModel product =
-                  provider.productSearchDtoList![index];
-              return InkWell(
-                child: _buildListItem(context, product),
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return ProductDetail(
-                        productId: product.productId!, like: product.like!);
-                  })).then((value) => Provider.of<SearchProductsProvider>(
-                              context,
-                              listen: false)
-                          .getSearchedProducts(viewModel));
-                },
-              );
-            },
-            itemCount: provider.productSearchDtoList!.length);
+        return RefreshIndicator(
+          color: green,
+          onRefresh: () async {
+            await Provider.of<SearchProductsProvider>(context, listen: false)
+                .refresh(viewModel);
+          },
+          child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              controller: scrollController,
+              itemBuilder: (context, index) {
+                ProductSearchDtoModel product =
+                    provider.productSearchDtoList![index];
+                return InkWell(
+                  child: _buildListItem(context, product),
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return ProductDetail(
+                          productId: product.productId!, like: product.like!);
+                    })).then((value) => Provider.of<SearchProductsProvider>(
+                                context,
+                                listen: false)
+                            .getSearchedProducts(viewModel));
+                  },
+                );
+              },
+              itemCount: provider.productSearchDtoList!.length),
+        );
       }
       return const Center(child: CircularProgressIndicator());
     });

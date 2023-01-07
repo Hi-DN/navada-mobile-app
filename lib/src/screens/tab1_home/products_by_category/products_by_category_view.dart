@@ -61,17 +61,25 @@ class ProductsByCategoryView extends StatelessWidget {
     return Consumer<ProductsByCategoryProvider>(
         builder: (context, provider, child) {
       return provider.productsByCategory != null
-          ? provider.productsByCategory!.isNotEmpty
-              ? Column(
-                  children: [
-                    _exchangeableOnlyCheckButton(),
-                    const Space(height: 8.0),
-                    _optionSection(),
-                    const Space(height: 8.0),
-                    Expanded(child: _listSection(context)),
-                  ],
-                )
-              : const NoElements(text: '해당 카테고리에\n등록된 물품이 없습니다.')
+          ? RefreshIndicator(
+              color: green,
+              onRefresh: () async {
+                await Provider.of<ProductsByCategoryProvider>(context,
+                        listen: false)
+                    .refresh(categoryId, viewModel);
+              },
+              child: provider.productsByCategory!.isNotEmpty
+                  ? Column(
+                      children: [
+                        _exchangeableOnlyCheckButton(),
+                        const Space(height: 8.0),
+                        _optionSection(),
+                        const Space(height: 8.0),
+                        Expanded(child: _listSection(context)),
+                      ],
+                    )
+                  : const NoElements(text: '해당 카테고리에\n등록된 물품이 없습니다.'),
+            )
           : const Center(child: CircularProgressIndicator());
     });
   }

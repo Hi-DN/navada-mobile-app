@@ -80,27 +80,33 @@ class ExchangeHistoryView extends StatelessWidget {
       if (scrollController.offset >=
               scrollController.position.maxScrollExtent &&
           !scrollController.position.outOfRange) {
-        print('load more');
         Provider.of<ExchangeHistoryProvider>(context, listen: false)
             .fetchMoreData(UserProvider.userId);
       }
     });
 
-    return exchangeHistoryList.isNotEmpty
-        ? ListView.separated(
-            physics: const AlwaysScrollableScrollPhysics(),
-            controller: scrollController,
-            padding: const EdgeInsets.all(0.0),
-            shrinkWrap: true,
-            itemCount: exchangeHistoryList.length,
-            itemBuilder: (context, index) {
-              ExchangeDtoModel exchange = exchangeHistoryList[index];
-              return _buildItem(context, exchange);
-            },
-            separatorBuilder: (context, index) {
-              return const Space(height: 10);
-            })
-        : const NoElements(text: '교환 완료 내역이 존재하지 않습니다.');
+    return RefreshIndicator(
+      color: green,
+      onRefresh: () async {
+        await Provider.of<ExchangeHistoryProvider>(context, listen: false)
+            .refresh(UserProvider.userId);
+      },
+      child: exchangeHistoryList.isNotEmpty
+          ? ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              controller: scrollController,
+              padding: const EdgeInsets.all(0.0),
+              shrinkWrap: true,
+              itemCount: exchangeHistoryList.length,
+              itemBuilder: (context, index) {
+                ExchangeDtoModel exchange = exchangeHistoryList[index];
+                return _buildItem(context, exchange);
+              },
+              separatorBuilder: (context, index) {
+                return const Space(height: 10);
+              })
+          : const NoElements(text: '교환 완료 내역이 존재하지 않습니다.'),
+    );
   }
 
   Widget _buildItem(BuildContext context, ExchangeDtoModel exchange) {

@@ -12,9 +12,4 @@ class PageProvider {
   void setLast(bool last) {
     _last = last;
   }
-
-  void refresh(Function refreshData) {
-    _currPage = 0;
-    refreshData();
-  }
 }

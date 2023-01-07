@@ -11,8 +11,8 @@ class HeartProvider with ChangeNotifier, PageProvider {
 
   bool _showAll = true;
 
-  late HeartListModel _heartListModel;
-  HeartListModel get heartListModel => _heartListModel;
+  HeartListModel? _heartListModel;
+  HeartListModel? get heartListModel => _heartListModel;
 
   List<HeartListContentModel> _heartList = [];
   List<HeartListContentModel> get heartList => _heartList;
@@ -20,6 +20,7 @@ class HeartProvider with ChangeNotifier, PageProvider {
   void setShowAll() {
     _showAll = !_showAll;
     super.setCurrPage(0);
+
     fetchHeartList();
     notifyListeners();
   }
@@ -29,9 +30,9 @@ class HeartProvider with ChangeNotifier, PageProvider {
         await _heartService.getHeartsByUser(userId, _showAll, super.currPage!);
 
     _heartListModel = model;
-    _heartList = _heartListModel.content!;
+    _heartList = _heartListModel!.content!;
 
-    super.setLast(_heartListModel.last!);
+    super.setLast(_heartListModel!.last!);
     notifyListeners();
   }
 
@@ -48,6 +49,11 @@ class HeartProvider with ChangeNotifier, PageProvider {
       }
       notifyListeners();
     }
+  }
+
+  refresh() {
+    super.setCurrPage(0);
+    fetchHeartList();
   }
 
   deleteSelectedHeart(int heartId) async {

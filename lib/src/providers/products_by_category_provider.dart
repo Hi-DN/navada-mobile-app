@@ -64,4 +64,9 @@ class ProductsByCategoryProvider with ChangeNotifier, PageProvider {
       notifyListeners();
     }
   }
+
+  refresh(int categoryId, ProductsByCategoryViewModel viewModel) {
+    super.setCurrPage(0);
+    fetchProducts(categoryId, viewModel);
+  }
 }
