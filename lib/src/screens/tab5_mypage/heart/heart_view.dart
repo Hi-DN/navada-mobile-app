@@ -94,6 +94,7 @@ HeartListSection : 좋아요 상품 리스트 부분
 class HeartListSection extends StatelessWidget {
   HeartListSection({Key? key}) : super(key: key);
   ScreenSize size = ScreenSize();
+  ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -103,14 +104,25 @@ class HeartListSection extends StatelessWidget {
       if (provider.heartList.isNotEmpty) {
         Provider.of<HeartViewModel>(context, listen: false)
             .createIconList(provider.heartListModel.totalElements);
-        return _makeListView(provider.heartList);
+        return _makeListView(context, provider.heartList);
       }
       return const Center(child: CircularProgressIndicator());
     });
   }
 
-  Widget _makeListView(List<HeartListContentModel> heartList) {
+  Widget _makeListView(
+      BuildContext context, List<HeartListContentModel> heartList) {
+    scrollController.addListener(() {
+      if (scrollController.offset >=
+              scrollController.position.maxScrollExtent &&
+          !scrollController.position.outOfRange) {
+        Provider.of<HeartProvider>(context, listen: false).fetchMoreData();
+      }
+    });
+
     return ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        controller: scrollController,
         itemBuilder: (context, index) {
           ProductModel product = heartList[index].product;
           int heartId = heartList[index].heartId;

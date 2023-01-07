@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/heart/heart_service.dart';
 import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
+import 'package:navada_mobile_app/src/providers/page_provider.dart';
 
 import '../models/product/product_service.dart';
 import '../models/user/user_provider.dart';
 import '../screens/tab2_products/search_products/search_products_view_model.dart';
 
-class SearchProductsProvider extends ChangeNotifier {
+class SearchProductsProvider with ChangeNotifier, PageProvider {
   ProductSearchPageModel? _productSearchPageModel;
   ProductSearchPageModel? get productSearchPageModel => _productSearchPageModel;
 
@@ -22,6 +23,7 @@ class SearchProductsProvider extends ChangeNotifier {
 
   getSearchedProducts(SearchProductsViewModel viewModel) async {
     _productSearchPageModel = null;
+    super.setCurrPage(0);
 
     ProductSearchPageModel? model = await _productService.searchProducts(
         UserProvider.userId,
@@ -32,13 +34,39 @@ class SearchProductsProvider extends ChangeNotifier {
         true,
         viewModel.onlyExchangeable ? [0] : [],
         viewModel.sortMap,
-        0);
+        super.currPage);
 
     _productSearchPageModel = model;
     _productSearchDtoList = _productSearchPageModel!.content!;
-    _totalElements = _productSearchDtoList!.length;
+    _totalElements = model!.totalElements!;
+
+    super.setLast(model.last!);
 
     notifyListeners();
+  }
+
+  void fetchMoreData(SearchProductsViewModel viewModel) async {
+    if (!super.last) {
+      super.setCurrPage(super.currPage! + 1);
+
+      ProductSearchPageModel? model = await _productService.searchProducts(
+          UserProvider.userId,
+          viewModel.searchValue,
+          viewModel.categoryIds,
+          viewModel.lowerCostBound,
+          viewModel.upperCostBound,
+          true,
+          viewModel.onlyExchangeable ? [0] : [],
+          viewModel.sortMap,
+          super.currPage);
+
+      super.setLast(model!.last!);
+
+      for (ProductSearchDtoModel product in model.content!) {
+        _productSearchDtoList!.add(product);
+      }
+      notifyListeners();
+    }
   }
 
   onHeartButtonTapped(ProductSearchDtoModel product) {

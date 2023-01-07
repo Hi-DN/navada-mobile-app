@@ -5,9 +5,10 @@ final HttpClient _httpClient = HttpClient();
 
 class HeartService {
   //회원별 좋아요 목록 조회
-  Future<HeartListModel> getHeartsByUser(int userId, bool showAll) async {
-    Map<String, dynamic> data =
-        await _httpClient.getRequest('/user/$userId/hearts?showAll=$showAll');
+  Future<HeartListModel> getHeartsByUser(
+      int userId, bool showAll, int page) async {
+    Map<String, dynamic> data = await _httpClient
+        .getRequest('/user/$userId/hearts?showAll=$showAll&page=$page');
 
     if (data['success']) {
       return HeartListModel.fromJson(data);

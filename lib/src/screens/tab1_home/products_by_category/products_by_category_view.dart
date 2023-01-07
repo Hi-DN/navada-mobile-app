@@ -21,14 +21,10 @@ import 'package:provider/provider.dart';
 class ProductsByCategoryView extends StatelessWidget {
   int categoryId;
   ScreenSize screenSize = ScreenSize();
+  ScrollController scrollController = ScrollController();
 
   ProductsByCategoryView({Key? key, required this.categoryId})
       : super(key: key);
-
-  // final TextEditingController _lowerCostBoundController =
-  //     TextEditingController();
-  // final TextEditingController _upperCostBoundController =
-  //     TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -336,9 +332,20 @@ class ProductsByCategoryView extends StatelessWidget {
     ProductsByCategoryViewModel viewModel =
         Provider.of<ProductsByCategoryViewModel>(context, listen: false);
 
+    scrollController.addListener(() {
+      if (scrollController.offset >=
+              scrollController.position.maxScrollExtent &&
+          !scrollController.position.outOfRange) {
+        Provider.of<ProductsByCategoryProvider>(context, listen: false)
+            .fetchMoreData(categoryId, viewModel);
+      }
+    });
+
     return Consumer<ProductsByCategoryProvider>(
         builder: (context, provider, widget) {
       return ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: scrollController,
           itemBuilder: (context, index) {
             ProductSearchDtoModel product = provider.productsByCategory![index];
             return InkWell(

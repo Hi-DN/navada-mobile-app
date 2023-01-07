@@ -16,7 +16,8 @@ import '../../../providers/exchange_history_provider.dart';
 import '../../tab4_exchange/my_exchange/exchange_tab/exchange_detail/exchange_detail_view.dart';
 
 class ExchangeHistoryView extends StatelessWidget {
-  const ExchangeHistoryView({Key? key}) : super(key: key);
+  ExchangeHistoryView({Key? key}) : super(key: key);
+  ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,7 @@ class ExchangeHistoryView extends StatelessWidget {
             ),
             const Space(height: 8.0),
             Expanded(
-              child: _buildListView(provider.exchangeHistoryList!),
+              child: _buildListView(context, provider.exchangeHistoryList!),
             )
           ],
         );
@@ -73,9 +74,22 @@ class ExchangeHistoryView extends StatelessWidget {
     });
   }
 
-  Widget _buildListView(List<ExchangeDtoModel> exchangeHistoryList) {
+  Widget _buildListView(
+      BuildContext context, List<ExchangeDtoModel> exchangeHistoryList) {
+    scrollController.addListener(() {
+      if (scrollController.offset >=
+              scrollController.position.maxScrollExtent &&
+          !scrollController.position.outOfRange) {
+        print('load more');
+        Provider.of<ExchangeHistoryProvider>(context, listen: false)
+            .fetchMoreData(UserProvider.userId);
+      }
+    });
+
     return exchangeHistoryList.isNotEmpty
         ? ListView.separated(
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: scrollController,
             padding: const EdgeInsets.all(0.0),
             shrinkWrap: true,
             itemCount: exchangeHistoryList.length,

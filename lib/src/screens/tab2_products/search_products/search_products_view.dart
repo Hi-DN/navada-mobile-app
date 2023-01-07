@@ -20,6 +20,7 @@ import '../../product_detail/product_detail.dart';
 class SearchProductsView extends StatelessWidget {
   SearchProductsView({Key? key}) : super(key: key);
   ScreenSize screenSize = ScreenSize();
+  ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -119,10 +120,22 @@ class SearchProductsView extends StatelessWidget {
     Provider.of<SearchProductsProvider>(context, listen: false)
         .getSearchedProducts(viewModel);
 
+    scrollController.addListener(() {
+      if (scrollController.offset >=
+              scrollController.position.maxScrollExtent &&
+          !scrollController.position.outOfRange) {
+        print('load more');
+        Provider.of<SearchProductsProvider>(context, listen: false)
+            .fetchMoreData(viewModel);
+      }
+    });
+
     return Consumer<SearchProductsProvider>(
         builder: (context, provider, widget) {
       if (provider.productSearchPageModel != null) {
         return ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: scrollController,
             itemBuilder: (context, index) {
               ProductSearchDtoModel product =
                   provider.productSearchDtoList![index];
@@ -420,12 +433,12 @@ class SearchProductsView extends StatelessWidget {
 
   Widget _showCategoryModal(
       BuildContext context, SearchProductsProvider provider) {
-    ScrollController scrollController = ScrollController();
+    ScrollController categoryScrollController = ScrollController();
     return Column(
       children: [
         Expanded(
           child: ListView.builder(
-              controller: scrollController,
+              controller: categoryScrollController,
               itemBuilder: (context, index) {
                 int categoryId = index + 1;
                 return Container(

@@ -116,7 +116,7 @@ class _UserActivities extends StatelessWidget {
               "교환 내역",
               () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const ExchangeHistoryView()));
+                    builder: (context) => ExchangeHistoryView()));
               },
             )
           ],

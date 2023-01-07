@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/my_products_provider.dart';
+import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
@@ -87,7 +88,7 @@ class _ProductList extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: size.getSize(16)),
                   itemCount: products.length,
                   itemBuilder: (context, index) {
-                    return _productTile(products[index]);
+                    return _productTile(context, products[index]);
                   },
                   separatorBuilder: (context, index) {
                     return const CustomDivider();
@@ -103,38 +104,49 @@ class _ProductList extends StatelessWidget {
     return true;
   }
 
-  Widget _productTile(ProductModel product) {
+  Widget _productTile(BuildContext context, ProductModel product) {
     ScreenSize size = ScreenSize();
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: size.getSize(15)),
-      height: size.getSize(70.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _exampleImage(),
-          const Space(width: 15),
-          Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(children: [
-                  B14Text(
-                      text: Shortener.shortenStrTo(product.productName!, 12)),
-                  const Space(width: 10),
-                  _productStatusBadge(product.productExchangeStatusCd!)
-                ]),
-                Row(children: [
-                  const B14Text(text: '원가 '),
-                  R14Text(text: product.productCost!.toString())
-                ]),
-                Row(children: [
-                  const B14Text(text: '희망가격 '),
-                  R14Text(
-                      text:
-                          "${product.productCost! - product.exchangeCostRange!} ~ ${product.productCost! + product.exchangeCostRange!}")
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProductDetail(
+                    productId: product.productId!, like: false))).then(
+            (value) => Provider.of<MyProductsProvider>(context, listen: false)
+                .loadMore(true));
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: size.getSize(15)),
+        height: size.getSize(70.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _exampleImage(),
+            const Space(width: 15),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(children: [
+                    B14Text(
+                        text: Shortener.shortenStrTo(product.productName!, 12)),
+                    const Space(width: 10),
+                    _productStatusBadge(product.productExchangeStatusCd!)
+                  ]),
+                  Row(children: [
+                    const B14Text(text: '원가 '),
+                    R14Text(text: product.productCost!.toString())
+                  ]),
+                  Row(children: [
+                    const B14Text(text: '희망가격 '),
+                    R14Text(
+                        text:
+                            "${product.productCost! - product.exchangeCostRange!} ~ ${product.productCost! + product.exchangeCostRange!}")
+                  ])
                 ])
-              ])
-        ],
+          ],
+        ),
       ),
     );
   }
