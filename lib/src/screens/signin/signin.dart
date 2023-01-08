@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 class SignIn extends StatelessWidget {
   SignIn({Key? key}) : super(key: key);
 
+  static const routeName = 'signin';
   late BuildContext? _context;
 
   @override

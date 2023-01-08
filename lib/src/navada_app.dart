@@ -19,25 +19,29 @@ class NavadaApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => UserProvider()),
           ChangeNotifierProvider(create: (context) => SignInProvider()),
-          ChangeNotifierProvider(
-              create: (context) =>
-                  MyExchangesExchangeProvider(UserProvider.userId)),
-          ChangeNotifierProvider(
-              create: (context) =>
-                  MyExchangesRequestProvider(UserProvider.userId)),
+          ChangeNotifierProvider(create: (context) => MyExchangesExchangeProvider(UserProvider.userId)),
+          ChangeNotifierProvider(create: (context) => MyExchangesRequestProvider(UserProvider.userId)),
           ChangeNotifierProvider(create: (context) => MyProductsProvider()),
         ],
         child: MaterialApp(
-            title: 'Navada',
-            theme: ThemeData(
-              primarySwatch: Colors.green,
-            ),
-            home: SignIn(),
-            routes: {
-              HomeView.routeName: (context) => const HomeView(),
-              CustomNavigationBar.routeName: (context) =>
-                  const CustomNavigationBar(),
-              MyExchangesView.routeName: (context) => const MyExchangesView()
-            }));
+          title: 'Navada',
+          theme: ThemeData(
+            primarySwatch: Colors.green,
+          ),
+          home: SignIn(),
+          routes: {
+            SignIn.routeName:(context) => SignIn(),
+            HomeView.routeName: (context) => const HomeView(),
+            CustomNavigationBar.routeName: (context) =>const CustomNavigationBar(),
+            MyExchangesView.routeName: (context) => const MyExchangesView()
+          },
+          onGenerateRoute: (settings) {
+            if (settings.name == SignIn.routeName) {
+              return PageRouteBuilder(pageBuilder: (_, __, ___) => SignIn());
+            }
+
+            return null;
+          }
+        ));
   }
 }

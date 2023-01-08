@@ -43,7 +43,10 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
-      appBar: CustomAppBar(titleText: "회원가입"),
+      appBar: CustomAppBar(
+        titleText: "회원가입", 
+        leadingYn: true, 
+        onTap: () => Navigator.of(context).pop()),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: size.getSize(26)),
         child: Column(children: [
