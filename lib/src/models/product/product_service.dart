@@ -46,13 +46,22 @@ class ProductService {
     }
   }
 
-  // 사용자별 상품목록조회
-  Future<ProductPageModel> getProductsByUser(
-      int userId, int pageNum) async {
+  // 상품 삭제
+  Future<bool> deleteProduct(int productId) async {
+    Map<String, dynamic> data =
+        await _httpClient.deleteRequest('/product/$productId', tokenYn: false);
 
-    Map<String, dynamic> data = await _httpClient.getRequest(
-        '/user/$userId/products?page=$pageNum',
-        tokenYn: false);
+    if (data['success']) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // 사용자별 상품목록조회
+  Future<ProductPageModel> getProductsByUser(int userId, int pageNum) async {
+    Map<String, dynamic> data = await _httpClient
+        .getRequest('/user/$userId/products?page=$pageNum', tokenYn: false);
 
     if (data['success']) {
       return ProductPageModel.fromJson(data);

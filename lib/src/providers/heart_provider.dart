@@ -1,39 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:navada_mobile_app/src/providers/page_provider.dart';
 
 import '../models/heart/heart_list_model.dart';
 import '../models/heart/heart_service.dart';
 import '../models/user/user_provider.dart';
 
-class HeartProvider with ChangeNotifier {
+class HeartProvider with ChangeNotifier, PageProvider {
   final HeartService _heartService = HeartService();
   int userId = UserProvider.userId;
 
   bool _showAll = true;
 
-  late HeartListModel _heartListModel;
-  HeartListModel get heartListModel => _heartListModel;
+  HeartListModel? _heartListModel;
+  HeartListModel? get heartListModel => _heartListModel;
 
   List<HeartListContentModel> _heartList = [];
   List<HeartListContentModel> get heartList => _heartList;
 
-  bool _last = false;
-  bool get last => _last;
-
   void setShowAll() {
     _showAll = !_showAll;
+    super.setCurrPage(0);
+
     fetchHeartList();
     notifyListeners();
   }
 
   fetchHeartList() async {
     HeartListModel model =
-        await _heartService.getHeartsByUser(userId, _showAll);
+        await _heartService.getHeartsByUser(userId, _showAll, super.currPage!);
 
     _heartListModel = model;
-    _heartList = _heartListModel.content;
-    _last = _heartListModel.last;
+    _heartList = _heartListModel!.content!;
 
+    super.setLast(_heartListModel!.last!);
     notifyListeners();
+  }
+
+  void fetchMoreData() async {
+    if (!super.last) {
+      super.setCurrPage(super.currPage! + 1);
+
+      HeartListModel model = await _heartService.getHeartsByUser(
+          userId, _showAll, super.currPage!);
+      super.setLast(model.last!);
+
+      for (HeartListContentModel heart in model.content!) {
+        _heartList.add(heart);
+      }
+      notifyListeners();
+    }
+  }
+
+  refresh() {
+    super.setCurrPage(0);
+    fetchHeartList();
   }
 
   deleteSelectedHeart(int heartId) async {

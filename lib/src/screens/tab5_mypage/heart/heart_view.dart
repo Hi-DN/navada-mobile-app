@@ -6,6 +6,7 @@ import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
+import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:provider/provider.dart';
@@ -94,119 +95,148 @@ HeartListSection : 좋아요 상품 리스트 부분
 class HeartListSection extends StatelessWidget {
   HeartListSection({Key? key}) : super(key: key);
   ScreenSize size = ScreenSize();
+  ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     Provider.of<HeartProvider>(context, listen: false).fetchHeartList();
 
-    return Consumer<HeartProvider>(builder: (context, provider, widget) {
-      if (provider.heartList.isNotEmpty) {
-        Provider.of<HeartViewModel>(context, listen: false)
-            .createIconList(provider.heartListModel.totalElements);
-        return _makeListView(provider.heartList);
-      }
-      return const Center(child: CircularProgressIndicator());
-    });
+    return RefreshIndicator(
+      color: green,
+      onRefresh: () async {
+        await Provider.of<HeartProvider>(context, listen: false).refresh();
+      },
+      child: Consumer<HeartProvider>(builder: (context, provider, widget) {
+        if (provider.heartListModel != null) {
+          if (provider.heartList.isNotEmpty) {
+            Provider.of<HeartViewModel>(context, listen: false)
+                .createIconList(provider.heartListModel!.totalElements);
+            return _makeListView(context, provider.heartList);
+          } else {
+            return const NoElements(text: '좋아요 물품이 없습니다.');
+          }
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      }),
+    );
   }
 
-  Widget _makeListView(List<HeartListContentModel> heartList) {
-    return ListView.builder(
-        itemBuilder: (context, index) {
-          ProductModel product = heartList[index].product;
-          int heartId = heartList[index].heartId;
+  Widget _makeListView(
+      BuildContext context, List<HeartListContentModel> heartList) {
+    scrollController.addListener(() {
+      if (scrollController.offset >=
+              scrollController.position.maxScrollExtent &&
+          !scrollController.position.outOfRange) {
+        Provider.of<HeartProvider>(context, listen: false).fetchMoreData();
+      }
+    });
 
-          return Column(
-            children: [
-              SizedBox(
-                height: size.getSize(8.0),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (BuildContext context2) {
-                    return ProductDetail(
-                        productId: product.productId!,
-                        like:
-                            Provider.of<HeartViewModel>(context, listen: false)
-                                .iconBoolList[index]);
-                  })).then((value) =>
-                          Provider.of<HeartProvider>(context, listen: false)
-                              .fetchHeartList());
-                },
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(5.0),
-                      child: Image.asset(
-                        'assets/images/test.jpeg',
-                        width: size.getSize(65.0),
-                        height: size.getSize(65.0),
-                      ),
-                    ),
-                    SizedBox(
-                      width: size.getSize(12.0),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Shortener.shortenStrWithMaxLines(
-                              product.productName,
-                              1,
-                              TextStyle(
-                                  fontSize: size.getSize(14.0),
-                                  fontWeight: FontWeight.w700)),
-                          RichText(
-                              text: TextSpan(children: [
-                            const TextSpan(
-                                text: '원가 ',
-                                style: TextStyle(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black)),
-                            TextSpan(
-                                text: '${product.productCost}원',
-                                style: const TextStyle(color: Colors.black))
-                          ])),
-                          Space(height: size.getSize(5.0)),
-                          ExchangeStatusBadge(
-                              statusCd: product.productExchangeStatusCd)
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: size.getSize(12.0)),
-                    IconButton(
-                        onPressed: () {
-                          Provider.of<HeartViewModel>(context, listen: false)
-                              .onHeartButtonTapped(index);
-                          bool isDelete = !Provider.of<HeartViewModel>(context,
-                                  listen: false)
-                              .iconBoolList[index];
-                          isDelete
-                              ? Provider.of<HeartProvider>(context,
-                                      listen: false)
-                                  .deleteSelectedHeart(heartId)
-                              : Provider.of<HeartProvider>(context,
-                                      listen: false)
-                                  .saveSelectedHeart(product.productId!);
-                        },
-                        icon: Icon(
-                          Provider.of<HeartViewModel>(context)
-                                  .iconBoolList[index]
-                              ? Icons.favorite
-                              : Icons.favorite_border_outlined,
-                          size: size.getSize(25.0),
-                          color: Colors.red,
-                        ))
-                  ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        await Provider.of<HeartProvider>(context, listen: false).refresh();
+      },
+      child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: scrollController,
+          itemBuilder: (context, index) {
+            ProductModel product = heartList[index].product;
+            int heartId = heartList[index].heartId;
+
+            return Column(
+              children: [
+                SizedBox(
+                  height: size.getSize(8.0),
                 ),
-              ),
-              Space(height: size.getSize(8.0)),
-              const CustomDivider()
-            ],
-          );
-        },
-        itemCount: heartList.length);
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context2) {
+                      return ProductDetail(
+                          productId: product.productId!,
+                          like: Provider.of<HeartViewModel>(context,
+                                  listen: false)
+                              .iconBoolList[index]);
+                    })).then((value) =>
+                        Provider.of<HeartProvider>(context, listen: false)
+                            .fetchHeartList());
+                  },
+                  child: Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(5.0),
+                        child: Image.asset(
+                          'assets/images/test.jpeg',
+                          width: size.getSize(65.0),
+                          height: size.getSize(65.0),
+                        ),
+                      ),
+                      SizedBox(
+                        width: size.getSize(12.0),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Shortener.shortenStrWithMaxLines(
+                                product.productName,
+                                1,
+                                TextStyle(
+                                    fontSize: size.getSize(14.0),
+                                    fontWeight: FontWeight.w700)),
+                            RichText(
+                                text: TextSpan(children: [
+                              const TextSpan(
+                                  text: '원가 ',
+                                  style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black)),
+                              TextSpan(
+                                  text: '${product.productCost}원',
+                                  style: const TextStyle(color: Colors.black))
+                            ])),
+                            Space(height: size.getSize(5.0)),
+                            ExchangeStatusBadge(
+                                statusCd: product.productExchangeStatusCd)
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: size.getSize(12.0)),
+                      IconButton(
+                          onPressed: () {
+                            Provider.of<HeartViewModel>(context, listen: false)
+                                .onHeartButtonTapped(index);
+                            bool isDelete = !Provider.of<HeartViewModel>(
+                                    context,
+                                    listen: false)
+                                .iconBoolList[index];
+                            isDelete
+                                ? Provider.of<HeartProvider>(context,
+                                        listen: false)
+                                    .deleteSelectedHeart(heartId)
+                                : Provider.of<HeartProvider>(context,
+                                        listen: false)
+                                    .saveSelectedHeart(product.productId!);
+                          },
+                          icon: Icon(
+                            Provider.of<HeartViewModel>(context)
+                                    .iconBoolList[index]
+                                ? Icons.favorite
+                                : Icons.favorite_border_outlined,
+                            size: size.getSize(25.0),
+                            color: Colors.red,
+                          ))
+                    ],
+                  ),
+                ),
+                Space(height: size.getSize(8.0)),
+                const CustomDivider()
+              ],
+            );
+          },
+          itemCount: heartList.length),
+    );
   }
 }

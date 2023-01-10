@@ -138,10 +138,14 @@ class _RequestListView extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context!,
-            MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    RequestDetailView(request: request)));
+                context!,
+                MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      RequestDetailView(request: request),
+                ))
+            .then((value) =>
+                Provider.of<MyExchangesRequestProvider>(context, listen: false)
+                    .fetchData(isRefresh: true));
       },
       child: Dismissible(
         key: UniqueKey(),

@@ -24,4 +24,11 @@ class RequestExchangeViewModel extends ChangeNotifier {
   bool isSelectedId(int productId) {
     return _requestProductIdList.contains(productId);
   }
+
+  void reset() {
+    _requestProductIdList.clear();
+    _isListEmpty = true;
+
+    notifyListeners();
+  }
 }

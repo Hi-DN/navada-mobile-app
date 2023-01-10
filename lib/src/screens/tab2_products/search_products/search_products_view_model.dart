@@ -5,10 +5,10 @@ class SearchProductsViewModel extends ChangeNotifier {
   bool _onlyExchangeable = false;
   bool get onlyExchangeable => _onlyExchangeable;
 
-  TextEditingController _lowerCostController = TextEditingController();
+  final TextEditingController _lowerCostController = TextEditingController();
   TextEditingController get lowerCostController => _lowerCostController;
 
-  TextEditingController _upperCostController = TextEditingController();
+  final TextEditingController _upperCostController = TextEditingController();
   TextEditingController get upperCostController => _upperCostController;
 
   // 검색값

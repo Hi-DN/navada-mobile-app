@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
+import 'package:navada_mobile_app/src/screens/tab1_home/products_by_category/products_by_category_view.dart';
+import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
@@ -202,16 +204,22 @@ class _CategoryIconTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
-    return SizedBox(
-      height: size.getSize(60),
-      width: size.getSize(50),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(icon, size: size.getSize(36), color: grey183),
-          R12Text(text: label)
-        ],
+    int categoryId = Category.labelToId(label!);
+    return InkWell(
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) =>
+              ProductsByCategoryView(categoryId: categoryId))),
+      child: SizedBox(
+        height: size.getSize(60),
+        width: size.getSize(50),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(icon, size: size.getSize(36), color: grey183),
+            R12Text(text: label)
+          ],
+        ),
       ),
     );
   }
