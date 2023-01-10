@@ -12,6 +12,7 @@ import '../models/user/user_model.dart';
 import '../models/user/user_provider.dart';
 
 final int _userId = UserProvider.userId;
+final UserService _userService = UserService();
 final HeartService _heartService = HeartService();
 final RequestService _requestService = RequestService();
 final ProductService _productService = ProductService();
@@ -63,7 +64,7 @@ class ProductDetailProvider extends ChangeNotifier {
   void _fetchUser(int productId) async {
     _userFetched = false;
 
-    UserModel userModel = await getUserByProductId(productId);
+    UserModel userModel = await _userService.getUserByProductId(productId);
     _userOfProduct = userModel.user;
 
     _userFetched = true;
