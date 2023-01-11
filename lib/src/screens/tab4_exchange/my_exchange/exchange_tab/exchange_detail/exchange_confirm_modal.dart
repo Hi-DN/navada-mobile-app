@@ -72,7 +72,7 @@ class ExchangeConfirmModal extends StatelessWidget {
   }
 
   Widget _completeExchangeBtn(ExchangeDtoModel? exchange) {
-    int userId = UserProvider.userId;
+    int userId = UserProvider.user.userId!;
     bool isAcceptor = (userId == exchange!.acceptorId);
 
     return Consumer2<ExchangeDetailViewModel, CompleteExchangeProvider>(builder:
@@ -94,7 +94,7 @@ class ExchangeConfirmModal extends StatelessWidget {
                     .then((value) {
                   Provider.of<MyExchangesExchangeProvider>(_context!,
                           listen: false)
-                      .fetchData(isRefresh: true);
+                      .fetchData(UserProvider.user.userId!, isRefresh: true);
                   viewModel.setCompleteFeatureActive(false);
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();

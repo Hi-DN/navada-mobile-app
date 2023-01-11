@@ -26,7 +26,7 @@ class SearchProductsProvider with ChangeNotifier, PageProvider {
     super.setCurrPage(0);
 
     ProductSearchPageModel? model = await _productService.searchProducts(
-        UserProvider.userId,
+        UserProvider.user.userId,
         viewModel.searchValue,
         viewModel.categoryIds,
         viewModel.lowerCostBound,
@@ -50,7 +50,7 @@ class SearchProductsProvider with ChangeNotifier, PageProvider {
       super.setCurrPage(super.currPage! + 1);
 
       ProductSearchPageModel? model = await _productService.searchProducts(
-          UserProvider.userId,
+          UserProvider.user.userId,
           viewModel.searchValue,
           viewModel.categoryIds,
           viewModel.lowerCostBound,
@@ -77,10 +77,10 @@ class SearchProductsProvider with ChangeNotifier, PageProvider {
   onHeartButtonTapped(ProductSearchDtoModel product) {
     if (product.like!) {
       product.like = false;
-      deleteHeart(product.productId!, UserProvider.userId);
+      deleteHeart(product.productId!, UserProvider.user.userId!);
     } else {
       product.like = true;
-      saveHeart(product.productId!, UserProvider.userId);
+      saveHeart(product.productId!, UserProvider.user.userId);
     }
     notifyListeners();
   }

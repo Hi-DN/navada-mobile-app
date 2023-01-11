@@ -21,7 +21,7 @@ class ProductsByCategoryProvider with ChangeNotifier, PageProvider {
     super.setCurrPage(0);
 
     ProductSearchPageModel? model = await _productService.searchProducts(
-        UserProvider.userId,
+        UserProvider.user.userId,
         null,
         [categoryId],
         viewModel.lowerCostBound,
@@ -45,7 +45,7 @@ class ProductsByCategoryProvider with ChangeNotifier, PageProvider {
       print('currpage=$currPage');
 
       ProductSearchPageModel? model = await _productService.searchProducts(
-          UserProvider.userId,
+          UserProvider.user.userId,
           null,
           [categoryId],
           viewModel.lowerCostBound,

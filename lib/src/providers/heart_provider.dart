@@ -7,7 +7,7 @@ import '../models/user/user_provider.dart';
 
 class HeartProvider with ChangeNotifier, PageProvider {
   final HeartService _heartService = HeartService();
-  int userId = UserProvider.userId;
+  int userId = UserProvider.user.userId!;
 
   bool _showAll = true;
 

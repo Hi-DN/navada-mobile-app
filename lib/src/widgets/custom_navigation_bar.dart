@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/providers/search_products_provider.dart';
 import 'package:navada_mobile_app/src/screens/tab5_mypage/my_page.dart';
@@ -35,9 +36,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   ];
 
   void _onMenuTapped(int index) {
-    if (index == 2)
+    int userId = UserProvider.user.userId!;
+    if (index == 2) {
       Provider.of<MyExchangesExchangeProvider>(context, listen: false)
-          .fetchData(isRefresh: true);
+          .fetchData(userId, isRefresh: true);
+    }
     setState(() {
       _currIndex = index;
     });

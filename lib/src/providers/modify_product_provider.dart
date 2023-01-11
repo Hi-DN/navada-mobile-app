@@ -4,7 +4,7 @@ import 'package:navada_mobile_app/src/models/product/product_service.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 
 class ModifyProductProvider extends ChangeNotifier {
-  final int _userId = UserProvider.userId;
+  final int _userId = UserProvider.user.userId!;
   
   final ProductService _productService = ProductService();
 

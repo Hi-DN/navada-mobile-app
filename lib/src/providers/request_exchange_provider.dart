@@ -27,7 +27,7 @@ class RequestExchangeProvider extends ChangeNotifier {
 
   fetchProductsList(acceptorProductId) async {
     ProductPageModel model =
-        await _productService.getProductsForRequest(UserProvider.userId, acceptorProductId);
+        await _productService.getProductsForRequest(UserProvider.user.userId!, acceptorProductId);
 
     _productPageModel = model;
     _productList = _productPageModel.content!;

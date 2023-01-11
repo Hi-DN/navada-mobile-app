@@ -19,8 +19,8 @@ class NavadaApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => UserProvider()),
           ChangeNotifierProvider(create: (context) => SignInProvider()),
-          ChangeNotifierProvider(create: (context) => MyExchangesExchangeProvider(UserProvider.userId)),
-          ChangeNotifierProvider(create: (context) => MyExchangesRequestProvider(UserProvider.userId)),
+          ChangeNotifierProvider(create: (context) => MyExchangesExchangeProvider()),
+          ChangeNotifierProvider(create: (context) => MyExchangesRequestProvider()),
           ChangeNotifierProvider(create: (context) => MyProductsProvider()),
         ],
         child: MaterialApp(
