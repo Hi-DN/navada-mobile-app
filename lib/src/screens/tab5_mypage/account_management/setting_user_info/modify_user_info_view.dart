@@ -11,13 +11,13 @@ class ModifyUserInfoView extends StatelessWidget {
 
   // User user = UserProvider().user;
   final TextEditingController _nickNameController =
-      TextEditingController(text: UserProvider.userNickname);
+      TextEditingController(text: UserProvider.user.userNickname);
   final TextEditingController _emailController =
-      TextEditingController(text: UserProvider.userEmail);
+      TextEditingController(text: UserProvider.user.userEmail);
   final TextEditingController _phoneNumController =
-      TextEditingController(text: UserProvider.userPhoneNum);
+      TextEditingController(text: UserProvider.user.userPhoneNum);
   final TextEditingController _addressController =
-      TextEditingController(text: UserProvider.userAddress);
+      TextEditingController(text: UserProvider.user.userAddress);
 
   @override
   Widget build(BuildContext context) {

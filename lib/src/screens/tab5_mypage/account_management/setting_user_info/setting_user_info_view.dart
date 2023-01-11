@@ -28,7 +28,7 @@ class SettingUserInfoView extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    User user = UserProvider().user;
+    User user = UserProvider.user;
     return Column(
       children: [
         _setInfo('이름', user.userName!),

@@ -9,9 +9,9 @@ import 'package:navada_mobile_app/src/utilities/enums.dart';
 import '../screens/tab4_exchange/my_exchange/my_exchanges_view_model.dart';
 
 class MyExchangesExchangeProvider extends ChangeNotifier {
-  MyExchangesExchangeProvider(this._userId);
+  MyExchangesExchangeProvider();
 
-  final int _userId;
+  // final int _userId = UserProvider.user.userId!;
 
   final ExchangeService _exchangeService = ExchangeService();
 
@@ -31,13 +31,13 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
   bool get _shouldResetTotalPagesAndTotalElements =>
       _isInitialFetching || _dataState == DataState.REFRESHING;
 
-  setFilter(MyExchangesFilterItem newFilter) {
+  setFilter(userId, MyExchangesFilterItem newFilter) {
     _curFilter = newFilter;
     notifyListeners();
-    fetchData(isRefresh: true);
+    fetchData(userId, isRefresh: true);
   }
 
-  fetchData({bool isRefresh = false}) async {
+  fetchData(int userId, {bool isRefresh = false}) async {
     if (isRefresh)
       _refresh();
     else
@@ -46,7 +46,7 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _fetchIfNotLastLoad();
+      _fetchIfNotLastLoad(userId);
     } catch (e) {
       _handleError();
     }
@@ -64,11 +64,11 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
         : DataState.MORE_FETCHING;
   }
 
-  _fetchIfNotLastLoad() async {
+  _fetchIfNotLastLoad(int userId) async {
     if (_didLastLoad) {
       _dataState = DataState.NO_MORE_DATA;
     } else {
-      await _fetchData();
+      await _fetchData(userId);
       _dataState = DataState.FETCHED;
     }
   }
@@ -81,8 +81,8 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
     }
   }
 
-  _fetchData() async {
-    ExchangeDtoPageResponse? pageResponse = await _getPageResponse();
+  _fetchData(int userId) async {
+    ExchangeDtoPageResponse? pageResponse = await _getPageResponse(userId);
     List<ExchangeDtoModel>? newExchanges = pageResponse!.content;
 
     _exchangeDataList += newExchanges!;
@@ -90,18 +90,15 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  _getPageResponse() async {
+  _getPageResponse(int userId) async {
     String exchangeStatus = "1";
     ExchangeDtoPageResponse? pageResponse;
     if (_curFilter == MyExchangesFilterItem.viewAll) {
-      pageResponse = await _exchangeService.getExchangeList(
-          _userId, exchangeStatus, _currentPageNum);
+      pageResponse = await _exchangeService.getExchangeList(userId, exchangeStatus, _currentPageNum);
     } else if (_curFilter == MyExchangesFilterItem.viewOnlyISent) {
-      pageResponse = await _exchangeService.getExchangeListViewOnlySent(
-          _userId, _currentPageNum);
+      pageResponse = await _exchangeService.getExchangeListViewOnlySent(userId, _currentPageNum);
     } else {
-      pageResponse = await _exchangeService.getExchangeListViewOnlyGot(
-          _userId, _currentPageNum);
+      pageResponse = await _exchangeService.getExchangeListViewOnlyGot(userId, _currentPageNum);
     }
     await _resetTotalPagesAndTotalElements(
         pageResponse!.totalPages!, pageResponse.totalElements!);
@@ -119,9 +116,9 @@ class MyExchangesExchangeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  deleteCompletedExchange(int? exchangeId, int? acceptorId) async {
-    bool isAcceptor = (_userId == acceptorId);
-    await _exchangeService.deleteCompletedExchange(exchangeId!, isAcceptor);
+  deleteCompletedExchange(int userId, int exchangeId, int acceptorId) async {
+    bool isAcceptor = (userId == acceptorId);
+    await _exchangeService.deleteCompletedExchange(exchangeId, isAcceptor);
     _exchangeDataList
         .removeWhere((exchange) => exchange.exchangeId == exchangeId);
   }

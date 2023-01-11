@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/exchange/exchange_dto_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
@@ -32,12 +33,13 @@ class ExchangeTab extends StatelessWidget {
   }
 
   Widget _buildScreenDependingOnDataState() {
+    int userId = UserProvider.user.userId!;
     return Consumer<MyExchangesExchangeProvider>(builder: (BuildContext context,
         MyExchangesExchangeProvider provider, Widget? _) {
       switch (provider.dataState) {
         case DataState.UNINITIALIZED:
           Future(() {
-            provider.fetchData();
+            provider.fetchData(userId);
           });
           return _ExchangeListView(
               exchangeList: provider.exchangeDataList, isLoading: false);
@@ -100,7 +102,7 @@ class _ExchangeListView extends StatelessWidget {
         scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
       isLoading = true;
       Provider.of<MyExchangesExchangeProvider>(_context!, listen: false)
-          .fetchData(isRefresh: false);
+          .fetchData(UserProvider.user.userId!, isRefresh: false);
     }
     return true;
   }
@@ -163,7 +165,7 @@ class _ExchangeListView extends StatelessWidget {
       key: UniqueKey(),
       onDismissed: (direction) {
         Provider.of<MyExchangesExchangeProvider>(_context!, listen: false)
-            .deleteCompletedExchange(exchange!.exchangeId, exchange.acceptorId);
+            .deleteCompletedExchange(UserProvider.user.userId!, exchange!.exchangeId!, exchange.acceptorId!);
       },
       confirmDismiss: (direction) async {
         return await showDialog(
@@ -214,7 +216,7 @@ class _ExchangeListView extends StatelessWidget {
     if (!isLoading) {
       isLoading = true;
       Provider.of<MyExchangesExchangeProvider>(_context!, listen: false)
-          .fetchData(isRefresh: true);
+          .fetchData(UserProvider.user.userId!, isRefresh: true);
     }
   }
 }
@@ -337,7 +339,7 @@ class _ViewFilter extends StatelessWidget {
         Provider.of<MyExchangesViewModel>(_context!, listen: false)
             .setFilter(selectedFilter!);
         Provider.of<MyExchangesExchangeProvider>(_context!, listen: false)
-            .setFilter(selectedFilter);
+            .setFilter(UserProvider.user.userId!,selectedFilter);
         Navigator.of(_context!).pop(false);
       },
       child: ListTile(

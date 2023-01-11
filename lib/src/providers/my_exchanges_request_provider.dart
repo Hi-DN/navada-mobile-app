@@ -7,9 +7,6 @@ import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class MyExchangesRequestProvider extends ChangeNotifier {
-  MyExchangesRequestProvider(this._userId);
-
-  final int _userId;
 
   final RequestService _requestService = RequestService();
 
@@ -27,7 +24,7 @@ class MyExchangesRequestProvider extends ChangeNotifier {
   bool get _isRefreshing => _dataState == DataState.REFRESHING;
   bool get _shouldResetTotalPagesAndTotalElements => _isInitialFetching || _dataState == DataState.REFRESHING;
 
-  fetchData({bool isRefresh = false}) async {
+  fetchData(int userId, {bool isRefresh = false}) async {
     if(isRefresh)
       _refresh();
     else 
@@ -36,7 +33,7 @@ class MyExchangesRequestProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _fetchIfNotLastLoad();
+      _fetchIfNotLastLoad(userId);
     } catch (e) {
       _handleError();
     }
@@ -54,11 +51,11 @@ class MyExchangesRequestProvider extends ChangeNotifier {
         : DataState.MORE_FETCHING;
   }
 
-  _fetchIfNotLastLoad() async {
+  _fetchIfNotLastLoad(int userId) async {
     if(_didLastLoad) {
       _dataState = DataState.NO_MORE_DATA;
     } else {
-      await _fetchData();
+      await _fetchData(userId);
       _dataState = DataState.FETCHED;
     }
   }
@@ -71,8 +68,8 @@ class MyExchangesRequestProvider extends ChangeNotifier {
     }
   }
 
-  _fetchData() async {
-    RequestPageResponse? pageResponse = await _getPageResponse();
+  _fetchData(int userId) async {
+    RequestPageResponse? pageResponse = await _getPageResponse(userId);
     List<RequestDto>? newRequests = pageResponse!.content;
 
     _requestDataList += newRequests!;
@@ -80,8 +77,8 @@ class MyExchangesRequestProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  _getPageResponse() async {
-    RequestPageResponse? pageResponse = await _requestService.getRequestsThatIApplied(_userId, _currentPageNum);
+  _getPageResponse(int userId) async {
+    RequestPageResponse? pageResponse = await _requestService.getRequestsThatIApplied(userId, _currentPageNum);
 
     await _resetTotalPagesAndTotalElements(pageResponse!.totalPages!, pageResponse.totalElements!);
 

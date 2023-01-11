@@ -263,7 +263,7 @@ class ProductDetail extends StatelessWidget {
     ProductDetailProvider provider =
         Provider.of<ProductDetailProvider>(context, listen: false);
 
-    return (provider.userOfProduct!.userId == UserProvider.userId)
+    return (provider.userOfProduct!.userId == UserProvider.user.userId)
         ? _myProductDetailBottomButton(context, provider.product!)
         : (provider.product!.productExchangeStatusCd ==
                 ProductExchangeStatusCd.REGISTERED)

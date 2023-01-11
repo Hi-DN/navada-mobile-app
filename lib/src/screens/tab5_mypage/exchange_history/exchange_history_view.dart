@@ -48,7 +48,7 @@ class ExchangeHistoryView extends StatelessWidget {
 
   Widget _buildBody(BuildContext context) {
     Provider.of<ExchangeHistoryProvider>(context, listen: false)
-        .fetchExchangeHistory(UserProvider.userId);
+        .fetchExchangeHistory(UserProvider.user.userId);
 
     return Consumer<ExchangeHistoryProvider>(
         builder: (context, provider, widget) {
@@ -81,7 +81,7 @@ class ExchangeHistoryView extends StatelessWidget {
               scrollController.position.maxScrollExtent &&
           !scrollController.position.outOfRange) {
         Provider.of<ExchangeHistoryProvider>(context, listen: false)
-            .fetchMoreData(UserProvider.userId);
+            .fetchMoreData(UserProvider.user.userId);
       }
     });
 
@@ -89,7 +89,7 @@ class ExchangeHistoryView extends StatelessWidget {
       color: green,
       onRefresh: () async {
         await Provider.of<ExchangeHistoryProvider>(context, listen: false)
-            .refresh(UserProvider.userId);
+            .refresh(UserProvider.user.userId!);
       },
       child: exchangeHistoryList.isNotEmpty
           ? ListView.separated(
@@ -111,7 +111,7 @@ class ExchangeHistoryView extends StatelessWidget {
 
   Widget _buildItem(BuildContext context, ExchangeDtoModel exchange) {
     ScreenSize screenSize = ScreenSize();
-    bool isAcceptor = exchange.acceptorId == UserProvider.userId;
+    bool isAcceptor = exchange.acceptorId == UserProvider.user.userId;
 
     ProductModel myProduct =
         isAcceptor ? exchange.acceptorProduct! : exchange.requesterProduct!;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
 import 'package:navada_mobile_app/src/screens/tab4_exchange/my_exchange/request_tab/request_detail/request_detail_view.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
@@ -34,7 +35,7 @@ class ProductsIRequestedTab extends StatelessWidget {
       switch (provider.dataState) {
         case DataState.UNINITIALIZED:
           Future(() {
-            provider.fetchData();
+            provider.fetchData(UserProvider.user.userId!);
           });
           return _RequestListView(
               requestList: provider.requestDataList, isLoading: false);
@@ -96,7 +97,7 @@ class _RequestListView extends StatelessWidget {
         scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
       isLoading = true;
       Provider.of<MyExchangesRequestProvider>(_context!, listen: false)
-          .fetchData(isRefresh: false);
+          .fetchData(UserProvider.user.userId!, isRefresh: false);
     }
     return true;
   }
@@ -123,7 +124,7 @@ class _RequestListView extends StatelessWidget {
           itemCount: requestList.length,
           itemBuilder: (context, index) {
             final request = requestList[index];
-            return _requestItem(context, request);
+            return _requestItem(_context!, request);
           },
           separatorBuilder: (context, index) {
             return const Space(height: 10);
@@ -131,21 +132,20 @@ class _RequestListView extends StatelessWidget {
     );
   }
 
-  _requestItem(BuildContext? context, RequestDto request) {
+  _requestItem(BuildContext context, RequestDto request) {
     ScreenSize size = ScreenSize();
     bool isWait = request.requestStatusCd == RequestStatusCd.WAIT;
 
     return GestureDetector(
       onTap: () {
         Navigator.push(
-                context!,
+                context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      RequestDetailView(request: request),
+                  builder: (BuildContext context) => RequestDetailView(request: request),
                 ))
             .then((value) =>
                 Provider.of<MyExchangesRequestProvider>(context, listen: false)
-                    .fetchData(isRefresh: true));
+                    .fetchData(UserProvider.user.userId!, isRefresh: true));
       },
       child: Dismissible(
         key: UniqueKey(),
@@ -160,7 +160,7 @@ class _RequestListView extends StatelessWidget {
         },
         confirmDismiss: (direction) async {
           return await showDialog(
-              context: context!,
+              context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
                   content: R14Text(
@@ -209,7 +209,7 @@ class _RequestListView extends StatelessWidget {
     if (!isLoading) {
       isLoading = true;
       Provider.of<MyExchangesRequestProvider>(_context!, listen: false)
-          .fetchData(isRefresh: true);
+          .fetchData(UserProvider.user.userId!, isRefresh: true);
     }
   }
 }
