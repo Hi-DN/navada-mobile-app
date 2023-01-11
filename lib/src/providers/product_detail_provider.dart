@@ -13,7 +13,7 @@ import '../models/request/request_list_response.dart';
 import '../models/user/user_model.dart';
 import '../models/user/user_provider.dart';
 
-final int _userId = UserProvider.userId;
+final int _userId = UserProvider.user.userId!;
 final UserService _userService = UserService();
 final HeartService _heartService = HeartService();
 final RequestService _requestService = RequestService();

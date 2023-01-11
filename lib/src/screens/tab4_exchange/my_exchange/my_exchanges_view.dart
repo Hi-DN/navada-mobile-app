@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_exchange_provider.dart';
 import 'package:navada_mobile_app/src/providers/my_exchanges_request_provider.dart';
@@ -21,7 +20,6 @@ class MyExchangesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
-    User user = Provider.of<UserProvider>(context, listen: false).user;
 
     return Scaffold(
         appBar: CustomAppBar(titleText: '내 물물교환'),
@@ -37,14 +35,16 @@ class MyExchangesView extends StatelessWidget {
                   child: Column(children: [
                     TabBar(
                       onTap: (index) {
+                        int userId = UserProvider.user.userId!;
                         if (index == 0) {
+                          int userId = UserProvider.user.userId!;
                           Provider.of<MyExchangesExchangeProvider>(context,
                                   listen: false)
-                              .fetchData(isRefresh: true);
+                              .fetchData(userId, isRefresh: true);
                         } else {
                           Provider.of<MyExchangesRequestProvider>(context,
                                   listen: false)
-                              .fetchData(isRefresh: true);
+                              .fetchData(userId, isRefresh: true);
                         }
                       },
                       tabs: [

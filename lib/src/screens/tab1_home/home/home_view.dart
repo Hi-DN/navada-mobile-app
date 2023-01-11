@@ -23,8 +23,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
-
-    User user = Provider.of<UserProvider>(context, listen: false).user;
+    User user = UserProvider.user;
 
     return Scaffold(
         body: MultiProvider(

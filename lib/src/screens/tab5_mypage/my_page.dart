@@ -13,7 +13,6 @@ import 'package:navada_mobile_app/src/widgets/divider.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
-import 'package:provider/provider.dart';
 
 class MyPage extends StatelessWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -42,7 +41,7 @@ class _UserProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenSize size = ScreenSize();
-    User user = Provider.of<UserProvider>(context, listen: false).user;
+    User user = UserProvider.user;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: size.getSize(27)),

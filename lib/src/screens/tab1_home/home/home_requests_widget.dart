@@ -56,7 +56,7 @@ class RequestsForMe extends StatelessWidget {
 
   Widget _sectionTitle() {
     ScreenSize size = ScreenSize();
-    User user = Provider.of<UserProvider>(_context!, listen: false).user;
+    User user = UserProvider.user;
     return RichText(
         text: TextSpan(children: [
       TextSpan(

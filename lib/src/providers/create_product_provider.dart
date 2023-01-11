@@ -7,7 +7,7 @@ import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class CreateProductProvider extends ChangeNotifier {
-  final int _userId = UserProvider.userId;
+  final int _userId = UserProvider.user.userId!;
 
   final ProductService _productService = ProductService();
   final RequestService _requestService = RequestService();
