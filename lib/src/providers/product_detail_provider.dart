@@ -60,7 +60,7 @@ class ProductDetailProvider extends ChangeNotifier {
   }
 
   void _fetchProduct(int productId) async {
-    int userId = UserProvider.userId;
+    int userId = UserProvider.user.userId!;
     _productFetched = false;
 
     ProductDetailDto? model =
