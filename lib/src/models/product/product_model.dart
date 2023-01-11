@@ -161,6 +161,20 @@ class ProductDetailDto {
     return data;
   }
 
+  ProductModel convertToProductModel() {
+    return ProductModel(
+        createdDate: createdDate,
+        productId: productId,
+        productName: productName,
+        productExplanation: productExplanation,
+        userNickname: userNickname,
+        category: category,
+        productExchangeStatusCd: productExchangeStatusCd,
+        heartNum: heartNum,
+        productCost: productCost,
+        exchangeCostRange: exchangeCostRange);
+  }
+
   int getLowerBound() {
     return productCost! - exchangeCostRange!;
   }

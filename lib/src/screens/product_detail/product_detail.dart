@@ -18,6 +18,7 @@ import '../../models/product/product_model.dart';
 import '../../models/user/user_model.dart';
 import '../../utilities/enums.dart';
 import '../../widgets/colors.dart';
+import 'modify_product/modify_product_view.dart';
 
 // ignore: must_be_immutable
 class ProductDetail extends StatelessWidget {
@@ -290,9 +291,9 @@ class ProductDetail extends StatelessWidget {
       LongCircledBtn(
         text: '수정하기',
         onTap: () {
-          // fix me!!
-          // Navigator.of(context).pushReplacement(MaterialPageRoute(
-          //     builder: (context) => ModifyProductView(product: product)));
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) =>
+                  ModifyProductView(product: product.convertToProductModel())));
         },
       ),
       const SizedBox(height: 10.0),
@@ -360,8 +361,9 @@ class ProductDetail extends StatelessWidget {
           ShortCircledBtn(
               text: '수정하기',
               onTap: () {
-                // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                //     builder: (context) => ModifyProductView(product: product)));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => ModifyProductView(
+                        product: product.convertToProductModel())));
               }),
         ],
       ),
