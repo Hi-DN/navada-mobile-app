@@ -111,8 +111,8 @@ class _ProductList extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ProductDetail(
-                    productId: product.productId!, like: false))).then(
+                builder: (context) =>
+                    ProductDetail(productId: product.productId!))).then(
             (value) => Provider.of<MyProductsProvider>(context, listen: false)
                 .loadMore(true));
       },

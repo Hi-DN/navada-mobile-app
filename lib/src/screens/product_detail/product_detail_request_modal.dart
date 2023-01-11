@@ -10,8 +10,7 @@ import '../../widgets/screen_size.dart';
 import '../../widgets/text_style.dart';
 
 class RequestListModal extends StatelessWidget {
-  bool initialLike;
-  RequestListModal({Key? key, required this.initialLike}) : super(key: key);
+  RequestListModal({Key? key}) : super(key: key);
   ScreenSize screenSize = ScreenSize();
 
   @override
@@ -21,7 +20,7 @@ class RequestListModal extends StatelessWidget {
             .requestDtoList;
 
     return ChangeNotifierProvider(
-      create: (context) => ProductDetailViewModel(initialLike),
+      create: (context) => ProductDetailViewModel(),
       child: Center(
         child: Column(
           children: [

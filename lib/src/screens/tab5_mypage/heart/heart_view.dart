@@ -152,11 +152,7 @@ class HeartListSection extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (BuildContext context2) {
-                      return ProductDetail(
-                          productId: product.productId!,
-                          like: Provider.of<HeartViewModel>(context,
-                                  listen: false)
-                              .iconBoolList[index]);
+                      return ProductDetail(productId: product.productId!);
                     })).then((value) =>
                         Provider.of<HeartProvider>(context, listen: false)
                             .fetchHeartList());

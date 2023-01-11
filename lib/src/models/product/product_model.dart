@@ -101,3 +101,71 @@ class ProductParams {
     return data;
   }
 }
+
+class ProductDetailDto {
+  String? createdDate;
+  int? productId;
+  String? userNickname;
+  String? productName;
+  String? productExplanation;
+  Category? category;
+  ProductExchangeStatusCd? productExchangeStatusCd;
+  int? heartNum;
+  int? productCost;
+  int? exchangeCostRange;
+  bool? like;
+
+  ProductDetailDto(
+      {this.createdDate,
+      this.productId,
+      this.userNickname,
+      this.productName,
+      this.productExplanation,
+      this.category,
+      this.productExchangeStatusCd,
+      this.heartNum,
+      this.productCost,
+      this.exchangeCostRange,
+      this.like});
+
+  ProductDetailDto.fromJson(Map<String, dynamic> json) {
+    createdDate = json['createdDate'];
+    productId = json['productId'];
+    userNickname = json['userNickname'];
+    productName = json['productName'];
+    productExplanation = json['productExplanation'];
+    category = Category.objToEnum(CategoryModel.fromJson(json['category']));
+    productExchangeStatusCd =
+        ProductExchangeStatusCd.codeToEnum(json['productExchangeStatusCd']);
+    heartNum = json['heartNum'];
+    productCost = json['productCost'];
+    exchangeCostRange = json['exchangeCostRange'];
+    like = json['like'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['createdDate'] = createdDate;
+    data['productId'] = productId;
+    data['userNickname'] = userNickname;
+    data['productName'] = productName;
+    data['productExplanation'] = productExplanation;
+    if (category != null) {
+      data['category'] = Category.enumToObj(category!).toJson();
+    }
+    data['productExchangeStatusCd'] = productExchangeStatusCd?.code;
+    data['heartNum'] = heartNum;
+    data['productCost'] = productCost;
+    data['exchangeCostRange'] = exchangeCostRange;
+    data['like'] = like;
+    return data;
+  }
+
+  int getLowerBound() {
+    return productCost! - exchangeCostRange!;
+  }
+
+  int getUpperBound() {
+    return productCost! + exchangeCostRange!;
+  }
+}

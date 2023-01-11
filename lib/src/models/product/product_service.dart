@@ -21,12 +21,12 @@ class ProductService {
   }
 
   // 상품 단건 조회
-  Future<ProductModel?> getProduct(int productId) async {
-    Map<String, dynamic> data =
-        await _httpClient.getRequest('/product/$productId', tokenYn: false);
+  Future<ProductDetailDto?> getProduct(int userId, int productId) async {
+    Map<String, dynamic> data = await _httpClient
+        .getRequest('/user/$userId/product/$productId', tokenYn: false);
 
     if (data['success']) {
-      return ProductModel.fromJson(data['data']);
+      return ProductDetailDto.fromJson(data['data']);
     } else {
       return null;
     }

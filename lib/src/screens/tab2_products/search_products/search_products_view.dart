@@ -149,8 +149,7 @@ class SearchProductsView extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
-                      return ProductDetail(
-                          productId: product.productId!, like: product.like!);
+                      return ProductDetail(productId: product.productId!);
                     })).then((value) => Provider.of<SearchProductsProvider>(
                                 context,
                                 listen: false)

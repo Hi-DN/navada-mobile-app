@@ -358,8 +358,8 @@ class ModifyProductScreen extends StatelessWidget {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (BuildContext context) => ProductDetail(
-                            productId: product.productId!, like: false)));
+                        builder: (BuildContext context) =>
+                            ProductDetail(productId: product.productId!)));
               } else {
                 _showSnackBarDurationForSec("물품 수정을 실패했습니다ㅠㅠ");
               }
