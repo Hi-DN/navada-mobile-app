@@ -42,6 +42,7 @@ class UserProvider extends ChangeNotifier {
     user.userRating = params.userRating;
     user.userTradeCount = params.userTradeCount;
     user.userRatingCount = params.userRatingCount;
+    user.userPhoneNum = params.userPhoneNum;
     notifyListeners();
   }
 
@@ -49,10 +50,15 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> signup(String userName, String userNickname, String userPhoneNum, String userAddress) async {
+  Future<bool> signup(String userName, String userNickname, String userPhoneNum,
+      String userAddress) async {
     UserParams params = UserParams(
-      userName: userName, userNickname: userNickname, userPhoneNum: userPhoneNum, userAddress: userAddress,
-      userEmail: user.userEmail!, signInPlatform: user.signInPlatform!);
+        userName: userName,
+        userNickname: userNickname,
+        userPhoneNum: userPhoneNum,
+        userAddress: userAddress,
+        userEmail: user.userEmail!,
+        signInPlatform: user.signInPlatform!);
     UserDto newUser = await _userService.signup(params);
     setUserInfo(newUser);
     return true;

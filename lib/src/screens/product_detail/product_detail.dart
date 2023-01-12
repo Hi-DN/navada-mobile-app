@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_service.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/product_detail_provider.dart';
-import 'package:navada_mobile_app/src/screens/product_detail/modify_product/modify_product_view.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_request_modal.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_view_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/request_exchange/request_exchange_view.dart';
@@ -19,15 +18,14 @@ import '../../models/product/product_model.dart';
 import '../../models/user/user_model.dart';
 import '../../utilities/enums.dart';
 import '../../widgets/colors.dart';
+import 'modify_product/modify_product_view.dart';
 
 // ignore: must_be_immutable
 class ProductDetail extends StatelessWidget {
   final int productId;
-  bool like;
   ScreenSize screenSize = ScreenSize();
 
-  ProductDetail({Key? key, required this.productId, required this.like})
-      : super(key: key);
+  ProductDetail({Key? key, required this.productId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +33,7 @@ class ProductDetail extends StatelessWidget {
       body: MultiProvider(
           providers: [
             ChangeNotifierProvider(
-                create: (context) => ProductDetailViewModel(like)),
+                create: (context) => ProductDetailViewModel()),
             ChangeNotifierProvider(create: (context) => ProductDetailProvider())
           ],
           builder: (context, child) {
@@ -54,9 +52,6 @@ class ProductDetail extends StatelessWidget {
       if (provider.productFetched &&
           provider.userFetched &&
           provider.requestsFetched) {
-        if (!viewModel.likeNumFetched) {
-          viewModel.setLikeNum(provider.product!.heartNum!);
-        }
         return Column(
           children: [
             Flexible(flex: 1, child: _productImagesSection(context)),
@@ -156,7 +151,7 @@ class ProductDetail extends StatelessWidget {
     ]);
   }
 
-  Widget _productInfoSection(ProductModel product) {
+  Widget _productInfoSection(ProductDetailDto product) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -185,20 +180,20 @@ class ProductDetail extends StatelessWidget {
                 ],
               ),
             ),
-            Consumer2<ProductDetailViewModel, ProductDetailProvider>(
-                builder: (context, viewProvider, provider, widget) {
+            Consumer<ProductDetailProvider>(
+                builder: (context, provider, widget) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
                     onPressed: () {
-                      viewProvider.setLikeValue();
-                      viewProvider.like
+                      provider.setLikeValue();
+                      provider.like!
                           ? provider.saveHeart(product.productId!)
                           : provider.deleteHeart(product.productId!);
                     },
                     icon: Icon(
-                      viewProvider.like
+                      provider.like!
                           ? Icons.favorite
                           : Icons.favorite_border_outlined,
                       color: const Color(0xFFDD8560),
@@ -206,7 +201,7 @@ class ProductDetail extends StatelessWidget {
                     ),
                   ),
                   R14Text(
-                    text: viewProvider.likeNum.toString(),
+                    text: provider.heartNum.toString(),
                     textColor: const Color(0xFFDD8560),
                   )
                 ],
@@ -235,7 +230,7 @@ class ProductDetail extends StatelessWidget {
     );
   }
 
-  Widget _reportAndCreateDtSection(ProductModel product) {
+  Widget _reportAndCreateDtSection(ProductDetailDto product) {
     return Container(
       padding: const EdgeInsets.only(top: 10.0),
       child: Row(
@@ -274,7 +269,7 @@ class ProductDetail extends StatelessWidget {
   }
 
   Widget _myProductDetailBottomButton(
-      BuildContext context, ProductModel product) {
+      BuildContext context, ProductDetailDto product) {
     switch (product.productExchangeStatusCd) {
       case ProductExchangeStatusCd.REGISTERED:
         return _deleteAndModifyButtons(context, product);
@@ -290,21 +285,23 @@ class ProductDetail extends StatelessWidget {
     }
   }
 
-  Widget _onlyModifyButton(BuildContext context, ProductModel product) {
+  Widget _onlyModifyButton(BuildContext context, ProductDetailDto product) {
     return Column(children: [
       Expanded(child: Container()),
       LongCircledBtn(
         text: '수정하기',
         onTap: () {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => ModifyProductView(product: product)));
+              builder: (context) =>
+                  ModifyProductView(product: product.convertToProductModel())));
         },
       ),
       const SizedBox(height: 10.0),
     ]);
   }
 
-  Widget _deleteAndModifyButtons(BuildContext context, ProductModel product) {
+  Widget _deleteAndModifyButtons(
+      BuildContext context, ProductDetailDto product) {
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
     ProductService productService = ProductService();
@@ -365,7 +362,8 @@ class ProductDetail extends StatelessWidget {
               text: '수정하기',
               onTap: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => ModifyProductView(product: product)));
+                    builder: (context) => ModifyProductView(
+                        product: product.convertToProductModel())));
               }),
         ],
       ),
@@ -413,7 +411,7 @@ class ProductDetail extends StatelessWidget {
       context: context,
       builder: (context) {
         return ChangeNotifierProvider.value(
-            value: provider, child: RequestListModal(initialLike: like));
+            value: provider, child: RequestListModal());
       },
     );
   }

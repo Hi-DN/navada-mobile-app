@@ -14,7 +14,7 @@ import '../../../widgets/text_style.dart';
 
 // 교환 신청하기 화면
 class RequestExchangeView extends StatelessWidget {
-  ProductModel acceptorProduct;
+  ProductDetailDto acceptorProduct;
   ScreenSize screenSize = ScreenSize();
   RequestExchangeView({Key? key, required this.acceptorProduct})
       : super(key: key);
@@ -54,7 +54,7 @@ class RequestExchangeView extends StatelessWidget {
         ));
   }
 
-  Widget _acceptorProductInfo(ProductModel acceptorProduct) {
+  Widget _acceptorProductInfo(ProductDetailDto acceptorProduct) {
     return Container(
       padding: const EdgeInsets.only(top: 15.0, bottom: 5.0),
       height: screenSize.getSize(220.0),

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_service.dart';
 import 'package:navada_mobile_app/src/models/request/request_service.dart';
@@ -19,8 +21,8 @@ final ProductService _productService = ProductService();
 
 class ProductDetailProvider extends ChangeNotifier {
   // 물품 정보
-  ProductModel? _product;
-  ProductModel? get product => _product;
+  ProductDetailDto? _product;
+  ProductDetailDto? get product => _product;
 
   // 해당 물품의 유저
   User? _userOfProduct;
@@ -35,6 +37,12 @@ class ProductDetailProvider extends ChangeNotifier {
 
   bool _productFetched = false;
   bool get productFetched => _productFetched;
+
+  bool? _like;
+  bool? get like => _like;
+
+  int? _heartNum;
+  int? get heartNum => _heartNum;
 
   bool _userFetched = false;
   bool get userFetched => _userFetched;
@@ -52,10 +60,15 @@ class ProductDetailProvider extends ChangeNotifier {
   }
 
   void _fetchProduct(int productId) async {
+    int userId = UserProvider.user.userId!;
     _productFetched = false;
 
-    ProductModel? model = await _productService.getProduct(productId);
+    ProductDetailDto? model =
+        await _productService.getProduct(userId, productId);
+
     _product = model;
+    _like = model!.like;
+    _heartNum = model.heartNum;
 
     _productFetched = true;
     notifyListeners();
@@ -80,6 +93,16 @@ class ProductDetailProvider extends ChangeNotifier {
     _requestDtoList = _requestListResponse!.dataList;
 
     _requestsFetched = true;
+    notifyListeners();
+  }
+
+  void setLikeValue() {
+    _like = !_like!;
+    if (_like!) {
+      _heartNum = _heartNum! + 1;
+    } else {
+      _heartNum = max(0, _heartNum! - 1);
+    }
     notifyListeners();
   }
 

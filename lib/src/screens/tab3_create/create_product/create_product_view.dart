@@ -368,8 +368,8 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (BuildContext context) => ProductDetail(
-                            productId: product.productId!, like: false)));
+                        builder: (BuildContext context) =>
+                            ProductDetail(productId: product.productId!)));
               } else {
                 _showSnackBarDurationForSec("물품 등록에 실패했습니다ㅠㅠ");
               }
