@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/screens/signIn/signIn.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/custom_navigation_bar.dart';
@@ -74,7 +75,7 @@ class _SignUpState extends State<SignUp> {
         setState(() { userName = value; });
       },
       decoration: InputDecoration(
-        hintText: "이름",
+        hintText: "이름을 입력해주세요",
         isDense: true,
         contentPadding: EdgeInsets.symmetric(
           horizontal: 0, vertical: size.getSize(10.0),
@@ -93,7 +94,7 @@ class _SignUpState extends State<SignUp> {
         setState(() { userNickname = value; });
       },
       decoration: InputDecoration(
-        hintText: "닉네임",
+        hintText: "닉네임을 입력해주세요",
         isDense: true,
         contentPadding: EdgeInsets.symmetric(
           horizontal: 0, vertical: size.getSize(10.0),
@@ -112,7 +113,8 @@ class _SignUpState extends State<SignUp> {
         setState(() { userPhoneNum = value; });
       },
       decoration: InputDecoration(
-        hintText: "폰번호",
+        hintText: "핸드폰 번호를 입력해주세요",
+        helperText: "'010-0000-0000' 형식으로 입력해주세요",
         isDense: true,
         contentPadding: EdgeInsets.symmetric(
           horizontal: 0, vertical: size.getSize(10.0),
@@ -131,7 +133,8 @@ class _SignUpState extends State<SignUp> {
         setState(() { userAddress = value; });
       },
       decoration: InputDecoration(
-        hintText: "주소",
+        hintText: "주소를 입력해주세요",
+        helperText: "'OO시 OO구' 형식으로 입력해주세요",
         isDense: true,
         contentPadding: EdgeInsets.symmetric(
           horizontal: 0, vertical: size.getSize(10.0),
@@ -152,8 +155,18 @@ class _SignUpState extends State<SignUp> {
     } else if (!_checkValid(userAddress)) {
       _checkField(_addressFNode, "주소를 입력해주세요!");
     } else {
-      Provider.of<UserProvider>(context, listen: false).signup(userName, userNickname, userPhoneNum, userAddress)
-          .then((value) => Navigator.of(context).pushNamed(CustomNavigationBar.routeName));
+      try {
+        bool result = await Provider.of<UserProvider>(context, listen: false).signup(userName, userNickname, userPhoneNum, userAddress);
+
+        if(result) {
+          Navigator.of(context).pushNamed(CustomNavigationBar.routeName);
+        } else {
+          _showUserExistsDialog(context);
+        }
+
+      } catch(e) {
+        _showUserExistsDialog(context);
+      }
     }
   }
 
@@ -172,5 +185,21 @@ class _SignUpState extends State<SignUp> {
       duration: const Duration(seconds: 1),
       content: R16Text(text: snackBarText, textColor: white),
     ));
+  }
+
+  _showUserExistsDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const R14Text(text: "이미 존재하는 회원입니다.\n다른 플랫폼으로 로그인을 진행해주세요!"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pushNamedAndRemoveUntil(context, SignIn.routeName, (route)=> false),
+              child: const R14Text(text: "확인", textColor: green),
+            )
+          ],
+        );
+      });
   }
 }
