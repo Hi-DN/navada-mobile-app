@@ -57,4 +57,8 @@ class UserProvider extends ChangeNotifier {
     }
     return false;
   }
+
+  Future<bool> withdraw(int userId) async {
+    return await _userService.withdraw(userId);
+  }
 }

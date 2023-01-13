@@ -13,6 +13,7 @@ import 'package:navada_mobile_app/src/widgets/divider.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
+import 'package:provider/provider.dart';
 
 class MyPage extends StatelessWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -169,7 +170,9 @@ class _AccountManagement extends StatelessWidget {
         _listTile("로그아웃", () {
           Navigator.pushNamedAndRemoveUntil(context, SignIn.routeName, (route)=> false);
         }),
-        _listTile("회원 탈퇴", () {}),
+        _listTile("회원 탈퇴", () {
+          _showWithdrawalConfirmDialog(context);
+        }),
         const Space(height: 24),
       ],
     );
@@ -188,6 +191,31 @@ class _AccountManagement extends StatelessWidget {
             ],
           )),
     );
+  }
+
+  _showWithdrawalConfirmDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const R14Text(text: "정말로 탈퇴하시겠습니까? ㅜ.ㅜ"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const R14Text(text: "취소", textColor: grey153),
+            ),
+            TextButton(
+              onPressed: () async { 
+                bool result = await Provider.of<UserProvider>(context, listen: false).withdraw(UserProvider.user.userId!);
+                if(result) {
+                  Navigator.pushNamedAndRemoveUntil(context, SignIn.routeName, (route)=> false);
+                }
+              },
+              child: const R14Text(text: "확인", textColor: red),
+            )
+          ],
+        );
+      });
   }
 }
 
