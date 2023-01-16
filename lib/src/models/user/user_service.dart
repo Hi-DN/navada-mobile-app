@@ -66,4 +66,16 @@ class UserService {
     }
   }
 
+  // 회원 탈퇴
+  Future<bool> withdraw(int userId) async {
+    Map<String, dynamic> response = await _httpClient.deleteRequest(
+        '/user/$userId', tokenYn: false);
+
+    if (response['success']) {
+      return true;
+    } else {
+      throw Exception('withdraw() fail!');
+    }
+  }
+
 }
