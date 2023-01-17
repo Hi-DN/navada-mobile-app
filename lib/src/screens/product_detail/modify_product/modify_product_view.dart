@@ -343,23 +343,23 @@ class ModifyProductScreen extends StatelessWidget {
             } else if (!viewModel.checkValidProductExplanation()) {
               _checkField(viewModel.productExplanationFNode, "물품 설명을 확인해주세요!");
             } else {
-              ProductModel? product = await Provider.of<ModifyProductProvider>(
+              ProductModel? modifiedProduct = await Provider.of<ModifyProductProvider>(
                       context,
                       listen: false)
-                  .modifyProduct(ProductParams(
+                  .modifyProduct(product!.productId!, ProductParams(
                       productName: viewModel.productName,
                       categoryId: viewModel.productCategory?.id,
                       productCost: viewModel.productPrice,
                       exchangeCostRange: viewModel.productExchangeCost,
                       productExplanation: viewModel.productExplanation));
-              if (product != null) {
+              if (modifiedProduct != null) {
                 _showSnackBarDurationForSec("글이 수정되었습니다🥰");
                 // ignore: use_build_context_synchronously
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            ProductDetail(productId: product.productId!)));
+                            ProductDetail(productId: modifiedProduct.productId!)));
               } else {
                 _showSnackBarDurationForSec("물품 수정을 실패했습니다ㅠㅠ");
               }
