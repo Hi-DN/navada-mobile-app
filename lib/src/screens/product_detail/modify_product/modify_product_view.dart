@@ -25,6 +25,7 @@ class ModifyProductView extends StatelessWidget {
       ChangeNotifierProvider(create: (context) => ModifyProductProvider()),
       ChangeNotifierProvider(
           create: (context) => ModifyProductViewModel(
+              product.productId!,
               product.productName,
               product.category,
               product.productCost,
@@ -100,7 +101,6 @@ class ModifyProductScreen extends StatelessWidget {
         controller:
             Provider.of<ModifyProductViewModel>(_context!, listen: false)
                 .productNameController,
-        // initialValue: Provider.of<ModifyProductViewModel>(_context!, listen: false).productName,
         maxLength: 20,
         focusNode: Provider.of<ModifyProductViewModel>(_context!, listen: false)
             .productNameFNode,
@@ -205,7 +205,6 @@ class ModifyProductScreen extends StatelessWidget {
             controller:
                 Provider.of<ModifyProductViewModel>(_context!, listen: false)
                     .productPriceController,
-            // initialValue: Provider.of<ModifyProductViewModel>(_context!, listen: false).productPrice.toString(),
             focusNode:
                 Provider.of<ModifyProductViewModel>(_context!, listen: false)
                     .productPriceFNode,
@@ -255,22 +254,15 @@ class ModifyProductScreen extends StatelessWidget {
                     bottom: size.getSize(5)),
                 width: size.getSize(130),
                 child: TextFormField(
-                  controller: Provider.of<ModifyProductViewModel>(_context!,
-                          listen: false)
-                      .productExchangeCostController,
-                  // initialValue: Provider.of<ModifyProductViewModel>(_context!, listen: false).productExchangeCost.toString(),
-                  focusNode: Provider.of<ModifyProductViewModel>(_context!,
-                          listen: false)
-                      .productExchangeCostFNode,
+                  controller: Provider.of<ModifyProductViewModel>(_context!,listen: false).productExchangeCostController,
+                  focusNode: Provider.of<ModifyProductViewModel>(_context!,listen: false).productExchangeCostFNode,
                   textAlign: TextAlign.right,
                   style: styleR.copyWith(fontSize: size.getSize(16)),
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                   ],
                   onChanged: (value) {
-                    Provider.of<ModifyProductViewModel>(_context!,
-                            listen: false)
-                        .setProductExchangeCost(int.parse(value));
+                    Provider.of<ModifyProductViewModel>(_context!,listen: false).setProductExchangeCost(int.parse(value));
                   },
                   decoration: InputDecoration(
                     isDense: true,
@@ -278,10 +270,8 @@ class ModifyProductScreen extends StatelessWidget {
                       horizontal: 0,
                       vertical: size.getSize(10.0),
                     ),
-                    enabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: grey183)),
-                    focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: green)),
+                    enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: grey183)),
+                    focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: green)),
                   ),
                 ),
               ),
@@ -298,7 +288,6 @@ class ModifyProductScreen extends StatelessWidget {
     return TextFormField(
       controller: Provider.of<ModifyProductViewModel>(_context!, listen: false)
           .productExplanationController,
-      // initialValue: Provider.of<ModifyProductViewModel>(_context!, listen: false).productExplanation,
       focusNode: Provider.of<ModifyProductViewModel>(_context!, listen: false)
           .productExplanationFNode,
       style: styleR.copyWith(fontSize: size.getSize(16)),
@@ -326,6 +315,7 @@ class ModifyProductScreen extends StatelessWidget {
   }
 
   Widget _confirmBtn(BuildContext context) {
+
     return Consumer<ModifyProductViewModel>(builder:
         (BuildContext context, ModifyProductViewModel viewModel, Widget? _) {
       return LongCircledBtn(
@@ -343,23 +333,24 @@ class ModifyProductScreen extends StatelessWidget {
             } else if (!viewModel.checkValidProductExplanation()) {
               _checkField(viewModel.productExplanationFNode, "물품 설명을 확인해주세요!");
             } else {
-              ProductModel? modifiedProduct = await Provider.of<ModifyProductProvider>(
-                      context,
-                      listen: false)
-                  .modifyProduct(product!.productId!, ProductParams(
-                      productName: viewModel.productName,
-                      categoryId: viewModel.productCategory?.id,
-                      productCost: viewModel.productPrice,
-                      exchangeCostRange: viewModel.productExchangeCost,
-                      productExplanation: viewModel.productExplanation));
+              ProductModel? modifiedProduct = await Provider.of<
+                      ModifyProductProvider>(context, listen: false)
+                  .modifyProduct(
+                      viewModel.productId!,
+                      ProductParams(
+                          productName: viewModel.productName,
+                          categoryId: viewModel.productCategory?.id,
+                          productCost: viewModel.productPrice,
+                          exchangeCostRange: viewModel.productExchangeCost,
+                          productExplanation: viewModel.productExplanation));
               if (modifiedProduct != null) {
                 _showSnackBarDurationForSec("글이 수정되었습니다🥰");
                 // ignore: use_build_context_synchronously
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            ProductDetail(productId: modifiedProduct.productId!)));
+                        builder: (BuildContext context) => ProductDetail(
+                            productId: modifiedProduct.productId!)));
               } else {
                 _showSnackBarDurationForSec("물품 수정을 실패했습니다ㅠㅠ");
               }
