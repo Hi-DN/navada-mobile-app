@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class ModifyProductViewModel extends ChangeNotifier {
-  ModifyProductViewModel(this._productName, this._productCategory, this._productPrice, this._productExchangeCost, this._productExplanation);
+  ModifyProductViewModel(this._productId, this._productName, this._productCategory, this._productPrice, this._productExchangeCost, this._productExplanation);
   
+  final int _productId;
   String? _productName;
   Category? _productCategory;  
   int? _productPrice;
   int? _productExchangeCost;
   String? _productExplanation;
 
+  int? get productId => _productId;
   String? get productName => _productName;
   Category? get productCategory => _productCategory;
   int? get productPrice => _productPrice;
