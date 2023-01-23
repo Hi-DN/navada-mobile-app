@@ -11,7 +11,7 @@ class ExchangeService {
       int userId, String exchangeStatusCds, int pageNum) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
         '/user/$userId/exchanges?exchangeStatusCds=$exchangeStatusCds&page=$pageNum',
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return ExchangeDtoPageResponse.fromJson(data);
@@ -25,7 +25,7 @@ class ExchangeService {
       int userId, int pageNum) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
         '/user/$userId/exchanges?viewOnlySentElseGot=true&page=$pageNum',
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return ExchangeDtoPageResponse.fromJson(data);
@@ -39,7 +39,7 @@ class ExchangeService {
       int userId, int pageNum) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
         '/user/$userId/exchanges?viewOnlySentElseGot=false&page=$pageNum',
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return ExchangeDtoPageResponse.fromJson(data);
@@ -53,7 +53,7 @@ class ExchangeService {
       int exchangeId, bool isAcceptor) async {
     Map<String, dynamic> data = await _httpClient.patchRequest(
         '/exchange/$exchangeId/delete?isAcceptor=$isAcceptor', {},
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return Exchange.fromJson(data['data']);
@@ -67,7 +67,7 @@ class ExchangeService {
       int exchangeId, bool isAcceptor, double rating) async {
     Map<String, dynamic> data = await _httpClient.patchRequest(
         '/exchange/$exchangeId/rate?isAcceptor=$isAcceptor&rating=$rating', {},
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return Exchange.fromJson(data['data']);
@@ -80,7 +80,7 @@ class ExchangeService {
   Future<Exchange?> completeExchange(int exchangeId, bool isAcceptor) async {
     Map<String, dynamic> data = await _httpClient.patchRequest(
         '/exchange/$exchangeId?isAcceptor=$isAcceptor', {},
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return Exchange.fromJson(data['data']);

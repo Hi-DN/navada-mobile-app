@@ -10,7 +10,11 @@ class HttpClient {
 
   // final String baseUrl = 'http://172.30.1.71:8080/v1';
 
-  String accessToken = '';
+  static String accessToken = '';
+
+  static void setAccessToken(String token) {
+    accessToken = token;
+  }
 
   factory HttpClient() {
     return _instance;
@@ -22,7 +26,7 @@ class HttpClient {
       {bool tokenYn = false}) async {
     http.Response response;
     if (tokenYn) {
-      var headers = {'ACCESS_TOKEN': accessToken};
+      var headers = {"Authorization": accessToken};
       response = await http.get(Uri.parse(baseUrl + url), headers: headers);
     } else {
       response = await http.get(Uri.parse(baseUrl + url));
@@ -41,7 +45,7 @@ class HttpClient {
     if (tokenYn) {
       headers = {
         'Content-Type': 'application/json',
-        'ACCESS_TOKEN': accessToken
+        'Authorization': accessToken
       };
     } else {
       headers = {'Content-Type': 'application/json'};
@@ -61,7 +65,7 @@ class HttpClient {
     if (tokenYn) {
       headers = {
         'Content-Type': 'application/json',
-        'ACCESS_TOKEN': accessToken
+        'Authorization': accessToken
       };
     } else {
       headers = {'Content-Type': 'application/json'};
@@ -81,7 +85,7 @@ class HttpClient {
     if (tokenYn) {
       headers = {
         'Content-Type': 'application/json',
-        'ACCESS_TOKEN': accessToken
+        'Authorization': accessToken
       };
     } else {
       headers = {'Content-Type': 'application/json'};
@@ -101,7 +105,7 @@ class HttpClient {
     if (tokenYn) {
       headers = {
         'Content-Type': 'application/json',
-        'ACCESS_TOKEN': accessToken
+        'Authorization': accessToken
       };
     } else {
       headers = {'Content-Type': 'application/json'};

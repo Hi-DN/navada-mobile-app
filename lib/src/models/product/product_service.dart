@@ -11,7 +11,7 @@ class ProductService {
       int userId, ProductParams productParams) async {
     Map<String, dynamic> data = await _httpClient.postRequest(
         '/user/$userId/product', productParams.toJson(),
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return ProductModel.fromJson(data['data']);
@@ -23,7 +23,7 @@ class ProductService {
   // 상품 단건 조회
   Future<ProductDetailDto?> getProduct(int userId, int productId) async {
     Map<String, dynamic> data = await _httpClient
-        .getRequest('/user/$userId/product/$productId', tokenYn: false);
+        .getRequest('/user/$userId/product/$productId', tokenYn: true);
 
     if (data['success']) {
       return ProductDetailDto.fromJson(data['data']);
@@ -37,7 +37,7 @@ class ProductService {
       int productId, ProductParams productParams) async {
     Map<String, dynamic> data = await _httpClient.patchRequest(
         '/product/$productId', productParams.toJson(),
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return ProductModel.fromJson(data['data']);
@@ -49,7 +49,7 @@ class ProductService {
   // 상품 삭제
   Future<bool> deleteProduct(int productId) async {
     Map<String, dynamic> data =
-        await _httpClient.deleteRequest('/product/$productId', tokenYn: false);
+        await _httpClient.deleteRequest('/product/$productId', tokenYn: true);
 
     if (data['success']) {
       return true;
@@ -61,7 +61,7 @@ class ProductService {
   // 사용자별 상품목록조회
   Future<ProductPageModel> getProductsByUser(int userId, int pageNum) async {
     Map<String, dynamic> data = await _httpClient
-        .getRequest('/user/$userId/products?page=$pageNum', tokenYn: false);
+        .getRequest('/user/$userId/products?page=$pageNum', tokenYn: true);
 
     if (data['success']) {
       return ProductPageModel.fromJson(data);
@@ -75,7 +75,7 @@ class ProductService {
       int userId, int statusCd, int pageNum) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
         '/user/$userId/products?page=$pageNum&productExchangeStatusCds=$statusCd',
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return ProductPageModel.fromJson(data);
@@ -89,7 +89,7 @@ class ProductService {
       int userId, int acceptorProductId) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
         '/user/$userId/products/request?acceptorProductId=$acceptorProductId',
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return ProductPageModel.fromJson(data);
@@ -131,7 +131,7 @@ class ProductService {
         '$productNameStr$categoryStr$lowerCostStr$upperCostStr$myProductIncludedStr$exchangeStatusCdStr$sortStr&page=$pageNum';
 
     Map<String, dynamic> data = await _httpClient
-        .getRequest('/user/$userId/products/search?$paramsStr', tokenYn: false);
+        .getRequest('/user/$userId/products/search?$paramsStr', tokenYn: true);
 
     if (data['success']) {
       return ProductSearchPageModel.fromJson(data);
