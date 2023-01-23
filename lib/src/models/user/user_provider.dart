@@ -38,8 +38,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> signup(String userName, String userNickname, String userPhoneNum,
-      String userAddress) async {
+  Future<bool> signup(String userName, String userNickname, String userPhoneNum, String userAddress) async {
     UserParams params = UserParams(
         userName: userName,
         userNickname: userNickname,
@@ -54,8 +53,8 @@ class UserProvider extends ChangeNotifier {
       return true;
     } catch(e) {
       Exception('signup() fail!');
+      return false;
     }
-    return false;
   }
 
   Future<bool> withdraw(int userId) async {

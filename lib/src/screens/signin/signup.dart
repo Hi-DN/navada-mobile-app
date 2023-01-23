@@ -3,7 +3,6 @@ import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/screens/signIn/signIn.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
-import 'package:navada_mobile_app/src/widgets/custom_navigation_bar.dart';
 import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
@@ -159,7 +158,7 @@ class _SignUpState extends State<SignUp> {
         bool result = await Provider.of<UserProvider>(context, listen: false).signup(userName, userNickname, userPhoneNum, userAddress);
 
         if(result) {
-          Navigator.of(context).pushNamed(CustomNavigationBar.routeName);
+          _showSignupConfirmDialog(context);
         } else {
           _showUserExistsDialog(context);
         }
@@ -185,6 +184,22 @@ class _SignUpState extends State<SignUp> {
       duration: const Duration(seconds: 1),
       content: R16Text(text: snackBarText, textColor: white),
     ));
+  }
+
+  _showSignupConfirmDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const R14Text(text: "Navada Village에 오신 것을 환영합니다!\n로그인하러 가볼까요?!😆🥰❤️"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pushNamedAndRemoveUntil(context, SignIn.routeName, (route)=> false),
+              child: const R14Text(text: "확인", textColor: green),
+            )
+          ],
+        );
+      });
   }
 
   _showUserExistsDialog(BuildContext context) {
