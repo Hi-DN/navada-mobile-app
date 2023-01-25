@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:navada_mobile_app/src/models/api/http_client.dart';
 import 'package:navada_mobile_app/src/models/oauth/signIn_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/signin_provider.dart';
@@ -90,7 +91,7 @@ class SignIn extends StatelessWidget {
             OAuthToken? token = await provider.getKakaoToken();
             if(token != null) {
               KakaoUserInfo kakaoUser = await provider.getKakaoUserInfo(token);
-              handleSignIn(kakaoUser.email, kakaoUser.nickname, SignInPlatform.KAKAO);
+              handleSignIn(kakaoUser.email, SignInPlatform.KAKAO);
             }
           },
         ),
@@ -115,7 +116,7 @@ class SignIn extends StatelessWidget {
             onTap: () async {
               final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
               if(googleUser != null){
-                handleSignIn(googleUser.email, googleUser.displayName ?? "", SignInPlatform.GOOGLE);
+                handleSignIn(googleUser.email, SignInPlatform.GOOGLE);
               }
             },
           ),
@@ -139,15 +140,15 @@ class SignIn extends StatelessWidget {
           ),
           onTap: () async {
             final NaverLoginResult naverUser = await FlutterNaverLogin.logIn();
-            handleSignIn(naverUser.account.email, naverUser.account.nickname, SignInPlatform.NAVER);
+            handleSignIn(naverUser.account.email, SignInPlatform.NAVER);
           },
         ),
       ),
     );
   }
 
-  handleSignIn(String email, String nickname, SignInPlatform platform) async {
-    SignInResponse? response = await Provider.of<SignInProvider>(_context!, listen: false).signInByOAuth(email, nickname, platform);
+  handleSignIn(String email, SignInPlatform platform) async {
+    SignInResponse? response = await Provider.of<SignInProvider>(_context!, listen: false).signInByOAuth(email, platform);
     if (response.user == null) {
       // 회원가입 진행
       Provider.of<UserProvider>(_context!, listen: false).setOAuthInfo(email, platform);
@@ -155,6 +156,7 @@ class SignIn extends StatelessWidget {
 
     } else {
       // 로그인 진행
+      HttpClient.setAccessToken(response.accessToken!);
       Provider.of<UserProvider>(_context!, listen: false).setUser(response.user!, email, platform);
       Navigator.of(_context!).pushNamed(CustomNavigationBar.routeName);
     }

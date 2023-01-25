@@ -12,7 +12,7 @@ class RequestService {
   Future<RequestPageResponse?> getRequestsForMe(int userId, int pageNum) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
         '/acceptor/$userId/exchange/requests?requestStatusCds=0&page=$pageNum',
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return RequestPageResponse.fromJson(data);
@@ -26,7 +26,7 @@ class RequestService {
       int userId, int pageNum) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
         '/acceptor/$userId/exchange/requests?requestStatusCds=0,2&page=$pageNum',
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return RequestPageResponse.fromJson(data);
@@ -40,7 +40,7 @@ class RequestService {
       int productId, int userId) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
         '/product/$productId/exchange/request?userId=$userId',
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return RequestListResponse.fromJson(data);
@@ -54,7 +54,7 @@ class RequestService {
       int productId, int pageNum) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
         '/exchange/request/product/$productId?page=$pageNum',
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return RequestPageResponse.fromJson(data);
@@ -68,7 +68,7 @@ class RequestService {
       int userId, int pageNum) async {
     Map<String, dynamic> data = await _httpClient.getRequest(
         '/requester/$userId/exchange/requests?&page=$pageNum',
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return RequestPageResponse.fromJson(data);
@@ -80,7 +80,8 @@ class RequestService {
   // 교환 신청 취소
   Future<bool> deleteRequest(int requestId) async {
     Map<String, dynamic> data =
-        await _httpClient.deleteRequest('/exchange/request/$requestId');
+        await _httpClient.deleteRequest('/exchange/request/$requestId',
+        tokenYn: true);
 
     if (data['success']) {
       return true;
@@ -93,7 +94,7 @@ class RequestService {
   Future<RequestDto?> deleteDeniedRequestByAcceptor(int requestId) async {
     Map<String, dynamic> data = await _httpClient.patchRequest(
         '/exchange/request/$requestId/delete?isAcceptor=true', {},
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return RequestDto.fromJson(data['data']);
@@ -106,7 +107,7 @@ class RequestService {
   Future<RequestDto?> deleteDeniedRequestByRequester(int requestId) async {
     Map<String, dynamic> data = await _httpClient.patchRequest(
         '/exchange/request/$requestId/delete?isAcceptor=false', {},
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return RequestDto.fromJson(data['data']);
@@ -120,7 +121,7 @@ class RequestService {
       int requesterProductId, int acceptorProductId) async {
     Map<String, dynamic> data = await _httpClient.postRequest(
         '/exchange/request/$requesterProductId/$acceptorProductId', {},
-        tokenYn: false);
+        tokenYn: true);
 
     if (data['success']) {
       return RequestDto.fromJson(data['data']);
@@ -132,7 +133,7 @@ class RequestService {
   //교환 신청 수락
   Future<ExchangeSingleResponse?> acceptRequest(int requestId) async {
     Map<String, dynamic> data = await _httpClient
-        .postRequest('/exchange/request/$requestId', {}, tokenYn: false);
+        .postRequest('/exchange/request/$requestId', {}, tokenYn: true);
 
     if (data['success']) {
       return ExchangeSingleResponse.fromJson(data);
@@ -144,7 +145,7 @@ class RequestService {
   //교환 신청 거절
   Future<bool> rejectRequest(int requestId) async {
     Map<String, dynamic> data = await _httpClient
-        .patchRequest('/exchange/request/$requestId/reject', {}, tokenYn: false);
+        .patchRequest('/exchange/request/$requestId/reject', {}, tokenYn: true);
 
     if (data['success']) {
       return true;

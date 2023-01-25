@@ -13,8 +13,7 @@ class UserService {
         '/signin/kakao', 
         {
           "accessToken" : kakaoAccessToken
-        },
-        tokenYn: false);
+        });
 
     if (response['success']) {
       return SignInResponse.fromJson(response['data']);
@@ -24,12 +23,11 @@ class UserService {
   }
 
   // 회원 존재여부 (구글, 네이버 로그인)
-  Future<SignInResponse> signInByOAuth(String userEmail, String userNickname, SignInPlatform platform) async {
+  Future<SignInResponse> signInByOAuth(String userEmail, SignInPlatform platform) async {
     Map<String, dynamic> response = await _httpClient.postRequest(
         '/signin/oauth', 
         {
           "userEmail" : userEmail,
-          "userNickname": userNickname,
           "signInPlatform": platform.name
         },
         tokenYn: false);
@@ -45,7 +43,7 @@ class UserService {
   Future<UserDto> signup(UserParams params) async {
     Map<String, dynamic> response = await _httpClient.postRequest(
         '/signup', params.toJson(),
-        tokenYn: false);
+        tokenYn: true);
 
     if (response['success']) {
       return UserDto.fromJson(response['data']);
@@ -57,7 +55,8 @@ class UserService {
   // 회원 단건 조회(상품 ID)
   Future<UserModel> getUserByProductId(int productId) async {
     Map<String, dynamic> data =
-        await _httpClient.getRequest('/user?productId=$productId');
+        await _httpClient.getRequest('/user?productId=$productId',
+        tokenYn: true);
 
     if (data['success']) {
       return UserModel.fromJson(data);
@@ -69,7 +68,7 @@ class UserService {
   // 회원 탈퇴
   Future<bool> withdraw(int userId) async {
     Map<String, dynamic> response = await _httpClient.deleteRequest(
-        '/user/$userId', tokenYn: false);
+        '/user/$userId', tokenYn: true);
 
     if (response['success']) {
       return true;
