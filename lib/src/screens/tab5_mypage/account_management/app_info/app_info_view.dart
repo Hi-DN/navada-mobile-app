@@ -29,13 +29,17 @@ class AppInfoView extends StatelessWidget {
         ],
         builder: (context, child) => Container(
           margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _faqSection(context),
-              const Space(height: 20.0),
-              _contactSection()
-            ],
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _faqSection(context),
+                const Space(height: 20.0),
+                _contactSection(),
+                const Space(height: 20.0),
+              ],
+            ),
           ),
         ),
       ),
