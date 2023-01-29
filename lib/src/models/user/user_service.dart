@@ -52,6 +52,18 @@ class UserService {
     }
   }
 
+  // 로그아웃
+  Future<bool> signOut(int userId) async {
+    Map<String, dynamic> response = await _httpClient.deleteRequest(
+        '/user/$userId/signout', tokenYn: true);
+
+    if (response['success']) {
+      return true;
+    } else {
+      throw Exception('signOut() fail!');
+    }
+  }
+
   // 회원 단건 조회(상품 ID)
   Future<UserModel> getUserByProductId(int productId) async {
     Map<String, dynamic> data =

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:navada_mobile_app/src/models/api/token/token_dto.dart';
 
 class HttpClient {
   static final HttpClient _instance = HttpClient._internal();
@@ -11,9 +12,14 @@ class HttpClient {
   // final String baseUrl = 'http://172.30.1.71:8080/v1';
 
   static String accessToken = '';
+  static String refreshToken = '';
 
   static void setAccessToken(String token) {
     accessToken = token;
+  }
+
+  static void setRefreshToken(String token) {
+    refreshToken = token;
   }
 
   factory HttpClient() {
@@ -32,8 +38,17 @@ class HttpClient {
       response = await http.get(Uri.parse(baseUrl + url));
     }
     _printResponseToApiRequest(response, url);
+  
+    if(response.statusCode == 403) {
+      await getNewAccessToken();
 
-    return jsonDecode(utf8.decode(response.bodyBytes));
+      var headers = {"Authorization": accessToken};
+      response = await http.get(Uri.parse(baseUrl + url), headers: headers);
+    }
+
+    return jsonDecode(utf8.decode(response.bodyBytes));  
+    
+    
   }
 
   Future<Map<String, dynamic>> postRequest(
@@ -50,10 +65,16 @@ class HttpClient {
     } else {
       headers = {'Content-Type': 'application/json'};
     }
-    response = await http.post(Uri.parse(baseUrl + url),
-        body: jsonEncode(body), headers: headers);
+    response = await http.post(Uri.parse(baseUrl + url), body: jsonEncode(body), headers: headers);
 
     _printResponseToApiRequest(response, url);
+
+    if(response.statusCode == 403) {
+      await getNewAccessToken();
+
+      var headers = {"Authorization": accessToken};
+      response = await http.post(Uri.parse(baseUrl + url), body: jsonEncode(body), headers: headers);
+    }
 
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
@@ -70,10 +91,16 @@ class HttpClient {
     } else {
       headers = {'Content-Type': 'application/json'};
     }
-    response = await http.put(Uri.parse(baseUrl + url),
-        headers: headers, body: jsonEncode(body));
+    response = await http.put(Uri.parse(baseUrl + url), headers: headers, body: jsonEncode(body));
 
     _printResponseToApiRequest(response, url);
+
+    if(response.statusCode == 403) {
+      await getNewAccessToken();
+
+      var headers = {"Authorization": accessToken};
+      response = await http.put(Uri.parse(baseUrl + url), headers: headers, body: jsonEncode(body));
+    }
 
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
@@ -94,6 +121,13 @@ class HttpClient {
 
     _printResponseToApiRequest(response, url);
 
+    if(response.statusCode == 403) {
+      await getNewAccessToken();
+
+      var headers = {"Authorization": accessToken};
+      response = await http.delete(Uri.parse(baseUrl + url), headers: headers);
+    }
+
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
@@ -110,18 +144,29 @@ class HttpClient {
     } else {
       headers = {'Content-Type': 'application/json'};
     }
-    response = await http.patch(Uri.parse(baseUrl + url),
-        headers: headers, body: jsonEncode(body));
+    response = await http.patch(Uri.parse(baseUrl + url), headers: headers, body: jsonEncode(body));
 
     _printResponseToApiRequest(response, url);
 
+    if(response.statusCode == 403) {
+      await getNewAccessToken();
+
+      var headers = {"Authorization": accessToken};
+      response = await http.patch(Uri.parse(baseUrl + url), headers: headers, body: jsonEncode(body));
+    }
+
     return jsonDecode(utf8.decode(response.bodyBytes));
+  }
+
+  Future<void> getNewAccessToken() async {
+    Map<String, dynamic> data = await postRequest("/refresh", { "refreshToken": refreshToken});
+    TokenDto token =  TokenDto.fromJson(data['data']);
+    setAccessToken(token.accessToken!);
   }
 
   void _printResponseToApiRequest(http.Response response, String url) {
     debugPrint('url : ${baseUrl + url}');
     debugPrint('statusCode : ${response.statusCode}');
-    // debugPrint('response body : ${utf8.decode(response.bodyBytes)}');
     printJson(utf8.decode(response.bodyBytes));
   }
 
