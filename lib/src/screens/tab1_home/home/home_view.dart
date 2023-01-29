@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
+import 'package:navada_mobile_app/src/screens/tab1_home/notification/notification_view.dart';
 import 'package:navada_mobile_app/src/screens/tab1_home/products_by_category/products_by_category_view.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
@@ -53,8 +54,9 @@ class _HomeTopBar extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: size.getSize(10)),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [_logo()],
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [_logo(), const NotificationSection()],
       ),
     );
   }
@@ -65,6 +67,55 @@ class _HomeTopBar extends StatelessWidget {
       'assets/images/logo.png',
       width: size.getSize(110.0),
       height: size.getSize(50.0),
+    );
+  }
+}
+
+class NotificationSection extends StatelessWidget {
+  const NotificationSection({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    //fixme 수정 필요!
+    bool notify = true;
+
+    return SizedBox(
+        width: 30.0,
+        height: 30.0,
+        child: notify
+            ? _customNotificationIcon(context)
+            : _notificationIcon(context));
+  }
+
+  Widget _customNotificationIcon(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          alignment: Alignment.topRight,
+          child: const Icon(
+            Icons.circle,
+            color: green,
+            size: 8.0,
+          ),
+        ),
+        _notificationIcon(context)
+      ],
+    );
+  }
+
+  Widget _notificationIcon(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      child: IconButton(
+        icon: const Icon(Icons.notifications_none),
+        iconSize: 25.0,
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(),
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const NotificationView()));
+        },
+      ),
     );
   }
 }
@@ -173,8 +224,7 @@ class _CategorySection extends StatelessWidget {
 }
 
 class _CategoryIconsRow extends StatelessWidget {
-  _CategoryIconsRow({Key? key, this.children})
-      : super(key: key);
+  _CategoryIconsRow({Key? key, this.children}) : super(key: key);
 
   late int? rowNum;
   final List<Widget>? children;

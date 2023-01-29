@@ -7,8 +7,9 @@ class HeartService {
   //회원별 좋아요 목록 조회
   Future<HeartListModel> getHeartsByUser(
       int userId, bool showAll, int page) async {
-    Map<String, dynamic> data = await _httpClient
-        .getRequest('/user/$userId/hearts?showAll=$showAll&page=$page');
+    Map<String, dynamic> data = await _httpClient.getRequest(
+        '/user/$userId/hearts?showAll=$showAll&page=$page',
+        tokenYn: true);
 
     if (data['success']) {
       return HeartListModel.fromJson(data);
@@ -20,7 +21,8 @@ class HeartService {
 //좋아요 등록
   Future<void> saveHeart(int productId, int userId) async {
     Map<String, dynamic> data = await _httpClient.postRequest(
-        '/product/$productId/heart?userId=$userId', <String, dynamic>{});
+        '/product/$productId/heart?userId=$userId', <String, dynamic>{},
+        tokenYn: true);
 
     if (data['success']) {
       return;
@@ -32,7 +34,7 @@ class HeartService {
 //좋아요 취소 by heartId
   Future<bool> deleteHeartByHeartId(int heartId) async {
     Map<String, dynamic> data =
-        await _httpClient.deleteRequest('/heart/$heartId');
+        await _httpClient.deleteRequest('/heart/$heartId', tokenYn: true);
 
     if (data['success']) {
       return true;
@@ -43,8 +45,9 @@ class HeartService {
 
 //좋아요 취소 by product and user
   Future<bool> deleteHeartByProductAndUser(int productId, int userId) async {
-    Map<String, dynamic> data = await _httpClient
-        .deleteRequest('/product/$productId/heart?userId=$userId');
+    Map<String, dynamic> data = await _httpClient.deleteRequest(
+        '/product/$productId/heart?userId=$userId',
+        tokenYn: true);
 
     if (data['success']) {
       return true;

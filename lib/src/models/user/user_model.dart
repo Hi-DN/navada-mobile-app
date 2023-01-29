@@ -30,21 +30,21 @@ class UserModel {
 }
 
 class User {
-  User({
-    this.createdDate,
-    this.modifiedDate,
-    this.userId,
-    this.userName,
-    this.userNickname,
-    this.userEmail,
-    this.userPhoneNum,
-    this.userAddress,
-    this.userLevel,
-    this.userRating,
-    this.userTradeCount,
-    this.userRatingCount,
-    this.signInPlatform,
-  });
+  User(
+      {this.createdDate,
+      this.modifiedDate,
+      this.userId,
+      this.userName,
+      this.userNickname,
+      this.userEmail,
+      this.userPhoneNum,
+      this.userAddress,
+      this.userLevel,
+      this.userRating,
+      this.userTradeCount,
+      this.userRatingCount,
+      this.signInPlatform,
+      this.userNotificationReadYn});
   late String? createdDate;
   late String? modifiedDate;
   late int? userId;
@@ -58,6 +58,7 @@ class User {
   late int? userTradeCount;
   late int? userRatingCount;
   late SignInPlatform? signInPlatform;
+  late bool? userNotificationReadYn;
 
   User.fromJson(Map<String, dynamic> json) {
     createdDate = json['createdDate'];
@@ -71,6 +72,7 @@ class User {
     userRating = json['userRating'];
     userTradeCount = json['userTradeCount'];
     userRatingCount = json['userRatingCount'];
+    userNotificationReadYn = json['userNotificationReadYn'];
   }
 
   Map<String, dynamic> toJson() {
@@ -86,6 +88,7 @@ class User {
     data['userRating'] = userRating;
     data['userTradeCount'] = userTradeCount;
     data['userRatingCount'] = userRatingCount;
+    data['userNotificationReadYn'] = userNotificationReadYn;
     return data;
   }
 }
@@ -140,14 +143,13 @@ class UserDto {
 }
 
 class UserParams {
-  UserParams({
-    required this.userName,
-    required this.userNickname,
-    required this.userPhoneNum,
-    required this.userAddress,
-    required this.userEmail,
-    required this.signInPlatform
-  });
+  UserParams(
+      {required this.userName,
+      required this.userNickname,
+      required this.userPhoneNum,
+      required this.userAddress,
+      required this.userEmail,
+      required this.signInPlatform});
   late final String userName;
   late final String userNickname;
   late final String userEmail;

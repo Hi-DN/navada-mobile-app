@@ -127,9 +127,28 @@ enum DataState {
 }
 
 enum SignInPlatform {
-  KAKAO, GOOGLE, NAVER, NONE;
+  KAKAO,
+  GOOGLE,
+  NAVER,
+  NONE;
 
   static SignInPlatform strToEnum(String str) {
     return SignInPlatform.values.byName(str);
+  }
+}
+
+enum NotificationType {
+  ACCEPTED_NOTI('교환 수락 알림'),
+  DENIED_NOTI('교환 거절 알림'),
+  COMPLETE_NOTI('교환 완료 알림'),
+  PERIODIC_COMPLETE_NOTI('교환 완료 요청'),
+  PRODUCT_DELETION_NOTI('요청 취소 알림'),
+  EXCHANGE_CANCELED_NOTI('교환 취소 알림');
+
+  const NotificationType(this.label);
+  final String label;
+
+  static NotificationType strToEnum(String str) {
+    return NotificationType.values.byName(str);
   }
 }
