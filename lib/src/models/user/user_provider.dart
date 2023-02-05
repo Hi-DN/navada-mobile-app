@@ -57,6 +57,16 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> modifyUser(int userId, UserParams userParams) async {
+    UserDto? modifiedUser = await _userService.modifyUser(userId, userParams);
+    if (modifiedUser != null) {
+      setUserInfo(modifiedUser);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> withdraw(int userId) async {
     return await _userService.withdraw(userId);
   }

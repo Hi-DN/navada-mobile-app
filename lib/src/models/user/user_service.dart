@@ -46,6 +46,18 @@ class UserService {
     }
   }
 
+  // 회원 정보 수정
+  Future<UserDto?> modifyUser(int userId, UserParams params) async {
+    Map<String, dynamic> response = await _httpClient
+        .putRequest('/user/$userId', params.toJson(), tokenYn: true);
+
+    if (response['success']) {
+      return UserDto.fromJson(response['data']);
+    } else {
+      return null;
+    }
+  }
+
   // 회원 단건 조회(상품 ID)
   Future<UserModel> getUserByProductId(int productId) async {
     Map<String, dynamic> data = await _httpClient

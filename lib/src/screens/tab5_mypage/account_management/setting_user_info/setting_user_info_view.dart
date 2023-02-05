@@ -7,6 +7,7 @@ import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
+import 'package:provider/provider.dart';
 
 class SettingUserInfoView extends StatelessWidget {
   const SettingUserInfoView({Key? key}) : super(key: key);
@@ -29,17 +30,19 @@ class SettingUserInfoView extends StatelessWidget {
 
   Widget _buildBody(BuildContext context) {
     User user = UserProvider.user;
-    return Column(
-      children: [
-        _setInfo('이름', user.userName!),
-        _setInfo('닉네임', user.userNickname!),
-        _setInfo('이메일', user.userEmail!),
-        _setInfo('휴대폰번호', user.userPhoneNum!),
-        _setInfo('주소', user.userAddress!),
-        const Expanded(child: SizedBox()),
-        _modifyButton(context)
-      ],
-    );
+    return Consumer<UserProvider>(builder: (context, provider, child) {
+      return Column(
+        children: [
+          _setInfo('이름', user.userName!),
+          _setInfo('닉네임', user.userNickname!),
+          _setInfo('이메일', user.userEmail!),
+          _setInfo('휴대폰번호', user.userPhoneNum!),
+          _setInfo('주소', user.userAddress!),
+          const Expanded(child: SizedBox()),
+          _modifyButton(context)
+        ],
+      );
+    });
   }
 
   Widget _setInfo(String label, String value) {

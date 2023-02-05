@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
+import 'package:provider/provider.dart';
 
 class ModifyUserInfoView extends StatelessWidget {
   ModifyUserInfoView({Key? key}) : super(key: key);
 
-  // User user = UserProvider().user;
   final TextEditingController _nickNameController =
       TextEditingController(text: UserProvider.user.userNickname);
-  final TextEditingController _emailController =
-      TextEditingController(text: UserProvider.user.userEmail);
   final TextEditingController _phoneNumController =
       TextEditingController(text: UserProvider.user.userPhoneNum);
   final TextEditingController _addressController =
@@ -32,10 +31,11 @@ class ModifyUserInfoView extends StatelessWidget {
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Column(children: [
               _userInfoSection(),
               const Space(height: 200.0),
-              _modifyButton()
+              _modifyButton(context)
             ]),
           ),
         ),
@@ -47,15 +47,15 @@ class ModifyUserInfoView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _setField('닉네임', _nickNameController),
-        _setField('이메일', _emailController),
-        _setField('휴대폰 번호', _phoneNumController),
-        _setField('주소', _addressController),
+        _setField('닉네임', "닉네임은 10자 이내로 설정 가능합니다.", _nickNameController),
+        _setField('휴대폰 번호', "'010-0000-0000' 형식으로 입력해주세요", _phoneNumController),
+        _setField('주소', "'OO시 OO구' 형식으로 입력해주세요", _addressController),
       ],
     );
   }
 
-  Widget _setField(String label, TextEditingController controller) {
+  Widget _setField(
+      String label, String? helperText, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -63,9 +63,9 @@ class ModifyUserInfoView extends StatelessWidget {
         B18Text(text: label),
         const Space(height: 10.0),
         SizedBox(
-          height: 50.0,
+          height: 70.0,
           child: TextField(
-            decoration: _inputDecoration(),
+            decoration: _inputDecoration(helperText),
             textAlignVertical: TextAlignVertical.center,
             controller: controller,
             keyboardType: TextInputType.text,
@@ -75,32 +75,62 @@ class ModifyUserInfoView extends StatelessWidget {
     );
   }
 
-  Widget _modifyButton() {
+  Widget _modifyButton(BuildContext context) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+    User user = UserProvider.user;
+
     return Container(
       alignment: Alignment.bottomCenter,
       child: LongCircledBtn(
         text: '수정하기',
         backgroundColor: navy,
-        onTap: () {},
+        onTap: () async {
+          UserParams userParams = UserParams(
+              signInPlatform: user.signInPlatform!,
+              userName: user.userName!,
+              userEmail: user.userEmail!,
+              userNickname: _nickNameController.value.text,
+              userPhoneNum: _phoneNumController.value.text,
+              userAddress: _addressController.value.text);
+
+          bool success = await Provider.of<UserProvider>(context, listen: false)
+              .modifyUser(user.userId!, userParams);
+
+          if (success) {
+            scaffoldMessenger.showSnackBar(const SnackBar(
+              duration: Duration(seconds: 1),
+              content: R16Text(text: '수정이 완료되었습니다 :D', textColor: white),
+            ));
+            navigator.pop();
+          } else {
+            scaffoldMessenger.showSnackBar(const SnackBar(
+              duration: Duration(seconds: 1),
+              content: R16Text(
+                  text: '수정에 실패했습니다. 잠시 후 다시 시도해주세요.', textColor: white),
+            ));
+          }
+        },
       ),
     );
   }
 
-  InputDecoration _inputDecoration() {
-    return const InputDecoration(
+  InputDecoration _inputDecoration(String? helperText) {
+    return InputDecoration(
         hintText: '* 필수 항목입니다.',
-        hintStyle: TextStyle(color: Colors.redAccent, fontSize: 14.0),
-        focusedBorder: OutlineInputBorder(
+        helperText: helperText,
+        hintStyle: const TextStyle(color: Colors.redAccent, fontSize: 14.0),
+        focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
           borderSide: BorderSide(width: 1, color: green),
         ),
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
           borderSide: BorderSide(width: 1, color: Color(0xFFB7B7B7)),
         ),
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
         ),
-        contentPadding: EdgeInsets.only(left: 10.0));
+        contentPadding: const EdgeInsets.only(left: 10.0));
   }
 }
