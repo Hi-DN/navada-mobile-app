@@ -76,15 +76,23 @@ class NotificationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //fixme 수정 필요!
-    bool notify = true;
-
     return SizedBox(
-        width: 30.0,
-        height: 30.0,
-        child: notify
-            ? _customNotificationIcon(context)
-            : _notificationIcon(context));
+      width: 30.0,
+      height: 30.0,
+      child: _buildIcon(context),
+    );
+  }
+
+  Widget _buildIcon(BuildContext context) {
+    Provider.of<UserProvider>(context, listen: false)
+        .fetchUserNotiReadYn(UserProvider.user.userId!);
+    return Consumer<UserProvider>(builder: (context, provider, child) {
+      return provider.userNotiReadYn != null
+          ? provider.userNotiReadYn!
+              ? _notificationIcon(context)
+              : _customNotificationIcon(context)
+          : _notificationIcon(context);
+    });
   }
 
   Widget _customNotificationIcon(BuildContext context) {
@@ -112,6 +120,8 @@ class NotificationSection extends StatelessWidget {
         padding: EdgeInsets.zero,
         constraints: const BoxConstraints(),
         onPressed: () {
+          Provider.of<UserProvider>(context, listen: false)
+              .setUserNotiReadYnTrue(UserProvider.user.userId!);
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => const NotificationView()));
         },
