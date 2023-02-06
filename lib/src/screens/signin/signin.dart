@@ -157,6 +157,7 @@ class SignIn extends StatelessWidget {
     } else {
       // 로그인 진행
       HttpClient.setAccessToken(response.accessToken!);
+      HttpClient.setRefreshToken(response.refreshToken!);
       Provider.of<UserProvider>(_context!, listen: false).setUser(response.user!, email, platform);
       Navigator.of(_context!).pushNamed(CustomNavigationBar.routeName);
     }

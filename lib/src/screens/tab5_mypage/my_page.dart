@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/providers/signin_provider.dart';
 import 'package:navada_mobile_app/src/screens/signin/signin.dart';
 import 'package:navada_mobile_app/src/screens/tab5_mypage/account_management/app_info/app_info_view.dart';
 import 'package:navada_mobile_app/src/screens/tab5_mypage/account_management/setting_user_info/setting_user_info_view.dart';
@@ -169,9 +170,9 @@ class _AccountManagement extends StatelessWidget {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const AppInfoView()));
         }),
-        _listTile("로그아웃", () {
-          Navigator.pushNamedAndRemoveUntil(
-              context, SignIn.routeName, (route) => false);
+        _listTile("로그아웃", () async {
+          await Provider.of<SignInProvider>(context, listen: false).signOut(UserProvider.user.userId!);
+          Navigator.pushNamedAndRemoveUntil(context, SignIn.routeName, (route) => false);
         }),
         _listTile("회원 탈퇴", () {
           _showWithdrawalConfirmDialog(context);

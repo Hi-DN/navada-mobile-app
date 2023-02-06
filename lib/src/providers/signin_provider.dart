@@ -60,6 +60,10 @@ class SignInProvider with ChangeNotifier {
   Future<SignInResponse> signInByOAuth(String email, SignInPlatform platform) async {
     return await userService.signInByOAuth(email, platform);
   }
+
+  Future<void> signOut(int email) async {
+    await userService.signOut(email);
+  }
 }
 
 class KakaoUserInfo {

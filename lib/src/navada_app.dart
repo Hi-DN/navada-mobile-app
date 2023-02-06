@@ -11,7 +11,8 @@ import 'package:navada_mobile_app/src/widgets/custom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
 class NavadaApp extends StatelessWidget {
-  const NavadaApp({Key? key}) : super(key: key);
+  const NavadaApp({Key? key, required this.navigatorKey}) : super(key: key);
+  final GlobalKey<NavigatorState> navigatorKey;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +25,7 @@ class NavadaApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => MyProductsProvider()),
         ],
         child: MaterialApp(
+          navigatorKey: navigatorKey,
           title: 'Navada',
           theme: ThemeData(
             primarySwatch: Colors.green,
