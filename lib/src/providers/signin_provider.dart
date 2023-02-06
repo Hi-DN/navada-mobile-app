@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:navada_mobile_app/src/models/api/http_client.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:navada_mobile_app/src/models/oauth/signIn_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_service.dart';
@@ -62,6 +63,8 @@ class SignInProvider with ChangeNotifier {
   }
 
   Future<void> signOut(int email) async {
+    HttpClient.setAccessToken("");
+    HttpClient.setRefreshToken("");
     await userService.signOut(email);
   }
 }
