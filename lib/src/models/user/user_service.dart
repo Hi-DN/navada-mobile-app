@@ -46,6 +46,18 @@ class UserService {
     }
   }
 
+  // 로그아웃
+  Future<bool> signOut(int userId) async {
+    Map<String, dynamic> response = await _httpClient.deleteRequest(
+        '/user/$userId/signout', tokenYn: true);
+
+    if (response['success']) {
+      return true;
+    } else {
+      throw Exception('signOut() fail!');
+    }
+  }
+
   // 회원 정보 수정
   Future<UserDto?> modifyUser(int userId, UserParams params) async {
     Map<String, dynamic> response = await _httpClient
