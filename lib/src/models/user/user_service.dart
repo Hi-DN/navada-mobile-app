@@ -46,6 +46,18 @@ class UserService {
     }
   }
 
+  // 닉네임 사용가능여부 확인
+  Future<bool> checkNicknameUsable(String nickname) async {
+    Map<String, dynamic> response = await _httpClient.getRequest(
+        '/signup/check?nickname=$nickname', tokenYn: true);
+
+    if (response['success']) {
+      return response['data'];
+    } else {
+      throw Exception('signOut() fail!');
+    }
+  }
+
   // 로그아웃
   Future<bool> signOut(int userId) async {
     Map<String, dynamic> response = await _httpClient.deleteRequest(
