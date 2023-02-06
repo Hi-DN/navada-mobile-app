@@ -21,10 +21,10 @@ class UserService {
 
   // 회원 존재여부 (구글, 네이버 로그인)
   Future<SignInResponse> signInByOAuth(
-      String userEmail, SignInPlatform platform) async {
+      String accessToken, SignInPlatform platform) async {
     Map<String, dynamic> response = await _httpClient.postRequest(
         '/signin/oauth',
-        {"userEmail": userEmail, "signInPlatform": platform.name},
+        {"accessToken": accessToken, "signInPlatform": platform.name},
         tokenYn: false);
 
     if (response['success']) {
