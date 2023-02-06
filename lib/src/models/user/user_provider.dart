@@ -4,7 +4,6 @@ import 'package:navada_mobile_app/src/models/user/user_service.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
 class UserProvider extends ChangeNotifier {
-
   static User user = User();
 
   final UserService _userService = UserService();
@@ -38,7 +37,8 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> signup(String userName, String userNickname, String userPhoneNum, String userAddress) async {
+  Future<bool> signup(String userName, String userNickname, String userPhoneNum,
+      String userAddress) async {
     UserParams params = UserParams(
         userName: userName,
         userNickname: userNickname,
@@ -51,13 +51,40 @@ class UserProvider extends ChangeNotifier {
       UserDto newUser = await _userService.signup(params);
       setUserInfo(newUser);
       return true;
-    } catch(e) {
+    } catch (e) {
       Exception('signup() fail!');
+      return false;
+    }
+  }
+
+  Future<bool> modifyUser(int userId, UserParams userParams) async {
+    UserDto? modifiedUser = await _userService.modifyUser(userId, userParams);
+    if (modifiedUser != null) {
+      setUserInfo(modifiedUser);
+      return true;
+    } else {
       return false;
     }
   }
 
   Future<bool> withdraw(int userId) async {
     return await _userService.withdraw(userId);
+  }
+
+  // ======= 알림 확인 여부
+  bool? _userNotiReadYn;
+  bool? get userNotiReadYn => _userNotiReadYn;
+
+  fetchUserNotiReadYn(int userId) async {
+    _userNotiReadYn = await _userService.getNotiReadYnByUser(userId);
+    notifyListeners();
+  }
+
+  setUserNotiReadYnTrue(int userId) async {
+    bool? result = await _userService.patchNotiReadYnTrue(userId);
+    if (result!) {
+      _userNotiReadYn = true;
+      notifyListeners();
+    }
   }
 }

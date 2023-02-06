@@ -44,45 +44,47 @@ class _UserProfile extends StatelessWidget {
     ScreenSize size = ScreenSize();
     User user = UserProvider.user;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: size.getSize(27)),
-      child: Column(
-        children: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Row(
-              children: [
-                Icon(Icons.face, color: green, size: size.getSize(48)),
-                const Space(width: 18),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    B16Text(text: user.userNickname),
-                    const Space(height: 2),
-                    R14Text(text: user.userLevel!.label),
-                    const Space(height: 2),
-                    Row(
-                      children: [
-                        Icon(Icons.location_on,
-                            size: size.getSize(15), color: grey183),
-                        const Space(width: 2),
-                        R14Text(text: user.userAddress, textColor: grey183),
-                      ],
-                    )
-                  ],
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Icon(Icons.star_rate_rounded, color: green),
-                R16Text(text: user.userRating.toString()),
-                const Space(width: 8)
-              ],
-            )
-          ]),
-        ],
-      ),
-    );
+    return Consumer<UserProvider>(builder: (context, provider, child) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: size.getSize(27)),
+        child: Column(
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Row(
+                children: [
+                  Icon(Icons.face, color: green, size: size.getSize(48)),
+                  const Space(width: 18),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      B16Text(text: user.userNickname),
+                      const Space(height: 2),
+                      R14Text(text: user.userLevel!.label),
+                      const Space(height: 2),
+                      Row(
+                        children: [
+                          Icon(Icons.location_on,
+                              size: size.getSize(15), color: grey183),
+                          const Space(width: 2),
+                          R14Text(text: user.userAddress, textColor: grey183),
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Icon(Icons.star_rate_rounded, color: green),
+                  R16Text(text: user.userRating.toString()),
+                  const Space(width: 8)
+                ],
+              )
+            ]),
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -168,7 +170,8 @@ class _AccountManagement extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const AppInfoView()));
         }),
         _listTile("로그아웃", () {
-          Navigator.pushNamedAndRemoveUntil(context, SignIn.routeName, (route)=> false);
+          Navigator.pushNamedAndRemoveUntil(
+              context, SignIn.routeName, (route) => false);
         }),
         _listTile("회원 탈퇴", () {
           _showWithdrawalConfirmDialog(context);
@@ -195,27 +198,30 @@ class _AccountManagement extends StatelessWidget {
 
   _showWithdrawalConfirmDialog(BuildContext context) {
     return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: const R14Text(text: "정말로 탈퇴하시겠습니까? ㅜ.ㅜ"),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const R14Text(text: "취소", textColor: grey153),
-            ),
-            TextButton(
-              onPressed: () async { 
-                bool result = await Provider.of<UserProvider>(context, listen: false).withdraw(UserProvider.user.userId!);
-                if(result) {
-                  Navigator.pushNamedAndRemoveUntil(context, SignIn.routeName, (route)=> false);
-                }
-              },
-              child: const R14Text(text: "확인", textColor: red),
-            )
-          ],
-        );
-      });
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: const R14Text(text: "정말로 탈퇴하시겠습니까? ㅜ.ㅜ"),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const R14Text(text: "취소", textColor: grey153),
+              ),
+              TextButton(
+                onPressed: () async {
+                  bool result =
+                      await Provider.of<UserProvider>(context, listen: false)
+                          .withdraw(UserProvider.user.userId!);
+                  if (result) {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, SignIn.routeName, (route) => false);
+                  }
+                },
+                child: const R14Text(text: "확인", textColor: red),
+              )
+            ],
+          );
+        });
   }
 }
 

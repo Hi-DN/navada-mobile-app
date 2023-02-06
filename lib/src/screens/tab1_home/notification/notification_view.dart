@@ -28,8 +28,9 @@ class NotificationView extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
+    int userId = UserProvider.user.userId!;
     Provider.of<NotificationProvider>(context, listen: false)
-        .fetchNotifications(UserProvider.user.userId!);
+        .fetchNotifications(userId);
 
     return Consumer<NotificationProvider>(builder: (context, provider, child) {
       return provider.notificationListModel != null
