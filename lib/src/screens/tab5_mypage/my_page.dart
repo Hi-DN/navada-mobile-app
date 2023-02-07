@@ -171,7 +171,7 @@ class _AccountManagement extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const AppInfoView()));
         }),
         _listTile("로그아웃", () async {
-          await Provider.of<SignInProvider>(context, listen: false).signOut(UserProvider.user.userId!);
+          await Provider.of<SignInProvider>(context, listen: false).signOut();
           Navigator.pushNamedAndRemoveUntil(context, SignIn.routeName, (route) => false);
         }),
         _listTile("회원 탈퇴", () {
@@ -210,12 +210,9 @@ class _AccountManagement extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () async {
-                  bool result =
-                      await Provider.of<UserProvider>(context, listen: false)
-                          .withdraw(UserProvider.user.userId!);
+                  bool result =await Provider.of<SignInProvider>(context, listen: false).withdraw();
                   if (result) {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, SignIn.routeName, (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(context, SignIn.routeName, (route) => false);
                   }
                 },
                 child: const R14Text(text: "확인", textColor: red),

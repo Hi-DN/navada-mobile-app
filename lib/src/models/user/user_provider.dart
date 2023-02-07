@@ -67,10 +67,6 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> withdraw(int userId) async {
-    return await _userService.withdraw(userId);
-  }
-
   // ======= 알림 확인 여부
   bool? _userNotiReadYn;
   bool? get userNotiReadYn => _userNotiReadYn;
