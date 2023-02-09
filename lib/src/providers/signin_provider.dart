@@ -1,12 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:navada_mobile_app/src/models/api/http_client.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:navada_mobile_app/src/models/oauth/signIn_model.dart';
+import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/models/user/user_service.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
 
@@ -57,8 +61,58 @@ class SignInProvider with ChangeNotifier {
     return KakaoUserInfo(email, nickname);
   }
 
+  Future<bool> checkNicknameUsable(String nickname) async {
+    return await userService.checkNicknameUsable(nickname);
+  }
+
   Future<SignInResponse> signInByOAuth(String email, SignInPlatform platform) async {
     return await userService.signInByOAuth(email, platform);
+  }
+
+  Future<void> signOut() async {
+    await signOutSocial();
+    await userService.signOut(UserProvider.user.userId!);
+    initializeTokens();
+  }
+
+  initializeTokens() {
+    HttpClient.setAccessToken("");
+    HttpClient.setRefreshToken("");
+  }
+
+  Future<bool> withdraw() async {
+    disconnectSocialInfo();
+    return await userService.withdraw(UserProvider.user.userId!);
+  }
+
+  signOutSocial() async {
+    switch(UserProvider.user.signInPlatform) {
+      case SignInPlatform.KAKAO:
+        await UserApi.instance.logout();
+        break;
+      case SignInPlatform.GOOGLE:
+        GoogleSignIn googleSignIn = GoogleSignIn();
+        await googleSignIn.signOut();
+        break;
+      default: //NAVER
+        await FlutterNaverLogin.logOut();
+        break;
+    }
+  }
+
+  disconnectSocialInfo() async {
+    switch(UserProvider.user.signInPlatform) {
+      case SignInPlatform.KAKAO:
+        await UserApi.instance.unlink();
+        break;
+      case SignInPlatform.GOOGLE:
+        GoogleSignIn googleSignIn = GoogleSignIn();
+        googleSignIn.disconnect();
+        break;
+      default: //NAVER
+        await FlutterNaverLogin.logOutAndDeleteToken();
+        break;
+    }
   }
 }
 

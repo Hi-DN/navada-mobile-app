@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
+import 'package:navada_mobile_app/src/providers/signin_provider.dart';
 import 'package:navada_mobile_app/src/screens/signIn/signIn.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
@@ -20,6 +21,7 @@ class _SignUpState extends State<SignUp> {
   ScreenSize size = ScreenSize();
   String userName="", userNickname="", userPhoneNum="", userAddress="";
 
+  bool isNicknameDuplicationCheckDone = false;
   final FocusNode _nameFNode = FocusNode();
   final FocusNode _nicknameFNode = FocusNode();
   final FocusNode _phoneNumFNode = FocusNode();
@@ -86,21 +88,59 @@ class _SignUpState extends State<SignUp> {
   }
 
   Widget _nicknameField() {
-    return TextFormField(
-      focusNode: _nicknameFNode,
-      style: styleR.copyWith(fontSize: size.getSize(16)),
-      onChanged: (value) {
-        setState(() { userNickname = value; });
-      },
-      decoration: InputDecoration(
-        hintText: "닉네임을 입력해주세요",
-        isDense: true,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 0, vertical: size.getSize(10.0),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(
+          width: size.getSize(220),
+          child: TextFormField(
+            focusNode: _nicknameFNode,
+            style: styleR.copyWith(fontSize: size.getSize(16)),
+            onChanged: (value) {
+              setState(() { 
+                userNickname = value; 
+                isNicknameDuplicationCheckDone = false;
+              });
+            },
+            decoration: InputDecoration(
+              hintText: "닉네임을 입력해주세요",
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 0, vertical: size.getSize(10.0),
+              ),
+              enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: grey183)),
+              focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: green)),
+            ),
+          ),
         ),
-        enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: grey183)),
-        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: green)),
-      ),
+        GestureDetector(
+          onTap: () async {
+            if (!_checkValid(userNickname)) {
+              _checkField(_nicknameFNode, "닉네임을 입력해주세요!");
+            } else {
+              bool result = await Provider.of<SignInProvider>(context, listen: false).checkNicknameUsable(userNickname);
+              if (result) {
+                setState(() { isNicknameDuplicationCheckDone = true; });
+              } else {
+                _checkField(_nicknameFNode, "다른 닉네임을 사용해주세요!");
+              }
+            }
+          },
+          child: Container(
+            alignment: Alignment.center,
+            width: size.getSize(90),
+            height: size.getSize(36),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: isNicknameDuplicationCheckDone ? green : white,
+              border: Border.all(color: green, width: 2)
+            ),
+            child: R16Text(
+              text: isNicknameDuplicationCheckDone ? "확인 완료" : "중복 확인",
+              textColor: isNicknameDuplicationCheckDone ? white : green)
+          ),
+        )
+      ],
     );
   }
 
@@ -147,8 +187,8 @@ class _SignUpState extends State<SignUp> {
   handleSignUp() async {
     if (!_checkValid(userName)) {
       _checkField(_nameFNode, "이름을 입력해주세요!");
-    } else if (!_checkValid(userNickname)) {
-      _checkField(_nicknameFNode, "닉네임을 입력해주세요!");
+    } else if (!isNicknameDuplicationCheckDone) {
+      _checkField(_nicknameFNode, "닉네임 중복확인을 해주세요!");
     } else if (!_checkValid(userPhoneNum)) {
       _checkField(_phoneNumFNode, "핸드폰 번호를 입력해주세요!");
     } else if (!_checkValid(userAddress)) {

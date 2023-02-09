@@ -21,10 +21,10 @@ class UserService {
 
   // 회원 존재여부 (구글, 네이버 로그인)
   Future<SignInResponse> signInByOAuth(
-      String userEmail, SignInPlatform platform) async {
+      String accessToken, SignInPlatform platform) async {
     Map<String, dynamic> response = await _httpClient.postRequest(
         '/signin/oauth',
-        {"userEmail": userEmail, "signInPlatform": platform.name},
+        {"accessToken": accessToken, "signInPlatform": platform.name},
         tokenYn: false);
 
     if (response['success']) {
@@ -37,12 +37,36 @@ class UserService {
   // 회원 가입
   Future<UserDto> signup(UserParams params) async {
     Map<String, dynamic> response = await _httpClient
-        .postRequest('/signup', params.toJson(), tokenYn: true);
+        .postRequest('/signup', params.toJson(), tokenYn: false);
 
     if (response['success']) {
       return UserDto.fromJson(response['data']);
     } else {
       throw Exception('signup() fail!');
+    }
+  }
+
+  // 닉네임 사용가능여부 확인
+  Future<bool> checkNicknameUsable(String nickname) async {
+    Map<String, dynamic> response = await _httpClient.getRequest(
+        '/signup/check?nickname=$nickname', tokenYn: false);
+
+    if (response['success']) {
+      return response['data'];
+    } else {
+      throw Exception('signOut() fail!');
+    }
+  }
+
+  // 로그아웃
+  Future<bool> signOut(int userId) async {
+    Map<String, dynamic> response = await _httpClient.deleteRequest(
+        '/user/$userId/signout', tokenYn: true);
+
+    if (response['success']) {
+      return true;
+    } else {
+      throw Exception('signOut() fail!');
     }
   }
 
