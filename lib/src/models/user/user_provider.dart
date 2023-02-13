@@ -67,6 +67,10 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> checkNicknameUsable(String nickname) async {
+    return await _userService.checkNicknameUsable(nickname);
+  }
+
   // ======= 알림 확인 여부
   bool? _userNotiReadYn;
   bool? get userNotiReadYn => _userNotiReadYn;
