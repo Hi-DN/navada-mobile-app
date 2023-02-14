@@ -20,7 +20,7 @@ PODS:
     - AppAuth/Core (~> 1.6)
     - GTMSessionFetcher/Core (< 3.0, >= 1.5)
   - GTMSessionFetcher/Core (2.3.0)
-  - kakao_flutter_sdk_common (1.3.0):
+  - kakao_flutter_sdk_common (1.3.1):
     - Flutter
   - naveridlogin-sdk-ios (4.1.5)
   - "permission_handler (5.1.0+2)":
@@ -66,7 +66,7 @@ SPEC CHECKSUMS:
   GoogleSignIn: 5651ce3a61e56ca864160e79b484cd9ed3f49b7a
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
-  kakao_flutter_sdk_common: 7c3acd2fbfe34788f69b6e97b8e47e89ebf5f4bc
+  kakao_flutter_sdk_common: b1f30bb70b2341db4d9bbad727f8356e64729668
   naveridlogin-sdk-ios: 4351fe7162cd6b8b6dbb37bd7cc205304fa1d889
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad

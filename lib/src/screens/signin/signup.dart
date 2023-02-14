@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
-import 'package:navada_mobile_app/src/providers/signin_provider.dart';
 import 'package:navada_mobile_app/src/screens/signIn/signIn.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
@@ -21,7 +20,7 @@ class _SignUpState extends State<SignUp> {
   ScreenSize size = ScreenSize();
   String userName="", userNickname="", userPhoneNum="", userAddress="";
 
-  bool isNicknameDuplicationCheckDone = false;
+  bool isNicknameAvailable = false;
   final FocusNode _nameFNode = FocusNode();
   final FocusNode _nicknameFNode = FocusNode();
   final FocusNode _phoneNumFNode = FocusNode();
@@ -99,7 +98,7 @@ class _SignUpState extends State<SignUp> {
             onChanged: (value) {
               setState(() { 
                 userNickname = value; 
-                isNicknameDuplicationCheckDone = false;
+                isNicknameAvailable = false;
               });
             },
             decoration: InputDecoration(
@@ -118,9 +117,9 @@ class _SignUpState extends State<SignUp> {
             if (!_checkValid(userNickname)) {
               _checkField(_nicknameFNode, "닉네임을 입력해주세요!");
             } else {
-              bool result = await Provider.of<SignInProvider>(context, listen: false).checkNicknameUsable(userNickname);
+              bool result = await Provider.of<UserProvider>(context, listen: false).checkNicknameUsable(userNickname);
               if (result) {
-                setState(() { isNicknameDuplicationCheckDone = true; });
+                setState(() { isNicknameAvailable = true; });
               } else {
                 _checkField(_nicknameFNode, "다른 닉네임을 사용해주세요!");
               }
@@ -132,12 +131,12 @@ class _SignUpState extends State<SignUp> {
             height: size.getSize(36),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: isNicknameDuplicationCheckDone ? green : white,
+              color: isNicknameAvailable ? green : white,
               border: Border.all(color: green, width: 2)
             ),
             child: R16Text(
-              text: isNicknameDuplicationCheckDone ? "확인 완료" : "중복 확인",
-              textColor: isNicknameDuplicationCheckDone ? white : green)
+              text: isNicknameAvailable ? "확인 완료" : "중복 확인",
+              textColor: isNicknameAvailable ? white : green)
           ),
         )
       ],
@@ -187,7 +186,7 @@ class _SignUpState extends State<SignUp> {
   handleSignUp() async {
     if (!_checkValid(userName)) {
       _checkField(_nameFNode, "이름을 입력해주세요!");
-    } else if (!isNicknameDuplicationCheckDone) {
+    } else if (!isNicknameAvailable) {
       _checkField(_nicknameFNode, "닉네임 중복확인을 해주세요!");
     } else if (!_checkValid(userPhoneNum)) {
       _checkField(_phoneNumFNode, "핸드폰 번호를 입력해주세요!");

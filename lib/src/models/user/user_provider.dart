@@ -21,6 +21,8 @@ class UserProvider extends ChangeNotifier {
   }
 
   void setUserInfo(UserDto params) {
+    String phoneNum = params.userPhoneNum;
+
     user.userId = params.userId;
     user.userName = params.userName;
     user.userNickname = params.userNickname;
@@ -29,7 +31,8 @@ class UserProvider extends ChangeNotifier {
     user.userRating = params.userRating;
     user.userTradeCount = params.userTradeCount;
     user.userRatingCount = params.userRatingCount;
-    user.userPhoneNum = params.userPhoneNum;
+    user.userPhoneNum 
+      = '${phoneNum.substring(0,3)}-${phoneNum.substring(3,7)}-${phoneNum.substring(8, phoneNum.length)}';
     notifyListeners();
   }
 
@@ -65,6 +68,10 @@ class UserProvider extends ChangeNotifier {
     } else {
       return false;
     }
+  }
+
+  Future<bool> checkNicknameUsable(String nickname) async {
+    return await _userService.checkNicknameUsable(nickname);
   }
 
   // ======= 알림 확인 여부

@@ -61,10 +61,6 @@ class SignInProvider with ChangeNotifier {
     return KakaoUserInfo(email, nickname);
   }
 
-  Future<bool> checkNicknameUsable(String nickname) async {
-    return await userService.checkNicknameUsable(nickname);
-  }
-
   Future<SignInResponse> signInByOAuth(String email, SignInPlatform platform) async {
     return await userService.signInByOAuth(email, platform);
   }
