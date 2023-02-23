@@ -1,3 +1,9 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart' as dio;
+import 'package:http/http.dart' as http;
+// import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:navada_mobile_app/src/models/api/http_client.dart';
 import 'package:navada_mobile_app/src/models/product/product_list_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
@@ -8,10 +14,44 @@ HttpClient _httpClient = HttpClient();
 class ProductService {
   // 상품 등록
   Future<ProductModel?> createProduct(
-      int userId, ProductParams productParams) async {
-    Map<String, dynamic> data = await _httpClient.postRequest(
-        '/user/$userId/product', productParams.toJson(),
-        tokenYn: true);
+      int userId, ProductParams productParams, XFile productImage) async {
+    String uri = '${_httpClient.baseUrl}/user/$userId/product';
+    http.MultipartRequest request =
+        http.MultipartRequest('POST', Uri.parse(uri));
+
+    request.fields['productName'] = productParams.productName!;
+    request.fields['productExplanation'] = productParams.productExplanation!;
+    request.fields['categoryId'] = productParams.categoryId!.toString();
+    request.fields['productCost'] = productParams.productCost!.toString();
+    request.fields['exchangeCostRange'] =
+        productParams.exchangeCostRange!.toString();
+    request.files.add(http.MultipartFile.fromBytes(
+        'file', File(productImage.path).readAsBytesSync()));
+
+    http.StreamedResponse response = await request.send();
+
+    // if (productImage != null) {
+    //   dio.FormData formData = dio.FormData.fromMap(
+    //       {'productImage': dio.MultipartFile.fromFileSync(productImage.path)});
+    //   dio.options.headers["authorization"] = AuthProvider.token;
+    //   dio.options.contentType = 'multipart/form-data';
+    //
+    //   final res = await dio.post(postNoteURL, data: _formData).then((res) {
+    //     Get.back();
+    //     return res.data;
+    // }
+    // Map<String, dynamic> data = await _httpClient.postRequest(
+    //     '/user/$userId/product', productParams.toJson(),
+    //     tokenYn: true, contentType: 'multipart/form-data');
+    //
+    // Map<String, dynamic> data = await _httpClient.postRequest(
+    //     '/user/$userId/product',
+    //     {
+    //       'productParams': productParams,
+    //       'productImage': dio.MultipartFile.fromFileSync(productImage.path)
+    //     },
+    //     tokenYn: true,
+    //     contentType: 'multipart/form-data');
 
     if (data['success']) {
       return ProductModel.fromJson(data['data']);
