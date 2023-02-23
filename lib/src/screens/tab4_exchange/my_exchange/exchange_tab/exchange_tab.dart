@@ -165,7 +165,8 @@ class _ExchangeListView extends StatelessWidget {
       key: UniqueKey(),
       onDismissed: (direction) {
         Provider.of<MyExchangesExchangeProvider>(_context!, listen: false)
-            .deleteCompletedExchange(UserProvider.user.userId!, exchange!.exchangeId!, exchange.acceptorId!);
+            .deleteCompletedExchange(UserProvider.user.userId!,
+                exchange!.exchangeId!, exchange.acceptorId!);
       },
       confirmDismiss: (direction) async {
         return await showDialog(
@@ -240,6 +241,7 @@ class ExchangeItem extends StatelessWidget {
           : const MyExchangeStatusSign(
               color: navy, icon: Icons.check, label: '교환완료'),
       params: MyExchangeCardParams(
+          requesterProductImageUrl: requesterProduct?.productImageUrl,
           requesterProductName: requesterProduct?.productName,
           requesterNickname: Row(children: [
             B10Text(text: "신청 ", textColor: isTrading ? green : navy),
@@ -250,6 +252,7 @@ class ExchangeItem extends StatelessWidget {
           ]),
           requesterProductCost: requesterProduct?.productCost,
           requesterProductCostRange: requesterProduct?.exchangeCostRange,
+          acceptorProductImageUrl: acceptorProduct?.productImageUrl,
           acceptorProductName: acceptorProduct?.productName,
           acceptorNickname: Row(children: [
             B10Text(text: "수락 ", textColor: isTrading ? green : navy),
@@ -339,7 +342,7 @@ class _ViewFilter extends StatelessWidget {
         Provider.of<MyExchangesViewModel>(_context!, listen: false)
             .setFilter(selectedFilter!);
         Provider.of<MyExchangesExchangeProvider>(_context!, listen: false)
-            .setFilter(UserProvider.user.userId!,selectedFilter);
+            .setFilter(UserProvider.user.userId!, selectedFilter);
         Navigator.of(_context!).pop(false);
       },
       child: ListTile(

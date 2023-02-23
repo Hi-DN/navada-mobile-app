@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/providers/heart_provider.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
 import 'package:navada_mobile_app/src/screens/tab5_mypage/heart/heart_view_model.dart';
+import 'package:navada_mobile_app/src/utilities/gcs_image.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
@@ -161,10 +162,10 @@ class HeartListSection extends StatelessWidget {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(5.0),
-                        child: Image.asset(
-                          'assets/images/test.jpeg',
+                        child: SizedBox(
                           width: size.getSize(65.0),
                           height: size.getSize(65.0),
+                          child: getGcsImage(product.productImageUrl),
                         ),
                       ),
                       SizedBox(

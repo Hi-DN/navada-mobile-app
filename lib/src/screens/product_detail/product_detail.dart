@@ -7,6 +7,7 @@ import 'package:navada_mobile_app/src/providers/product_detail_provider.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_request_modal.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail_view_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/request_exchange/request_exchange_view.dart';
+import 'package:navada_mobile_app/src/utilities/gcs_image.dart';
 import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
 import 'package:navada_mobile_app/src/widgets/short_circled_btn.dart';
@@ -58,7 +59,7 @@ class ProductDetail extends StatelessWidget {
               physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
-                  _productImagesSection(context),
+                  _productImagesSection(context, product.productImageUrl),
                   Container(
                     width: screenSize.getSize(327.0),
                     child: Column(
@@ -126,14 +127,12 @@ class ProductDetail extends StatelessWidget {
     }
   }
 
-  Widget _productImagesSection(BuildContext context) {
+  Widget _productImagesSection(BuildContext context, String? imageUrl) {
     return Stack(children: [
       Container(
         width: double.infinity,
-        child: Image.asset(
-          'assets/images/test.jpeg',
-          fit: BoxFit.cover,
-        ),
+        height: MediaQuery.of(context).size.width,
+        child: getGcsImage(imageUrl),
       ),
       IconButton(
         onPressed: () =>

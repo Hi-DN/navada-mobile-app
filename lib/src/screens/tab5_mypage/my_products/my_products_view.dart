@@ -3,6 +3,7 @@ import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/my_products_provider.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/gcs_image.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
@@ -122,7 +123,7 @@ class _ProductList extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _exampleImage(),
+            _productImage(product.productImageUrl),
             const Space(width: 15),
             Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -162,14 +163,14 @@ class _ProductList extends StatelessWidget {
     }
   }
 
-  Widget _exampleImage() {
+  Widget _productImage(String? imageUrl) {
     ScreenSize size = ScreenSize();
     return ClipRRect(
         borderRadius: BorderRadius.circular(size.getSize(5)),
-        child: Image.asset(
-          'assets/images/test.jpeg',
+        child: SizedBox(
           width: size.getSize(70.0),
           height: size.getSize(70.0),
+          child: getGcsImage(imageUrl),
         ));
   }
 }
