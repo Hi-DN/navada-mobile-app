@@ -76,5 +76,14 @@ Change unnecessary items into valuable items by bartering with your neighbors!
 ## 📑 Future Plans
 - 테스트 진행중
 
+<br/> 
+
+## 💪 Team
+|        **TEAM**         |          김민지         |       이한슬         |                                                                                                               
+| :---------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | 
+|   <img width="200px" src="https://user-images.githubusercontent.com/51855129/219069219-a5dc76bc-6ff0-49e2-b40a-4c41e5f18ef7.png" />    |                      <img width="160px" src="https://user-images.githubusercontent.com/51855129/219071391-b856e91a-88c3-429f-b27e-fe1e2dcbbb1c.png" />    |                   <img width="160px" src="https://user-images.githubusercontent.com/51855129/219068013-42c555f0-220c-4345-bb4e-e7ac9a417925.png"/>   |
+|   [![Github](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white)](https://github.com/Hi-DN)   |    [@minji1110](https://github.com/minji1110)  | [@hanslelee](https://github.com/hanslelee)  |
+|  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  | 2023 홍익대학교 컴퓨터공학과 졸업 | 2023 홍익대학교 컴퓨터공학과 졸업 |
 
 <br/> 
+
