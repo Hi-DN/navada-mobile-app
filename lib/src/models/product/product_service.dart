@@ -13,7 +13,7 @@ HttpClient _httpClient = HttpClient();
 class ProductService {
   // 상품 등록
   Future<ProductModel?> createProduct(
-      int userId, ProductParams productParams, XFile productImageFile) async {
+      int userId, ProductParams productParams, XFile? productImageFile) async {
     String uri = '${_httpClient.baseUrl}/user/$userId/product';
     http.MultipartRequest request =
         http.MultipartRequest('POST', Uri.parse(uri));
@@ -26,14 +26,25 @@ class ProductService {
       request.fields['productCost'] = productParams.productCost!.toString();
       request.fields['exchangeCostRange'] =
           productParams.exchangeCostRange!.toString();
-      request.files.add(
-        http.MultipartFile.fromBytes(
-            'file', File(productImageFile.path).readAsBytesSync(),
-            filename: productImageFile.name),
-      );
+
+      if (productImageFile != null) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+              'file', File(productImageFile.path).readAsBytesSync(),
+              filename: productImageFile.name),
+        );
+      }
 
       http.Response response =
           await http.Response.fromStream(await request.send());
+
+      if (response.statusCode == 403) {
+        await _httpClient.getNewAccessToken();
+
+        request.headers['Authorization'] = HttpClient.accessToken;
+        response = await http.Response.fromStream(await request.send());
+      }
+
       Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (data['success']) {

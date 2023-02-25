@@ -95,7 +95,7 @@ class CreateProductProvider extends ChangeNotifier {
         productExplanation: _productExplanation);
 
     ProductModel? product =
-        await _productService.createProduct(_userId, params, _productImage!);
+        await _productService.createProduct(_userId, params, _productImage);
     if (product == null) return null;
     return product;
   }
