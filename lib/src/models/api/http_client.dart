@@ -11,7 +11,7 @@ class HttpClient {
 
   // final String baseUrl = 'http://localhost:8080/v1';
 
-  final String baseUrl = 'http://172.30.1.30:8080/v1';
+  final String baseUrl = 'http://172.30.1.49:8080/v1';
 
   static String accessToken = '';
   static String refreshToken = '';
@@ -56,15 +56,18 @@ class HttpClient {
 
   Future<Map<String, dynamic>> postRequest(
       String url, Map<String, dynamic> body,
-      {bool tokenYn = false, String contentType = 'application/json'}) async {
+      {bool tokenYn = false}) async {
     http.Response response;
     Map<String, String> headers;
-    print('contenttype=$contentType');
+
     try {
       if (tokenYn) {
-        headers = {'Content-Type': contentType, 'Authorization': accessToken};
+        headers = {
+          'Content-Type': 'application/json',
+          'Authorization': accessToken
+        };
       } else {
-        headers = {'Content-Type': contentType};
+        headers = {'Content-Type': 'application/json'};
       }
       response = await http.post(Uri.parse(baseUrl + url),
           body: jsonEncode(body), headers: headers);
