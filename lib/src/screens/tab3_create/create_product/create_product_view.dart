@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
 import 'package:navada_mobile_app/src/providers/create_product_provider.dart';
@@ -46,6 +49,9 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   FocusNode? _productExplanationFNode;
 
   Category? _productCategory;
+
+  final ImagePicker _picker = ImagePicker();
+  XFile? _image;
 
   @override
   void initState() {
@@ -185,13 +191,32 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   }
 
   Widget _productImageField() {
-    return Container(
-      width: size.getSize(149),
-      height: size.getSize(149),
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(5), color: grey216),
-      child: const Icon(Icons.photo_library_outlined, color: grey153),
-    );
+    return InkWell(onTap: () async {
+      XFile? productImage =
+          await _picker.pickImage(source: ImageSource.gallery);
+      if (productImage != null) {
+        setState(() {
+          Provider.of<CreateProductProvider>(context, listen: false)
+              .setProductImage(productImage);
+        });
+      }
+    }, child: Consumer<CreateProductProvider>(
+      builder: (context, provider, widget) {
+        return Container(
+            width: size.getSize(149),
+            height: size.getSize(149),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: grey216,
+            ),
+            child: provider.productImage == null
+                ? const Icon(Icons.photo_library_outlined, color: grey153)
+                : Image.file(
+                    File(provider.productImage!.path),
+                    fit: BoxFit.cover,
+                  ));
+      },
+    ));
   }
 
   Widget _productPriceSection() {

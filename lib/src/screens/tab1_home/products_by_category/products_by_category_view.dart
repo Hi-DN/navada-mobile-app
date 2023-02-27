@@ -5,6 +5,7 @@ import 'package:navada_mobile_app/src/providers/products_by_category_provider.da
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
 import 'package:navada_mobile_app/src/screens/tab1_home/products_by_category/products_by_category_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/gcs_image.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
@@ -384,13 +385,12 @@ class ProductsByCategoryView extends StatelessWidget {
         Row(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(5.0),
-              child: Image.asset(
-                'assets/images/test.jpeg',
-                width: screenSize.getSize(65.0),
-                height: screenSize.getSize(65.0),
-              ),
-            ),
+                borderRadius: BorderRadius.circular(5.0),
+                child: SizedBox(
+                  width: screenSize.getSize(65.0),
+                  height: screenSize.getSize(65.0),
+                  child: getGcsImage(product.productImageUrl),
+                )),
             SizedBox(
               width: screenSize.getSize(12.0),
             ),

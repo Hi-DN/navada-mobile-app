@@ -187,6 +187,7 @@ class ExchangeHistoryView extends StatelessWidget {
                 height: screenSize.getSize(55.0),
                 decoration: const BoxDecoration(
                   image: DecorationImage(
+                      //fixme 이미지 불러오기
                       fit: BoxFit.cover,
                       image: AssetImage('assets/images/test.jpeg')),
                 ),

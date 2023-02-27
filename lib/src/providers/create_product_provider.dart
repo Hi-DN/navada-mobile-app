@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_search_page_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_service.dart';
@@ -17,6 +18,8 @@ class CreateProductProvider extends ChangeNotifier {
   int? _productPrice;
   int? _productExchangeCost;
   String? _productExplanation;
+  XFile? _productImage;
+  XFile? get productImage => _productImage;
   final List<ProductSearchDtoModel> _otherProducts = [];
 
   List<ProductSearchDtoModel> get otherProducts => _otherProducts;
@@ -40,6 +43,10 @@ class CreateProductProvider extends ChangeNotifier {
 
   setProductExplanation(String productExplanation) {
     _productExplanation = productExplanation;
+  }
+
+  setProductImage(XFile productImage) {
+    _productImage = productImage;
   }
 
   addOtherProducts(ProductSearchDtoModel product) {
@@ -88,7 +95,7 @@ class CreateProductProvider extends ChangeNotifier {
         productExplanation: _productExplanation);
 
     ProductModel? product =
-        await _productService.createProduct(_userId, params);
+        await _productService.createProduct(_userId, params, _productImage);
     if (product == null) return null;
     return product;
   }

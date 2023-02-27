@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/request_exchange/request_exchange_view_model.dart';
+import 'package:navada_mobile_app/src/utilities/gcs_image.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/long_circled_btn.dart';
 import 'package:navada_mobile_app/src/widgets/no_elements_screen.dart';
@@ -67,14 +68,12 @@ class RequestExchangeView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(5.0),
-                child: Image.asset(
-                  'assets/images/test.jpeg',
-                  fit: BoxFit.cover,
-                  width: screenSize.getSize(99.0),
-                  height: screenSize.getSize(99.0),
-                ),
-              ),
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: SizedBox(
+                    width: screenSize.getSize(99.0),
+                    height: screenSize.getSize(99.0),
+                    child: getGcsImage(acceptorProduct.productImageUrl),
+                  )),
               const SizedBox(width: 12.0),
               Expanded(
                 child: SizedBox(
@@ -199,13 +198,12 @@ class MyProductList extends StatelessWidget {
               children: [
                 const SizedBox(width: 11.0),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(5.0),
-                  child: Image.asset(
-                    'assets/images/test.jpeg',
-                    width: screenSize.getSize(70.0),
-                    height: screenSize.getSize(70.0),
-                  ),
-                ),
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: SizedBox(
+                      width: screenSize.getSize(70.0),
+                      height: screenSize.getSize(70.0),
+                      child: getGcsImage(product.productImageUrl),
+                    )),
                 const SizedBox(width: 11.0),
                 Expanded(
                   child: Column(

@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:navada_mobile_app/src/models/api/http_client.dart';
 import 'package:navada_mobile_app/src/models/product/product_list_model.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
@@ -8,15 +13,47 @@ HttpClient _httpClient = HttpClient();
 class ProductService {
   // 상품 등록
   Future<ProductModel?> createProduct(
-      int userId, ProductParams productParams) async {
-    Map<String, dynamic> data = await _httpClient.postRequest(
-        '/user/$userId/product', productParams.toJson(),
-        tokenYn: true);
+      int userId, ProductParams productParams, XFile? productImageFile) async {
+    String uri = '${_httpClient.baseUrl}/user/$userId/product';
+    http.MultipartRequest request =
+        http.MultipartRequest('POST', Uri.parse(uri));
 
-    if (data['success']) {
-      return ProductModel.fromJson(data['data']);
-    } else {
-      return null;
+    try {
+      request.headers['Authorization'] = HttpClient.accessToken;
+      request.fields['productName'] = productParams.productName!;
+      request.fields['productExplanation'] = productParams.productExplanation!;
+      request.fields['categoryId'] = productParams.categoryId!.toString();
+      request.fields['productCost'] = productParams.productCost!.toString();
+      request.fields['exchangeCostRange'] =
+          productParams.exchangeCostRange!.toString();
+
+      if (productImageFile != null) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+              'file', File(productImageFile.path).readAsBytesSync(),
+              filename: productImageFile.name),
+        );
+      }
+
+      http.Response response =
+          await http.Response.fromStream(await request.send());
+
+      if (response.statusCode == 403) {
+        await _httpClient.getNewAccessToken();
+
+        request.headers['Authorization'] = HttpClient.accessToken;
+        response = await http.Response.fromStream(await request.send());
+      }
+
+      Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+
+      if (data['success']) {
+        return ProductModel.fromJson(data['data']);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      throw Exception();
     }
   }
 

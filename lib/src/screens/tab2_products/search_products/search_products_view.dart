@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:navada_mobile_app/src/providers/search_products_provider.dart';
 import 'package:navada_mobile_app/src/screens/tab2_products/search_products/search_products_view_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/gcs_image.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
 import 'package:navada_mobile_app/src/widgets/screen_size.dart';
@@ -174,10 +175,10 @@ class SearchProductsView extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(5.0),
-              child: Image.asset(
-                'assets/images/test.jpeg',
+              child: SizedBox(
                 width: screenSize.getSize(65.0),
                 height: screenSize.getSize(65.0),
+                child: getGcsImage(product.productImageUrl),
               ),
             ),
             SizedBox(

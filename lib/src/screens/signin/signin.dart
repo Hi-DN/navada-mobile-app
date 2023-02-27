@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -17,7 +15,6 @@ import 'package:navada_mobile_app/src/widgets/space.dart';
 import 'package:navada_mobile_app/src/widgets/text_style.dart';
 import 'package:provider/provider.dart';
 
-
 class SignIn extends StatelessWidget {
   SignIn({Key? key}) : super(key: key);
 
@@ -31,24 +28,24 @@ class SignIn extends StatelessWidget {
     _context = context;
 
     return Scaffold(
-      backgroundColor: white,
-      body: Column(mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Space(height: 40),
-          _logo(),
-          const Space(height: 170),
-          _loginTestBtn(),
-          const Space(height: 30),
-          Row(mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-            _kakaoBtn(),
-            const Space(width: 20),
-            _googleBtn(),
-            const Space(width: 20),
-            _naverBtn()
-          ])
-        ],
-      ));
+        backgroundColor: white,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Space(height: 40),
+            _logo(),
+            const Space(height: 170),
+            _loginTestBtn(),
+            const Space(height: 30),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              _kakaoBtn(),
+              const Space(width: 20),
+              _googleBtn(),
+              const Space(width: 20),
+              _naverBtn()
+            ])
+          ],
+        ));
   }
 
   Widget _logo() {
@@ -62,13 +59,15 @@ class SignIn extends StatelessWidget {
 
   Widget _loginTestBtn() {
     return GestureDetector(
-      onTap: () {
-        UserProvider userProvider = Provider.of(_context!, listen: false);
-        userProvider.notifyListeners();
-        Navigator.of(_context!).pushNamed(CustomNavigationBar.routeName);
-      },
-      child: const R14Text(text: '로그인(테스트용)', textColor: grey153,)
-    );
+        onTap: () {
+          UserProvider userProvider = Provider.of(_context!, listen: false);
+          userProvider.notifyListeners();
+          Navigator.of(_context!).pushNamed(CustomNavigationBar.routeName);
+        },
+        child: const R14Text(
+          text: '로그인(테스트용)',
+          textColor: grey153,
+        ));
   }
 
   Widget _kakaoBtn() {
@@ -87,9 +86,10 @@ class SignIn extends StatelessWidget {
             Radius.circular(35.0),
           ),
           onTap: () async {
-            SignInProvider provider = Provider.of<SignInProvider>(_context!, listen: false);
+            SignInProvider provider =
+                Provider.of<SignInProvider>(_context!, listen: false);
             OAuthToken? token = await provider.getKakaoToken();
-            if(token != null) {
+            if (token != null) {
               handleSignIn(token.accessToken, SignInPlatform.KAKAO);
             }
           },
@@ -113,10 +113,13 @@ class SignIn extends StatelessWidget {
           child: InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(35.0)),
             onTap: () async {
-              final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-              if(googleUser != null){
-                GoogleSignInAuthentication authentication = await googleUser.authentication;
-                handleSignIn(authentication.accessToken!, SignInPlatform.GOOGLE);
+              final GoogleSignInAccount? googleUser =
+                  await GoogleSignIn().signIn();
+              if (googleUser != null) {
+                GoogleSignInAuthentication authentication =
+                    await googleUser.authentication;
+                handleSignIn(
+                    authentication.accessToken!, SignInPlatform.GOOGLE);
               }
             },
           ),
@@ -140,7 +143,8 @@ class SignIn extends StatelessWidget {
           ),
           onTap: () async {
             await FlutterNaverLogin.logIn();
-            NaverAccessToken accessToken = await FlutterNaverLogin.currentAccessToken;
+            NaverAccessToken accessToken =
+                await FlutterNaverLogin.currentAccessToken;
             handleSignIn(accessToken.accessToken, SignInPlatform.NAVER);
           },
         ),
@@ -149,17 +153,21 @@ class SignIn extends StatelessWidget {
   }
 
   handleSignIn(String token, SignInPlatform platform) async {
-    SignInResponse? response = await Provider.of<SignInProvider>(_context!, listen: false).signInByOAuth(token, platform);
+    SignInResponse? response =
+        await Provider.of<SignInProvider>(_context!, listen: false)
+            .signInByOAuth(token, platform);
     if (response.user == null) {
       // 회원가입 진행
-      Provider.of<UserProvider>(_context!, listen: false).setOAuthInfo(response.oauth!.userEmail!, platform);
-      Navigator.push(_context!,MaterialPageRoute(builder: (BuildContext context) => const SignUp()));
-
+      Provider.of<UserProvider>(_context!, listen: false)
+          .setOAuthInfo(response.oauth!.userEmail!, platform);
+      Navigator.push(_context!,
+          MaterialPageRoute(builder: (BuildContext context) => const SignUp()));
     } else {
       // 로그인 진행
       HttpClient.setAccessToken(response.accessToken!);
       HttpClient.setRefreshToken(response.refreshToken!);
-      Provider.of<UserProvider>(_context!, listen: false).setUser(response.user!, response.oauth!.userEmail!, platform);
+      Provider.of<UserProvider>(_context!, listen: false)
+          .setUser(response.user!, response.oauth!.userEmail!, platform);
       Navigator.of(_context!).pushNamed(CustomNavigationBar.routeName);
     }
   }

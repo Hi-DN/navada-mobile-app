@@ -25,6 +25,7 @@ class ProductSearchPageModel extends PageModel<ProductSearchDtoModel> {
 
 class ProductSearchDtoModel {
   int? productId;
+  String? productImageUrl;
   String? productName;
   String? userNickname;
   int? productCost;
@@ -34,6 +35,7 @@ class ProductSearchDtoModel {
 
   ProductSearchDtoModel(
       {this.productId,
+      this.productImageUrl,
       this.productName,
       this.userNickname,
       this.productCost,
@@ -43,6 +45,7 @@ class ProductSearchDtoModel {
 
   ProductSearchDtoModel.fromJson(Map<String, dynamic> json) {
     productId = json['productId'];
+    productImageUrl = json['productImageUrl'];
     productName = json['productName'];
     userNickname = json['userNickname'];
     productCost = json['productCost'];
@@ -55,6 +58,7 @@ class ProductSearchDtoModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['productId'] = productId;
+    data['productImageUrl'] = productImageUrl;
     data['productName'] = productName;
     data['userNickname'] = userNickname;
     data['productCost'] = productCost;

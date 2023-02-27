@@ -7,6 +7,7 @@ class ProductModel {
   int? productId;
   String? productName;
   String? productExplanation;
+  String? productImageUrl;
   String? userNickname;
   Category? category;
   ProductExchangeStatusCd? productExchangeStatusCd;
@@ -20,6 +21,7 @@ class ProductModel {
       this.productId,
       this.productName,
       this.productExplanation,
+      this.productImageUrl,
       this.userNickname,
       this.category,
       this.productExchangeStatusCd,
@@ -33,6 +35,7 @@ class ProductModel {
     productId = json['productId'];
     productName = json['productName'];
     productExplanation = json['productExplanation'];
+    productImageUrl = json['productImageUrl'];
     userNickname = json['userNickname'];
     category = Category.objToEnum(CategoryModel.fromJson(json['category']));
     productExchangeStatusCd =
@@ -49,6 +52,7 @@ class ProductModel {
     data['productId'] = productId;
     data['productName'] = productName;
     data['productExplanation'] = productExplanation;
+    data['productImageUrl'] = productImageUrl;
     data['userNickname'] = userNickname;
     if (category != null) {
       data['category'] = Category.enumToObj(category!).toJson();
@@ -108,6 +112,7 @@ class ProductDetailDto {
   String? userNickname;
   String? productName;
   String? productExplanation;
+  String? productImageUrl;
   Category? category;
   ProductExchangeStatusCd? productExchangeStatusCd;
   int? heartNum;
@@ -121,6 +126,7 @@ class ProductDetailDto {
       this.userNickname,
       this.productName,
       this.productExplanation,
+      this.productImageUrl,
       this.category,
       this.productExchangeStatusCd,
       this.heartNum,
@@ -134,6 +140,7 @@ class ProductDetailDto {
     userNickname = json['userNickname'];
     productName = json['productName'];
     productExplanation = json['productExplanation'];
+    productImageUrl = json['productImageUrl'];
     category = Category.objToEnum(CategoryModel.fromJson(json['category']));
     productExchangeStatusCd =
         ProductExchangeStatusCd.codeToEnum(json['productExchangeStatusCd']);
@@ -150,6 +157,7 @@ class ProductDetailDto {
     data['userNickname'] = userNickname;
     data['productName'] = productName;
     data['productExplanation'] = productExplanation;
+    data['productImageUrl'] = productImageUrl;
     if (category != null) {
       data['category'] = Category.enumToObj(category!).toJson();
     }
@@ -167,6 +175,7 @@ class ProductDetailDto {
         productId: productId,
         productName: productName,
         productExplanation: productExplanation,
+        productImageUrl: productImageUrl,
         userNickname: userNickname,
         category: category,
         productExchangeStatusCd: productExchangeStatusCd,

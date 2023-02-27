@@ -3,6 +3,7 @@ import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/models/request/request_service.dart';
 import 'package:navada_mobile_app/src/models/request/requtest_dto_model.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/gcs_image.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/custom_appbar.dart';
 import 'package:navada_mobile_app/src/widgets/divider.dart';
@@ -152,7 +153,7 @@ class _ProductInfo extends StatelessWidget {
         children: [
           _nickNameSection(),
           const Space(height: 10),
-          _imageAndDetailSection(),
+          _imageAndDetailSection(product?.productImageUrl),
           const Space(height: 13),
           _productExplanationSection(),
           const Space(height: 20),
@@ -192,20 +193,24 @@ class _ProductInfo extends StatelessWidget {
     );
   }
 
-  Widget _imageAndDetailSection() {
+  Widget _imageAndDetailSection(String? productImageUrl) {
     return Row(
-      children: [_exampleImage(), const Space(width: 10), _productDetails()],
+      children: [
+        _productImage(productImageUrl),
+        const Space(width: 10),
+        _productDetails()
+      ],
     );
   }
 
-  Widget _exampleImage() {
+  Widget _productImage(String? imageUrl) {
     ScreenSize size = ScreenSize();
     return ClipRRect(
         borderRadius: BorderRadius.circular(size.getSize(5)),
-        child: Image.asset(
-          'assets/images/test.jpeg',
+        child: SizedBox(
           width: size.getSize(99.0),
           height: size.getSize(99.0),
+          child: getGcsImage(imageUrl),
         ));
   }
 
