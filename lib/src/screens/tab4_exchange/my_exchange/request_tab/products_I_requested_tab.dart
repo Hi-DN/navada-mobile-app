@@ -141,7 +141,8 @@ class _RequestListView extends StatelessWidget {
         Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => RequestDetailView(request: request),
+                  builder: (BuildContext context) =>
+                      RequestDetailView(request: request),
                 ))
             .then((value) =>
                 Provider.of<MyExchangesRequestProvider>(context, listen: false)
@@ -231,6 +232,7 @@ class RequestItem extends StatelessWidget {
           : const MyExchangeStatusSign(
               color: grey216, icon: Icons.not_interested, label: '거절됨'),
       params: MyExchangeCardParams(
+          requesterProductImageUrl: request?.requesterProduct!.productImageUrl,
           requesterProductName: request?.requesterProduct!.productName,
           requesterNickname: Row(children: [
             B10Text(text: "신청 ", textColor: isWait ? yellow : grey153),
@@ -243,6 +245,7 @@ class RequestItem extends StatelessWidget {
           requesterProductCost: request?.requesterProduct!.productCost,
           requesterProductCostRange:
               request?.requesterProduct!.exchangeCostRange,
+          acceptorProductImageUrl: request?.acceptorProduct!.productImageUrl,
           acceptorProductName: request?.acceptorProduct!.productName,
           acceptorNickname: Row(children: [
             B10Text(
