@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:navada_mobile_app/src/models/product/product_model.dart';
 import 'package:navada_mobile_app/src/providers/modify_product_provider.dart';
 import 'package:navada_mobile_app/src/screens/product_detail/product_detail.dart';
@@ -30,7 +33,8 @@ class ModifyProductView extends StatelessWidget {
               product.category,
               product.productCost,
               product.exchangeCostRange,
-              product.productExplanation)),
+              product.productExplanation,
+              product.productImageUrl)),
     ], child: MaterialApp(home: ModifyProductScreen()));
   }
 }
@@ -39,6 +43,7 @@ class ModifyProductScreen extends StatelessWidget {
   ModifyProductScreen({Key? key, this.product}) : super(key: key);
 
   final ProductModel? product;
+  final ImagePicker _picker = ImagePicker();
 
   late BuildContext? _context;
 
@@ -165,12 +170,66 @@ class ModifyProductScreen extends StatelessWidget {
 
   Widget _productImageField() {
     ScreenSize size = ScreenSize();
-    return Container(
-      width: size.getSize(149),
-      height: size.getSize(149),
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(5), color: grey216),
-      child: const Icon(Icons.photo_library_outlined, color: grey153),
+    return InkWell(
+      onTap: () async {
+        XFile? productImage =
+            await _picker.pickImage(source: ImageSource.gallery);
+        if (productImage != null) {
+          Provider.of<ModifyProductViewModel>(_context!, listen: false)
+              .setProductImageFile(productImage);
+        }
+      },
+      child: Consumer<ModifyProductViewModel>(
+        builder: (context, viewModel, widget) {
+          return SizedBox(
+            width: size.getSize(149),
+            height: size.getSize(149),
+            child: Stack(
+              children: [
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                      width: size.getSize(139),
+                      height: size.getSize(139),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: grey216,
+                      ),
+                      child: viewModel.productImageUrl != null
+                          ? Image.network(
+                              viewModel.productImageUrl!,
+                              fit: BoxFit.cover,
+                            )
+                          : viewModel.productImageFile != null
+                              ? Image.file(
+                                  File(viewModel.productImageFile!.path),
+                                  fit: BoxFit.cover,
+                                )
+                              : const Icon(Icons.photo_library_outlined,
+                                  color: grey153)),
+                ),
+                viewModel.productImageUrl != null ||
+                        viewModel.productImageFile != null
+                    ? Container(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          onPressed: () {
+                            viewModel.setProductImageFile(null);
+                          },
+                          icon: Icon(
+                            Icons.cancel,
+                            size: size.getSize(20.0),
+                          ),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                      )
+                    : Container()
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -182,6 +241,7 @@ class ModifyProductScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Space(height: size.getSize(10.0)),
           _productPriceField(),
           _productExchangeCostField(),
         ],
@@ -254,15 +314,21 @@ class ModifyProductScreen extends StatelessWidget {
                     bottom: size.getSize(5)),
                 width: size.getSize(130),
                 child: TextFormField(
-                  controller: Provider.of<ModifyProductViewModel>(_context!,listen: false).productExchangeCostController,
-                  focusNode: Provider.of<ModifyProductViewModel>(_context!,listen: false).productExchangeCostFNode,
+                  controller: Provider.of<ModifyProductViewModel>(_context!,
+                          listen: false)
+                      .productExchangeCostController,
+                  focusNode: Provider.of<ModifyProductViewModel>(_context!,
+                          listen: false)
+                      .productExchangeCostFNode,
                   textAlign: TextAlign.right,
                   style: styleR.copyWith(fontSize: size.getSize(16)),
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                   ],
                   onChanged: (value) {
-                    Provider.of<ModifyProductViewModel>(_context!,listen: false).setProductExchangeCost(int.parse(value));
+                    Provider.of<ModifyProductViewModel>(_context!,
+                            listen: false)
+                        .setProductExchangeCost(int.parse(value));
                   },
                   decoration: InputDecoration(
                     isDense: true,
@@ -270,8 +336,10 @@ class ModifyProductScreen extends StatelessWidget {
                       horizontal: 0,
                       vertical: size.getSize(10.0),
                     ),
-                    enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: grey183)),
-                    focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: green)),
+                    enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: grey183)),
+                    focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: green)),
                   ),
                 ),
               ),
@@ -315,7 +383,6 @@ class ModifyProductScreen extends StatelessWidget {
   }
 
   Widget _confirmBtn(BuildContext context) {
-
     return Consumer<ModifyProductViewModel>(builder:
         (BuildContext context, ModifyProductViewModel viewModel, Widget? _) {
       return LongCircledBtn(
@@ -333,16 +400,19 @@ class ModifyProductScreen extends StatelessWidget {
             } else if (!viewModel.checkValidProductExplanation()) {
               _checkField(viewModel.productExplanationFNode, "물품 설명을 확인해주세요!");
             } else {
-              ProductModel? modifiedProduct = await Provider.of<
-                      ModifyProductProvider>(context, listen: false)
-                  .modifyProduct(
-                      viewModel.productId!,
-                      ProductParams(
-                          productName: viewModel.productName,
-                          categoryId: viewModel.productCategory?.id,
-                          productCost: viewModel.productPrice,
-                          exchangeCostRange: viewModel.productExchangeCost,
-                          productExplanation: viewModel.productExplanation));
+              ProductModel? modifiedProduct =
+                  await Provider.of<ModifyProductProvider>(context,
+                          listen: false)
+                      .modifyProduct(
+                          viewModel.productId!,
+                          ProductParams(
+                              productName: viewModel.productName,
+                              categoryId: viewModel.productCategory?.id,
+                              productCost: viewModel.productPrice,
+                              exchangeCostRange: viewModel.productExchangeCost,
+                              productExplanation: viewModel.productExplanation,
+                              productImageUrl: viewModel.productImageUrl),
+                          viewModel.productImageFile);
               if (modifiedProduct != null) {
                 _showSnackBarDurationForSec("글이 수정되었습니다🥰");
                 // ignore: use_build_context_synchronously

@@ -79,13 +79,15 @@ class ProductParams {
   int? categoryId;
   int? productCost;
   int? exchangeCostRange;
+  String? productImageUrl;
 
   ProductParams(
       {this.productName,
       this.productExplanation,
       this.categoryId,
       this.productCost,
-      this.exchangeCostRange});
+      this.exchangeCostRange,
+      this.productImageUrl});
 
   ProductParams.fromJson(Map<String, dynamic> json) {
     productName = json['productName'];
@@ -93,6 +95,7 @@ class ProductParams {
     categoryId = json['categoryId'];
     productCost = json['productCost'];
     exchangeCostRange = json['exchangeCostRange'];
+    productImageUrl = json['productImageUrl'];
   }
 
   Map<String, dynamic> toJson() {
@@ -102,6 +105,7 @@ class ProductParams {
     data['categoryId'] = categoryId.toString();
     data['productCost'] = productCost.toString();
     data['exchangeCostRange'] = exchangeCostRange.toString();
+    data['productImageUrl'] = productImageUrl.toString();
     return data;
   }
 }

@@ -45,8 +45,9 @@ class CreateProductProvider extends ChangeNotifier {
     _productExplanation = productExplanation;
   }
 
-  setProductImage(XFile productImage) {
+  setProductImage(XFile? productImage) {
     _productImage = productImage;
+    notifyListeners();
   }
 
   addOtherProducts(ProductSearchDtoModel product) {
