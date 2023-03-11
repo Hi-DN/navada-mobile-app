@@ -15,8 +15,20 @@ class ProductService {
   Future<ProductModel?> createProduct(
       int userId, ProductParams productParams, XFile? productImageFile) async {
     String uri = '${_httpClient.baseUrl}/user/$userId/product';
+    return multipartRequest(uri, 'POST', productParams, productImageFile);
+  }
+
+  // 상품 수정
+  Future<ProductModel?> modifyProduct(int productId,
+      ProductParams productParams, XFile? productImageFile) async {
+    String uri = '${_httpClient.baseUrl}/product/$productId';
+    return multipartRequest(uri, 'PATCH', productParams, productImageFile);
+  }
+
+  Future<ProductModel?> multipartRequest(String uri, String method,
+      ProductParams productParams, XFile? productImageFile) async {
     http.MultipartRequest request =
-        http.MultipartRequest('POST', Uri.parse(uri));
+        http.MultipartRequest(method, Uri.parse(uri));
 
     try {
       request.headers['Authorization'] = HttpClient.accessToken;
@@ -26,6 +38,9 @@ class ProductService {
       request.fields['productCost'] = productParams.productCost!.toString();
       request.fields['exchangeCostRange'] =
           productParams.exchangeCostRange!.toString();
+      request.fields['productImageUrl'] = (productParams.productImageUrl != null
+          ? productParams.productImageUrl!.toString()
+          : '');
 
       if (productImageFile != null) {
         request.files.add(
@@ -53,6 +68,7 @@ class ProductService {
         return null;
       }
     } catch (e) {
+      print(e.toString());
       throw Exception();
     }
   }
@@ -64,20 +80,6 @@ class ProductService {
 
     if (data['success']) {
       return ProductDetailDto.fromJson(data['data']);
-    } else {
-      return null;
-    }
-  }
-
-  // 상품 수정
-  Future<ProductModel?> modifyProduct(
-      int productId, ProductParams productParams) async {
-    Map<String, dynamic> data = await _httpClient.patchRequest(
-        '/product/$productId', productParams.toJson(),
-        tokenYn: true);
-
-    if (data['success']) {
-      return ProductModel.fromJson(data['data']);
     } else {
       return null;
     }

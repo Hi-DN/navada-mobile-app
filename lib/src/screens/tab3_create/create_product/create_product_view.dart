@@ -51,7 +51,6 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   Category? _productCategory;
 
   final ImagePicker _picker = ImagePicker();
-  XFile? _image;
 
   @override
   void initState() {
@@ -202,19 +201,46 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       }
     }, child: Consumer<CreateProductProvider>(
       builder: (context, provider, widget) {
-        return Container(
-            width: size.getSize(149),
-            height: size.getSize(149),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: grey216,
-            ),
-            child: provider.productImage == null
-                ? const Icon(Icons.photo_library_outlined, color: grey153)
-                : Image.file(
-                    File(provider.productImage!.path),
-                    fit: BoxFit.cover,
-                  ));
+        return SizedBox(
+          width: size.getSize(149),
+          height: size.getSize(149),
+          child: Stack(
+            children: [
+              Container(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                      width: size.getSize(139),
+                      height: size.getSize(139),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: grey216,
+                      ),
+                      child: provider.productImage != null
+                          ? Image.file(
+                              File(provider.productImage!.path),
+                              fit: BoxFit.cover,
+                            )
+                          : const Icon(Icons.photo_library_outlined,
+                              color: grey153))),
+              provider.productImage != null
+                  ? Container(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        onPressed: () {
+                          provider.setProductImage(null);
+                        },
+                        icon: Icon(
+                          Icons.cancel,
+                          size: size.getSize(20.0),
+                        ),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    )
+                  : Container()
+            ],
+          ),
+        );
       },
     ));
   }
