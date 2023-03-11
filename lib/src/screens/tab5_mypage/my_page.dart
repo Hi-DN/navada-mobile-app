@@ -212,6 +212,7 @@ class _AccountManagement extends StatelessWidget {
                 onPressed: () async {
                   bool result =await Provider.of<SignInProvider>(context, listen: false).withdraw();
                   if (result) {
+                    Provider.of<UserProvider>(context, listen: false).initUser();
                     Navigator.pushNamedAndRemoveUntil(context, SignIn.routeName, (route) => false);
                   }
                 },

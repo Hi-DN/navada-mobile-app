@@ -8,13 +8,19 @@ class UserProvider extends ChangeNotifier {
 
   final UserService _userService = UserService();
 
+  void initUser() {
+    setOAuthInfo(null, null);
+    user = User();
+    notifyListeners();
+  }
+
   void setUser(UserDto userParams, String email, SignInPlatform platform) {
     setOAuthInfo(email, platform);
     setUserInfo(userParams);
     notifyListeners();
   }
 
-  void setOAuthInfo(String email, SignInPlatform platform) {
+  void setOAuthInfo(String? email, SignInPlatform? platform) {
     user.userEmail = email;
     user.signInPlatform = platform;
     notifyListeners();
