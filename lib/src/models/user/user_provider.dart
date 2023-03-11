@@ -21,7 +21,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   void setUserInfo(UserDto params) {
-    String phoneNum = params.userPhoneNum;
+    String phoneNum = params.userPhoneNum.replaceAll("-", "");
 
     user.userId = params.userId;
     user.userName = params.userName;
@@ -32,7 +32,7 @@ class UserProvider extends ChangeNotifier {
     user.userTradeCount = params.userTradeCount;
     user.userRatingCount = params.userRatingCount;
     user.userPhoneNum 
-      = '${phoneNum.substring(0,3)}-${phoneNum.substring(3,7)}-${phoneNum.substring(8, phoneNum.length)}';
+      = '${phoneNum.substring(0,3)}-${phoneNum.substring(3,7)}-${phoneNum.substring(7, phoneNum.length)}';
     notifyListeners();
   }
 
