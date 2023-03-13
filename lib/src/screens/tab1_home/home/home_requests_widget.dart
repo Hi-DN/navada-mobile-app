@@ -27,13 +27,13 @@ class RequestsForMe extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     return Scaffold(
-        body: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _titleSection(),
-        Expanded(child: _buildScreenDependingOnDataState()),
-      ],
-    ));
+      backgroundColor: white,
+      body: Column(crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _titleSection(),
+          Expanded(child: _buildScreenDependingOnDataState()),
+        ],
+      ));
   }
 
   Widget _titleSection() {

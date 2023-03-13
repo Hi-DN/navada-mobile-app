@@ -8,20 +8,26 @@ class UserProvider extends ChangeNotifier {
 
   final UserService _userService = UserService();
 
+  void initUser() {
+    setOAuthInfo(null, null);
+    user = User();
+    notifyListeners();
+  }
+
   void setUser(UserDto userParams, String email, SignInPlatform platform) {
     setOAuthInfo(email, platform);
     setUserInfo(userParams);
     notifyListeners();
   }
 
-  void setOAuthInfo(String email, SignInPlatform platform) {
+  void setOAuthInfo(String? email, SignInPlatform? platform) {
     user.userEmail = email;
     user.signInPlatform = platform;
     notifyListeners();
   }
 
   void setUserInfo(UserDto params) {
-    String phoneNum = params.userPhoneNum;
+    String phoneNum = params.userPhoneNum.replaceAll("-", "");
 
     user.userId = params.userId;
     user.userName = params.userName;
@@ -32,7 +38,7 @@ class UserProvider extends ChangeNotifier {
     user.userTradeCount = params.userTradeCount;
     user.userRatingCount = params.userRatingCount;
     user.userPhoneNum 
-      = '${phoneNum.substring(0,3)}-${phoneNum.substring(3,7)}-${phoneNum.substring(8, phoneNum.length)}';
+      = '${phoneNum.substring(0,3)}-${phoneNum.substring(3,7)}-${phoneNum.substring(7, phoneNum.length)}';
     notifyListeners();
   }
 

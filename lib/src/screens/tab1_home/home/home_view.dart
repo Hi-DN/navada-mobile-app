@@ -27,21 +27,20 @@ class HomeView extends StatelessWidget {
     User user = UserProvider.user;
 
     return Scaffold(
-        body: MultiProvider(
-            providers: [
-          ChangeNotifierProvider(
-              create: (context) => RequestsForMeProvider(user.userId!)),
-          ChangeNotifierProvider(create: (context) => HomeViewModel()),
-        ],
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: size.getSize(22)),
-              child: Column(children: [
-                const _HomeTopBar(),
-                const _CategorySection(),
-                const CustomDivider(),
-                Expanded(child: RequestsForMe())
-              ]),
-            )));
+      backgroundColor: white,
+      body: MultiProvider(providers: [
+        ChangeNotifierProvider(create: (context) => RequestsForMeProvider(user.userId!)),
+        ChangeNotifierProvider(create: (context) => HomeViewModel()),
+      ],
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: size.getSize(22)),
+        child: Column(children: [
+          const _HomeTopBar(),
+          const _CategorySection(),
+          const CustomDivider(),
+          Expanded(child: RequestsForMe())
+        ]),
+      )));
   }
 }
 

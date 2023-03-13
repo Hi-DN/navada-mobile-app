@@ -78,7 +78,14 @@ class SignInProvider with ChangeNotifier {
 
   Future<bool> withdraw() async {
     disconnectSocialInfo();
-    return await userService.withdraw(UserProvider.user.userId!);
+    
+    bool result = await userService.withdraw(UserProvider.user.userId!);
+    if(result){
+      initializeTokens();
+      return true;
+    } else {
+      return false;
+    }
   }
 
   signOutSocial() async {

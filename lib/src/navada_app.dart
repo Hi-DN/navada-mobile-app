@@ -25,6 +25,7 @@ class NavadaApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => MyProductsProvider()),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           navigatorKey: navigatorKey,
           title: 'Navada',
           theme: ThemeData(
