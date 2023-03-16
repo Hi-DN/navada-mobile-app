@@ -4,6 +4,7 @@ import 'package:navada_mobile_app/src/models/user/user_model.dart';
 import 'package:navada_mobile_app/src/models/user/user_provider.dart';
 import 'package:navada_mobile_app/src/providers/home_requests_provider.dart';
 import 'package:navada_mobile_app/src/utilities/enums.dart';
+import 'package:navada_mobile_app/src/utilities/gcs_image.dart';
 import 'package:navada_mobile_app/src/utilities/shortener.dart';
 import 'package:navada_mobile_app/src/widgets/colors.dart';
 import 'package:navada_mobile_app/src/widgets/cost_range_badge.dart';
@@ -27,13 +28,14 @@ class RequestsForMe extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     return Scaffold(
-      backgroundColor: white,
-      body: Column(crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _titleSection(),
-          Expanded(child: _buildScreenDependingOnDataState()),
-        ],
-      ));
+        backgroundColor: white,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _titleSection(),
+            Expanded(child: _buildScreenDependingOnDataState()),
+          ],
+        ));
   }
 
   Widget _titleSection() {
@@ -228,7 +230,7 @@ class RequestItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _exampleImage(),
+          _productImage(),
           const Space(height: 8),
           _requesterProjectInfo()
         ],
@@ -236,17 +238,21 @@ class RequestItem extends StatelessWidget {
     );
   }
 
-  Widget _exampleImage() {
+  Widget _productImage() {
     ScreenSize size = ScreenSize();
     return ClipRRect(
       borderRadius: BorderRadius.circular(size.getSize(5)),
       child: Stack(
         children: [
-          Image.asset(
-            'assets/images/test.jpeg',
-            width: size.getSize(160.0),
-            height: size.getSize(160.0),
-          ),
+          SizedBox(
+              width: size.getSize(160.0),
+              height: size.getSize(160.0),
+              child: getGcsImage(request!.requesterProduct?.productImageUrl)),
+          // Image.asset(
+          //   'assets/images/test.jpeg',
+          //   width: size.getSize(160.0),
+          //   height: size.getSize(160.0),
+          // ),
           if (request!.requestStatusCd == RequestStatusCd.DENIED)
             _blackTransparentFilter()
         ],

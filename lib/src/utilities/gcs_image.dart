@@ -7,7 +7,5 @@ Widget getGcsImage(String? gcsImageUrl) {
           gcsImageUrl,
           fit: BoxFit.contain,
         )
-      : Container(
-          child: Center(child: const Text('기본 이미지 넣기')),
-        );
+      : Image.asset("assets/images/logo.png");
 }

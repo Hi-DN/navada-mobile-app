@@ -66,7 +66,8 @@ class AcceptRequestScreen extends StatelessWidget {
                     exchangeCostRange:
                         request.acceptorProduct!.exchangeCostRange,
                     productExplanation:
-                        request.requesterProduct!.productExplanation)),
+                        request.acceptorProduct!.productExplanation,
+                    productImageUrl: request.acceptorProduct!.productImageUrl)),
             Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [_seeOtherRequestsBtn()]),
@@ -80,7 +81,9 @@ class AcceptRequestScreen extends StatelessWidget {
                     exchangeCostRange:
                         request.requesterProduct!.exchangeCostRange,
                     productExplanation:
-                        request.requesterProduct!.productExplanation)),
+                        request.requesterProduct!.productExplanation,
+                    productImageUrl:
+                        request.requesterProduct!.productImageUrl)),
             _warningSection(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
