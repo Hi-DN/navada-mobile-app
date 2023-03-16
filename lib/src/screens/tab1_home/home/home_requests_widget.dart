@@ -248,11 +248,6 @@ class RequestItem extends StatelessWidget {
               width: size.getSize(160.0),
               height: size.getSize(160.0),
               child: getGcsImage(request!.requesterProduct?.productImageUrl)),
-          // Image.asset(
-          //   'assets/images/test.jpeg',
-          //   width: size.getSize(160.0),
-          //   height: size.getSize(160.0),
-          // ),
           if (request!.requestStatusCd == RequestStatusCd.DENIED)
             _blackTransparentFilter()
         ],
